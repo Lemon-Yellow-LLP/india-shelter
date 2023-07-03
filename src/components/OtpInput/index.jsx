@@ -4,7 +4,7 @@ import otpVerified from '../../assets/icons/otp-verified.svg';
 import otpNotVerified from '../../assets/icons/otp-not-verified.svg';
 
 let currentOtpIndex = 0;
-const DISALLOW_CHAR = ['e', 'E', '+', '-'];
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
 
 const OtpInput = ({
   label,

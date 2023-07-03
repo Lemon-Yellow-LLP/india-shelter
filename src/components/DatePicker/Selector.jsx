@@ -2,9 +2,20 @@ import { useEffect, useRef, useState } from 'react';
 import { IconArrowDown } from '../../assets/icons';
 import PropTypes from 'prop-types';
 
-const Selector = ({ label, options, onOptionClick, selectedIndex }) => {
+const Selector = ({
+  label,
+  options,
+  onOptionClick,
+  selectedIndex,
+  listContainerId,
+  onShowOptionCB,
+}) => {
   const [showOptions, setShowOptions] = useState(false);
   const containerRef = useRef(null);
+
+  useEffect(() => {
+    onShowOptionCB && onShowOptionCB();
+  }, [onShowOptionCB, showOptions]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -31,6 +42,7 @@ const Selector = ({ label, options, onOptionClick, selectedIndex }) => {
       </button>
       {showOptions ? (
         <div
+          id={listContainerId}
           style={{ maxHeight: 298, width: 130, top: '120%' }}
           className='absolute left-2/4 -translate-x-2/4 bg-neutral-white p-2 overflow-y-auto flex flex-col gap-2 shadow-calendar rounded-lg'
         >
@@ -40,6 +52,7 @@ const Selector = ({ label, options, onOptionClick, selectedIndex }) => {
                 onOptionClick(option, index);
                 setShowOptions(false);
               }}
+              id={`${listContainerId}-${option}`}
               title={option}
               type='button'
               key={option}
@@ -66,7 +79,8 @@ export default Selector;
 Selector.propTypes = {
   label: PropTypes.any.isRequired,
   options: PropTypes.arrayOf(PropTypes.any),
-  currentDate: PropTypes.any,
   onOptionClick: PropTypes.func,
   selectedIndex: PropTypes.number,
+  listContainerId: PropTypes.string,
+  onShowOptionCB: PropTypes.func,
 };

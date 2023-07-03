@@ -95,6 +95,8 @@ const privacyPolicy = `<ul class="pl-[18px]">
 <ul class="list-none pl-0">
 <h3>Aadhar Personal Data collection</h3>
 <p>INDIA SHELTER FINANCE CORPORATION LIMITED shall collect the personal data including Aadhaar number/ Virtual ID, directly from the Aadhaar number holder for conducting authentication with UIDAI at the time of providing the services.</p>
+</ul>
+<li>
 <h3>Specific purpose for collection of Personal data</h3>
 <ul class="list-none pl-0">
 <li>
@@ -110,6 +112,8 @@ const privacyPolicy = `<ul class="pl-[18px]">
 <p>INDIA SHELTER FINANCE CORPORATION LIMITED shall implement a process to ensure that identity information is not used beyond the purposes mentioned in the notice/ consent form provided to the Aadhaar number holder.</p>
 </li>
 </ul>
+</li>
+<li>
 <h3>Notice/ Disclosure of Information to Aadhaar number holder</h3>
 <ul class="list-none pl-0">
 <li>INDIA SHELTER FINANCE CORPORATION LIMITED shall provide relevant information prior to collection of identity information/ personal data from Aadhaar number holder. These shall include:</li>
@@ -124,6 +128,7 @@ const privacyPolicy = `<ul class="pl-[18px]">
 <ul class="list-none pl-0">
 <li>Aadhaar number holder shall be notified of the authentication either through the e-mail or phone or SMS at the time of authentication and INDIA SHELTER FINANCE CORPORATION LIMITED shall maintain logs of the same.</li>
 </ul>
+</li>
 </li>
 <li><h3>Obtaining Consent</h3>
 <ul class="list-none pl-0">
@@ -150,7 +155,6 @@ const privacyPolicy = `<ul class="pl-[18px]">
 <li>
 <p>For the purpose of e-KYC, the demographic details of the individual received from UIDAI as a response shall be used for identification of the individual for the specific purposes of providing the specific services for the duration of the services.</p>
 </li>
-</ul>
 </ul>
 </li>
 <li><h3>Retention of Personal Data</h3>

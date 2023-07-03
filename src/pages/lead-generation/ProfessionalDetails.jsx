@@ -104,6 +104,7 @@ const ProfessinalDetail = () => {
   } = useContext(AuthContext);
   const [date, setDate] = useState();
   const [selectedProfession, setSelectedProfession] = useState(null);
+  const [processingPanCard, setProcessingPanCard] = useState(false);
 
   useEffect(() => {
     setSelectedProfession(values.profession);
@@ -133,9 +134,9 @@ const ProfessinalDetail = () => {
       if (!keys.length) return acc && false;
       return acc && !keys.includes(field);
     }, !errors[disableNextFields[0]]);
-    disableNext = disableNext && (values.mode_of_salary || values.occupation);
+    disableNext = disableNext && (values.mode_of_salary || values.occupation) && !processingPanCard;
     setDisableNextStep(!disableNext);
-  }, [errors, setDisableNextStep, values.mode_of_salary, values.occupation]);
+  }, [errors, processingPanCard, setDisableNextStep, values.mode_of_salary, values.occupation]);
 
   useEffect(() => {
     if (!date) return;
@@ -165,14 +166,18 @@ const ProfessinalDetail = () => {
   );
 
   const handleOnPanBlur = useCallback(
-    async (e) => {
+    async (_e) => {
       if (errors.pan_number) return;
+      setProcessingPanCard(true);
 
       const updatedPanCard = await editLeadById(currentLeadId, {
-        pan_number: e.currentTarget.value.toUpperCase(),
+        pan_number: values.pan_number,
       });
 
-      if (updatedPanCard?.status !== 200) return;
+      if (updatedPanCard?.status !== 200) {
+        setProcessingPanCard(false);
+        return;
+      }
 
       //call dedupe
       await checkDedupe(currentLeadId);
@@ -180,7 +185,10 @@ const ProfessinalDetail = () => {
       //call bre99
       const bre99Res = await checkBre99(currentLeadId);
 
-      if (bre99Res.status !== 200) return;
+      if (bre99Res.status !== 200) {
+        setProcessingPanCard(false);
+        return;
+      }
 
       const bre99Data = bre99Res.data.bre_99_response.body;
       const allowCallPanRule = bre99Data.find((rule) => rule.Rule_Name === 'PAN');
@@ -189,14 +197,19 @@ const ProfessinalDetail = () => {
       if (allowCallPanRule.Rule_Value === 'YES') {
         const res = await verifyPan(currentLeadId);
 
-        if (res.status === 'Valid') return;
+        if (res.status === 'Valid') {
+          setProcessingPanCard(false);
+          return;
+        }
         setFieldError('pan_number', 'Please enter your valid PAN number');
+        setProcessingPanCard(false);
       }
       if (allowCallCibilRule.Rule_Value === 'YES') {
         await checkCibil(currentLeadId);
       }
+      setProcessingPanCard(false);
     },
-    [currentLeadId, errors.pan_number, setFieldError],
+    [currentLeadId, errors.pan_number, setFieldError, values.pan_number],
   );
 
   return (
@@ -209,6 +222,7 @@ const ProfessinalDetail = () => {
         value={values.pan_number.toUpperCase()}
         error={errors.pan_number}
         touched={touched.pan_number}
+        processing={processingPanCard}
         onBlur={(e) => {
           handleBlur(e);
           handleOnPanBlur(e);

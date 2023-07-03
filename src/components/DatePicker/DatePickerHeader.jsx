@@ -32,8 +32,8 @@ const DatePickerHeader = ({
   }, [date]);
 
   const onShowYearOptionCB = useCallback(() => {
-    const year = document.querySelector('#year-list-1980');
-    year?.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'center' });
+    const year = document.querySelector('#year-list-1982');
+    year?.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'nearest' });
   }, []);
 
   return (

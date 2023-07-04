@@ -6,6 +6,7 @@ import Sheet from 'react-modal-sheet';
 import { BottomSheetHandle } from '../../components';
 import { steps } from './utils';
 import PropTypes from 'prop-types';
+import Loader from '../../components/Loader';
 
 const snapPoints = [0.92, 0.46];
 const initialSnap = 1;
@@ -31,7 +32,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
 
   const Form = useMemo(
     () => (
-      <Suspense fallback={<h1>Loading next step...</h1>}>
+      <Suspense fallback={<Loader extraClasses="bg-transparent md:pr-[175px]" />}>
         <div className='relative h-full overflow-y-hidden'>
           <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 

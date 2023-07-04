@@ -6,6 +6,7 @@ import AnimationBanner from './AnimationBanner';
 import { addToSalesForce, editLeadById } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
+import Loader from '../../components/Loader';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
@@ -25,7 +26,7 @@ const LeadGeneration = () => {
   }, []);
 
   return (
-    <Suspense fallback={<h1>Loading...</h1>}>
+    <Suspense fallback={<Loader />}>
       <AuthContextProvider
         setProcessingBRE={setProcessingBRE}
         setIsQualified={setIsQualified}

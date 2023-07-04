@@ -10,11 +10,6 @@ function parseDateString(_, originalValue) {
 }
 
 export const signUpSchema = Yup.object({
-  loan_request_amount: Yup.number()
-    .required('Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000')
-    .typeError('Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000')
-    .min(100000, 'Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000')
-    .max(5000000, 'Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000'),
   first_name: Yup.string().min(2).max(10).required('Please enter your First name'),
   middle_name: Yup.string().min(2).max(10),
   last_name: Yup.string().min(2).max(10),
@@ -34,7 +29,6 @@ export const signUpSchema = Yup.object({
   date_of_birth: Yup.date().transform(parseDateString).required(''),
   monthly_family_income: Yup.string().required('Please enter your monthly family income'),
   ongoing_emi: Yup.string().required('Please enter your ongoing emi amount'),
-  property_estimation: Yup.string().required('Please enter you property estimation'),
   property_pincode: Yup.string()
     .required('Please enter your property pincode')
     .matches(/^[0-9]+$/, 'Must be only digits')
@@ -46,12 +40,29 @@ export const signUpSchema = Yup.object({
   purpose_of_loan: Yup.string().required('Please select the purpose of the loan.'),
   property_type: Yup.string().required('Please select the property type.'),
   loan_tenure: Yup.string()
-    .required('Please enter the Loan tenure period within 12 months')
-    .matches(/^(1[012]|[1-9])$/, 'Please enter the Loan tenure period within 12 months'),
+    .required('Please enter the Loan tenure period'),
   purpose_type: Yup.string().required('Property category not selected.'),
 
   email: Yup.string()
     .email()
     .required('Please enter your email')
     .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, 'Enter a Valid Email'),
+}).shape({
+  loan_request_amount: Yup.number()
+    .required('Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000')
+    .typeError('Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000')
+    .min(100000, 'Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000')
+    .max(5000000, 'Total loan amount should not be less than ₹ 1,00,000 and more than ₹ 50,00,000'),
+  property_estimation: Yup.string()
+    .required('Please enter you property estimation')
+    .test({
+      name: 'min',
+      exclusive: false,
+      params: {},
+      message: 'Property Estimation Value should not exceed than Loan Amount',
+      test: function (value) {
+        // You can access the price field with `this.parent`.
+        return parseInt(value) <= parseInt(this.parent.loan_request_amount);
+      },
+    }),
 });

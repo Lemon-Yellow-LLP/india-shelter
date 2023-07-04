@@ -124,6 +124,10 @@ const OtpInput = ({
             }}
             value={otp[index]}
             pattern='\d*'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
             onPaste={(e) => {
               e.preventDefault();
               const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');

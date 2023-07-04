@@ -69,6 +69,10 @@ const BalanceTransferFields = () => {
             }}
             onChange={handleChange}
             type='number'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
             inputClasses='hidearrow'
           />
         </div>
@@ -90,7 +94,7 @@ const BalanceTransferFields = () => {
         name='loan_amount'
         label='Loan Amount'
         required
-        pattern="\d*"
+        pattern='\d*'
         Icon={IconRupee}
         placeholder='1,00,000'
         value={values.loan_amount}

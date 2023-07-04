@@ -369,6 +369,10 @@ const PersonalDetail = () => {
           handleBlur(e);
           handleOnPincodeChange();
         }}
+        min='0'
+        onInput={(e) => {
+          if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+        }}
         onChange={handleChange}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
@@ -418,6 +422,10 @@ const PersonalDetail = () => {
             { passive: false },
           )
         }
+        min='0'
+        onInput={(e) => {
+          if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+        }}
         onChange={(e) => {
           if (e.currentTarget.value < 0) {
             e.preventDefault();

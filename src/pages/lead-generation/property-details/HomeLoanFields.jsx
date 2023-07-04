@@ -110,6 +110,10 @@ const HomeLoanFields = () => {
             touched={touched.property_pincode}
             type='number'
             pattern='\d*'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
             onFocus={(e) =>
               e.target.addEventListener(
                 'wheel',

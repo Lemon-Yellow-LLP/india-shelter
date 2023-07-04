@@ -1,10 +1,11 @@
 import { CurrencyInput, DropDown, TextInput } from '../../../components';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
-import { loanTenureOptions } from '../utils';
+import { loanTenureOptions, loanTypeOptions } from '../utils';
 import { updateLeadDataOnBlur } from '../../../global';
 import { PropertyDetailContext } from '.';
+import { useDebounce } from '../../../hooks';
 
 const fieldsRequiredForSubmitting = [
   'banker_name',
@@ -16,8 +17,39 @@ const fieldsRequiredForSubmitting = [
 
 const BalanceTransferFields = () => {
   const { showOTPInput, emailOTPVerified } = useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    setDisableNextStep,
+    currentLeadId,
+    setFieldValue,
+  } = useContext(AuthContext);
+
+  const [selectedLoanTenure, setSelectedLoanTenure] = useState(loanTypeOptions[0].value);
+
+  const deferredFilteredLoanTenure = useDebounce(values.loan_tenure, 5000);
+
+  useEffect(() => {
+    const fileteredValueOnBlur = () => {
+      if (selectedLoanTenure === 'years') {
+        if (deferredFilteredLoanTenure) {
+          const filteredValue = deferredFilteredLoanTenure * 12;
+          console.log(filteredValue.toString());
+          updateLeadDataOnBlur(currentLeadId, 'loan_tenure', filteredValue.toString());
+        }
+      } else {
+        console.log(typeof parseInt(deferredFilteredLoanTenure));
+        if (deferredFilteredLoanTenure) {
+          console.log('data sent');
+          updateLeadDataOnBlur(currentLeadId, 'loan_tenure', deferredFilteredLoanTenure.toString());
+        }
+      }
+    };
+    fileteredValueOnBlur();
+  }, [selectedLoanTenure, deferredFilteredLoanTenure]);
 
   useEffect(() => {
     if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
@@ -27,7 +59,7 @@ const BalanceTransferFields = () => {
       return acc && !Object.keys(errors).includes(field);
     });
     setDisableNextStep(!disableSubmit);
-  }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput]);
+  }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput, loanTenureOptions]);
 
   return (
     <div className='flex flex-col gap-2'>
@@ -63,17 +95,37 @@ const BalanceTransferFields = () => {
             value={values.loan_tenure}
             displayError={false}
             onBlur={(e) => {
-              const target = e.currentTarget;
               handleBlur(e);
-              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+              // fileteredValueOnBlur(e);
+              // updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
             }}
-            onChange={handleChange}
+            onChange={(e) => {
+              if (e.currentTarget.value < 0) {
+                e.preventDefault();
+                return;
+              }
+              if (values.loan_tenure.length >= 2) {
+                return;
+              }
+              const value = e.currentTarget.value;
+              setFieldValue('loan_tenure', value);
+            }}
             type='number'
             min='0'
             onInput={(e) => {
               if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
             }}
             inputClasses='hidearrow'
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace') {
+                setFieldValue(
+                  'loan_tenure',
+                  values.loan_tenure.slice(0, values.loan_tenure.length - 1),
+                );
+                e.preventDefault();
+                return;
+              }
+            }}
           />
         </div>
         <div className='mt-1 grow'>
@@ -82,6 +134,11 @@ const BalanceTransferFields = () => {
             placeholder='Months'
             showError={false}
             showIcon={false}
+            value={selectedLoanTenure}
+            onChange={(value) => {
+              setSelectedLoanTenure(value);
+              console.log(value);
+            }}
           />
         </div>
       </div>

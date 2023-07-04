@@ -3,7 +3,7 @@ import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { editLeadById } from '../../global';
+import { addToSalesForce, editLeadById } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
 import Loader from '../../components/Loader';
@@ -22,6 +22,7 @@ const LeadGeneration = () => {
 
   const onSubmit = useCallback(async (leadId, values) => {
     editLeadById(leadId, values).then(() => setProcessingBRE(true));
+    addToSalesForce(leadId).then((res) => console.log(res));
   }, []);
 
   return (

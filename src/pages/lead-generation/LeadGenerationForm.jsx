@@ -32,7 +32,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
 
   const Form = useMemo(
     () => (
-      <Suspense fallback={<Loader extraClasses="bg-opacity-0 md:pr-[175px]" />}>
+      <Suspense fallback={<Loader extraClasses="bg-transparent md:pr-[175px]" />}>
         <div className='relative h-full overflow-y-hidden'>
           <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 

@@ -43,10 +43,6 @@ const PropertyDetail = () => {
     setPropertyType(values.property_type);
   }, [values.property_type]);
 
-useEffect(() => {
-    setDisableNextStep(true)
-  }, [])
-
   const handleLoanPursposeChange = useCallback(
     (value) => {
       setLoanPurpose(value);
@@ -147,7 +143,11 @@ useEffect(() => {
             label='Property Type'
             required
             placeholder='Ex: Residential'
-            options={propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][loanPurpose] || []}
+            options={
+              propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][
+                loanPurpose
+              ] || []
+            }
             onChange={handlePropertyType}
             defaultSelected={propertyType}
             disabled={!loanPurpose}

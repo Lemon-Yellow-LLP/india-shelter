@@ -25,7 +25,7 @@ const BalanceTransferFields = () => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
-    }, true);
+    });
     setDisableNextStep(!disableSubmit);
   }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput]);
 

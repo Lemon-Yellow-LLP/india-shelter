@@ -52,6 +52,8 @@ const AuthContextProvider = ({
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
+  const [processingPanCard, setProcessingPanCard] = useState(false);
+  const [validPancard, setValidPancard] = useState(false);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -158,6 +160,10 @@ const AuthContextProvider = ({
         acceptedTermsAndCondition,
         setAcceptedTermsAndCondition,
         updateFieldsFromServerData,
+        validPancard,
+        setValidPancard,
+        processingPanCard,
+        setProcessingPanCard,
       }}
     >
       {children}

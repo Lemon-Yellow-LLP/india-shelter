@@ -86,6 +86,9 @@ const AuthContextProvider = ({
     getLeadById(_leadID).then((res) => {
       if (res.status !== 200) return;
       setIsLeadGenearted(true);
+      if (res.data.pan_number) {
+        setValidPancard(true);
+      }
       const data = {};
       Object.entries(res.data).forEach(([fieldName, fieldValue]) => {
         if (typeof fieldValue === 'number') {

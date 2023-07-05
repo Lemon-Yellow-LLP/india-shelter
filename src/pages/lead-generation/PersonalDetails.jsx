@@ -60,6 +60,7 @@ const PersonalDetail = () => {
     acceptedTermsAndCondition,
     setAcceptedTermsAndCondition,
     updateFieldsFromServerData,
+    setValidPancard,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -188,6 +189,9 @@ const PersonalDetail = () => {
 
   const onResumeJourneyClick = useCallback(() => {
     const resumeJourneyIndex = values.extra_params.resume_journey_index;
+    if (values.pan_number) {
+      setValidPancard(true);
+    }
     if (resumeJourneyIndex) {
       setActiveStepIndex(parseInt(resumeJourneyIndex));
     }

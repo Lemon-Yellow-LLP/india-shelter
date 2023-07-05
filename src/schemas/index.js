@@ -39,8 +39,7 @@ export const signUpSchema = Yup.object({
   ),
   purpose_of_loan: Yup.string().required('Please select the purpose of the loan.'),
   property_type: Yup.string().required('Please select the property type.'),
-  loan_tenure: Yup.string()
-    .required('Please enter the Loan tenure period'),
+  loan_tenure: Yup.string().required('Please enter the Loan tenure period'),
   purpose_type: Yup.string().required('Property category not selected.'),
 
   email: Yup.string()
@@ -59,10 +58,10 @@ export const signUpSchema = Yup.object({
       name: 'min',
       exclusive: false,
       params: {},
-      message: 'Property Estimation Value should not exceed than Loan Amount',
+      message: 'Property estimation value should be greater than Loan Amount',
       test: function (value) {
         // You can access the price field with `this.parent`.
-        return parseInt(value) <= parseInt(this.parent.loan_request_amount);
+        return parseInt(value) >= parseInt(this.parent.loan_request_amount);
       },
     }),
 });

@@ -62,12 +62,20 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         activeStepIndex > 0 ? 'justify-between' : 'justify-end'
       } btn-bg absolute h-[128px] md:h-[166px] flex bottom-0 w-full md:pr-[175px] md:pl-1  md:w-[732px] items-end pb-6 px-4 md:px-0`}
     >
-      <Button type='button' onClick={onPreviousButtonClick} inputClasses={`w-2/4 ${activeStepIndex === 0 ? 'pointer-events-none opacity-0': 'opacity-100 pointer-events-auto'}`}>
-          Previous
-      </Button>
-      
       <Button
-        disabled={disableNextStep}
+        type='button'
+        onClick={onPreviousButtonClick}
+        inputClasses={`w-2/4 ${
+          activeStepIndex === 0
+            ? 'pointer-events-none opacity-0'
+            : 'opacity-100 pointer-events-auto'
+        }`}
+      >
+        Previous
+      </Button>
+
+      <Button
+        // disabled={disableNextStep}
         type={activeStepIndex === steps.length - 1 ? 'submit' : 'button'}
         primary
         inputClasses='ml-4 md:ml-6 w-2/4 self-end'

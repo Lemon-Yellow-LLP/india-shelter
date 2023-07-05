@@ -75,7 +75,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       </Button>
 
       <Button
-        // disabled={disableNextStep}
+        disabled={disableNextStep}
         type={activeStepIndex === steps.length - 1 ? 'submit' : 'button'}
         primary
         inputClasses='ml-4 md:ml-6 w-2/4 self-end'

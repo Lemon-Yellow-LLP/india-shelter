@@ -43,6 +43,10 @@ const PropertyDetail = () => {
     setPropertyType(values.property_type);
   }, [values.property_type]);
 
+  useEffect(() => {
+    setDisableNextStep(true);
+  }, [setDisableNextStep]);
+
   const handleLoanPursposeChange = useCallback(
     (value) => {
       setLoanPurpose(value);

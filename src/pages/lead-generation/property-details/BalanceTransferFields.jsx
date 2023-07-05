@@ -49,7 +49,7 @@ const BalanceTransferFields = () => {
       }
     };
     fileteredValueOnBlur();
-  }, [selectedLoanTenure, deferredFilteredLoanTenure]);
+  }, [selectedLoanTenure, deferredFilteredLoanTenure, currentLeadId]);
 
   useEffect(() => {
     if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
@@ -57,9 +57,9 @@ const BalanceTransferFields = () => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
-    });
+    }, true);
     setDisableNextStep(!disableSubmit);
-  }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput, loanTenureOptions]);
+  }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput]);
 
   return (
     <div className='flex flex-col gap-2'>
@@ -135,6 +135,7 @@ const BalanceTransferFields = () => {
             showError={false}
             showIcon={false}
             value={selectedLoanTenure}
+            defaultSelected='months'
             onChange={(value) => {
               setSelectedLoanTenure(value);
               console.log(value);

@@ -64,7 +64,7 @@ const LoanAgainstPropertyFields = () => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
-    });
+    }, true);
 
     disableSubmitting = disableSubmitting && !errors.purpose_type;
 

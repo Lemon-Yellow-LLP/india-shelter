@@ -45,7 +45,7 @@ const HomeLoanFields = () => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
-    });
+    }, true);
 
     setDisableNextStep(!disableSubmitting);
   }, [propertyIdentified, errors, setDisableNextStep, showOTPInput, emailOTPVerified]);

@@ -8,7 +8,7 @@ import { steps } from './utils';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader';
 
-const snapPoints = [0.92, 0.46];
+const snapPoints = [0.91, 0.46];
 const initialSnap = 1;
 
 const LeadGenerationForm = ({ formContainerRef, modalRef }) => {

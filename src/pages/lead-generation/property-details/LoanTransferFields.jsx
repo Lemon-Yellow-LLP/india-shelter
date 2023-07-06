@@ -15,7 +15,7 @@ const fieldsRequiredForSubmitting = [
   'property_type',
 ];
 
-const BalanceTransferFields = () => {
+const LoanTransferFields = () => {
   const { showOTPInput, emailOTPVerified } = useContext(PropertyDetailContext);
   const {
     values,
@@ -170,4 +170,4 @@ const BalanceTransferFields = () => {
   );
 };
 
-export default BalanceTransferFields;
+export default LoanTransferFields;

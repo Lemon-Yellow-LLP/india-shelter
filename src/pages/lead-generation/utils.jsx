@@ -1,5 +1,5 @@
 import {
-  IconBalanceTransfer,
+  IconLoanTransfer,
   IconCommercial,
   IconHomeLoan,
   IconLoanAgainstProperty,
@@ -8,7 +8,7 @@ import {
   IconResidential,
 } from '../../assets/icons';
 
-import BalanceTransferFields from './property-details/BalanceTransferFields';
+import LoanTransferFields from './property-details/LoanTransferFields';
 import HomeLoanFields from './property-details/HomeLoanFields';
 import LoanAgainstPropertyFields from './property-details/LoanAgainstPropertyFields';
 import { lazy } from 'react';
@@ -25,9 +25,9 @@ export const loanTypeOptions = [
     icon: <IconLoanAgainstProperty />,
   },
   {
-    label: 'Balance Transfer',
-    value: 'Balance Transfer',
-    icon: <IconBalanceTransfer />,
+    label: 'Loan Transfer',
+    value: 'Loan Transfer',
+    icon: <IconLoanTransfer />,
   },
 ];
 
@@ -99,8 +99,8 @@ export const propertyDetailsMap = {
       ],
     },
   },
-  'Balance Transfer': {
-    fields: <BalanceTransferFields />,
+  'Loan Transfer': {
+    fields: <LoanTransferFields />,
     loanPurposeOptions: [
       { label: 'Home Loan', value: 'Home Loan' },
       { label: 'LAP', value: 'LAP' },

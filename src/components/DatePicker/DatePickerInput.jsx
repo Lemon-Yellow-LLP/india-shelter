@@ -45,9 +45,20 @@ const DatePickerInput = forwardRef(function DatePickerInput({ name, ...props }, 
                 e.currentTarget.value = value.slice(0, value.length - 1);
               }
             }
+            if (e.key === 'Enter') {
+              props.datepickerref.current.setOpen(false);
+            }
           }}
         />
-        <button type='button' onClick={() => inputRef.current?.focus()}>
+        <button
+          type='button'
+          title='Open Calendar'
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            props.datepickerref.current.setOpen(!props.datepickerref.current.state.open);
+          }}
+        >
           <IconCalendar />
         </button>
       </div>
@@ -62,4 +73,5 @@ DatePickerInput.propTypes = {
   label: PropTypes.string,
   error: PropTypes.string,
   touched: PropTypes.string,
+  datepickerref: PropTypes.object,
 };

@@ -6,7 +6,7 @@ import IconPropertyIdentified from './property-identified';
 import IconPropertyUnIdentified from './property-unidentified';
 import IconRupee from './rupee';
 import IconCalendar from './calendar';
-import IconBalanceTransfer from './balance-transfer';
+import IconLoanTransfer from './loan-transfer';
 import IconLoanAgainstProperty from './loan-against-property';
 import IconResidential from './residential';
 import IconCommercial from './commercial';
@@ -21,7 +21,7 @@ export {
   IconPropertyUnIdentified,
   IconRupee,
   IconCalendar,
-  IconBalanceTransfer,
+  IconLoanTransfer,
   IconLoanAgainstProperty,
   IconResidential,
   IconCommercial,

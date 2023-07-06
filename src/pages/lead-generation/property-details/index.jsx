@@ -142,7 +142,7 @@ const PropertyDetail = () => {
         />
 
         {propertyIdentificationOptions[0].value === propertyIdentified ||
-        selectedLoanType === 'Balance Transfer' ? (
+        selectedLoanType === 'Loan Transfer' ? (
           <DropDown
             label='Property Type'
             required

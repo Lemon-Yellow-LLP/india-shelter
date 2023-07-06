@@ -377,7 +377,18 @@ const PersonalDetail = () => {
         onInput={(e) => {
           if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
         }}
-        onChange={handleChange}
+        onChange={(e) => {
+          if(e.currentTarget.value.length>6){
+            e.preventDefault()
+            return
+          }
+          const value = e.currentTarget.value
+          if (value.charAt(0) === '0') {
+            e.preventDefault();
+            return;
+          }
+          handleChange(e)
+        }}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
           (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||

@@ -315,7 +315,7 @@ const ProfessinalDetail = () => {
 
       <CurrencyInput
         label='Ongoing EMI'
-        hint='Mention all of the ongoing monthly payments'
+        hint='Please mention the ongoing monthly payments. <br /> If there are no EMI payments, please enter 0.'
         required
         name='ongoing_emi'
         placeholder='Eg: 10,000'

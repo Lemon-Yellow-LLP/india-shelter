@@ -300,7 +300,7 @@ const PersonalDetail = () => {
 
       <TextInput
         label='First Name'
-        placeholder='Ex: Suresh, Priya'
+        placeholder='Eg: Suresh, Priya'
         required
         name='first_name'
         value={values.first_name}
@@ -322,7 +322,7 @@ const PersonalDetail = () => {
           <TextInput
             value={values.middle_name}
             label='Middle Name'
-            placeholder='Ex: Ramji, Sreenath'
+            placeholder='Eg: Ramji, Sreenath'
             name='middle_name'
             disabled={inputDisabled}
             onBlur={handleBlur}
@@ -341,7 +341,7 @@ const PersonalDetail = () => {
             value={values.last_name}
             onBlur={handleBlur}
             label='Last Name'
-            placeholder='Ex: Swami, Singh'
+            placeholder='Eg: Swami, Singh'
             disabled={inputDisabled}
             name='last_name'
             onChange={(e) => {
@@ -357,7 +357,7 @@ const PersonalDetail = () => {
       </div>
       <TextInput
         label='Current Pincode'
-        placeholder='Ex: 123456'
+        placeholder='Eg: 123456'
         required
         name='pincode'
         type='number'

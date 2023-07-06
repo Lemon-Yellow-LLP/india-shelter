@@ -67,7 +67,7 @@ const BalanceTransferFields = () => {
         name='banker_name'
         label='Banker Name'
         required
-        placeholder='Ex: Axis'
+        placeholder='Eg: Axis'
         value={values.banker_name}
         error={errors.banker_name}
         touched={touched.banker_name}
@@ -89,7 +89,7 @@ const BalanceTransferFields = () => {
         <div className='grow'>
           <TextInput
             name='loan_tenure'
-            placeholder='Ex: 10'
+            placeholder='Eg: 10'
             label='Loan Tenure'
             required
             value={values.loan_tenure}

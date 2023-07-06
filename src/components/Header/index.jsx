@@ -1,9 +1,9 @@
-import indiaShelterLogo from '../../assets/indiashelter.svg';
+import indiaShelterLogo from '../../assets/logo.svg';
 
 const Header = () => {
   return (
     <div className='px-4 py-4 bg-neutral-white w-full'>
-      <img src={indiaShelterLogo} alt='India Shelter' />
+      <img style={{ maxWidth: 100 }} src={indiaShelterLogo} alt='India Shelter' />
     </div>
   );
 };

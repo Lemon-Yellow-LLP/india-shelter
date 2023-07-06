@@ -15,6 +15,7 @@ import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
 import privacyPolicy from '../../global/privacy-policy';
 import {
+  checkIsValidStatePincode,
   createLead,
   getLeadByPhoneNumber,
   getPincode,
@@ -148,11 +149,14 @@ const PersonalDetail = () => {
   const handleOnPincodeChange = useCallback(async () => {
     if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
 
-    const data = await getPincode(pincode);
-    if (!data) {
+    const validStatePin = await checkIsValidStatePincode(pincode);
+    if(!validStatePin.length){
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
+
+    const data = await getPincode(pincode);
+    
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 

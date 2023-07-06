@@ -45,6 +45,11 @@ async function deleteLeadById(id) {
   return res.data;
 }
 
+async function checkIsValidStatePincode(pincode) {
+  const res = await axios.get(`${API_URL}/state-pin/${pincode}`, {}, requestOptions);
+  return res.data;
+}
+
 async function getPincode(pincode) {
   const res = await axios.get(`${API_URL}/pincode/${pincode}`, {}, requestOptions);
   return res.data;
@@ -166,6 +171,7 @@ export {
   getLeadById,
   editLeadById,
   deleteLeadById,
+  checkIsValidStatePincode,
   getPincode,
   sendMobileOTP,
   verifyMobileOtp,

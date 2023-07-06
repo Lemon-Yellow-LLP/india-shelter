@@ -89,7 +89,14 @@ const CongratulationBanner = () => {
       </div>
       <div className='flex w-full items-center justify-between md:items-start p-4 md:px-16 md:pt-10 gap-1 z-50'>
         <div className='flex flex-col gap-7 items-center flex-1'>
-          <img className='hidden md:inline self-start md:ml-20' src={logo} alt='India Shelter' />
+          <img
+            style={{
+              maxWidth: 175,
+            }}
+            className='hidden md:inline self-start md:ml-20'
+            src={logo}
+            alt='India Shelter'
+          />
           <h4
             style={{ color: '#04584C' }}
             className='text-center text-base md:text-xl font-medium flex items-center w-full mx-4 gap-1 md:hidden'

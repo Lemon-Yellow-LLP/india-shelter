@@ -101,10 +101,13 @@ const ProfessinalDetail = () => {
     setFieldError,
     setDisableNextStep,
     currentLeadId,
+    validPancard,
+    setValidPancard,
+    processingPanCard,
+    setProcessingPanCard,
   } = useContext(AuthContext);
   const [date, setDate] = useState();
   const [selectedProfession, setSelectedProfession] = useState(null);
-  const [processingPanCard, setProcessingPanCard] = useState(false);
 
   useEffect(() => {
     setSelectedProfession(values.profession);
@@ -134,9 +137,20 @@ const ProfessinalDetail = () => {
       if (!keys.length) return acc && false;
       return acc && !keys.includes(field);
     }, !errors[disableNextFields[0]]);
-    disableNext = disableNext && (values.mode_of_salary || values.occupation) && !processingPanCard;
+    disableNext =
+      disableNext &&
+      validPancard &&
+      (values.mode_of_salary || values.occupation) &&
+      !processingPanCard;
     setDisableNextStep(!disableNext);
-  }, [errors, processingPanCard, setDisableNextStep, values.mode_of_salary, values.occupation]);
+  }, [
+    errors,
+    processingPanCard,
+    validPancard,
+    setDisableNextStep,
+    values.mode_of_salary,
+    values.occupation,
+  ]);
 
   useEffect(() => {
     if (!date) return;
@@ -169,6 +183,7 @@ const ProfessinalDetail = () => {
     async (_e) => {
       if (errors.pan_number) return;
       setProcessingPanCard(true);
+      setValidPancard(false);
 
       const updatedPanCard = await editLeadById(currentLeadId, {
         pan_number: values.pan_number,
@@ -198,11 +213,13 @@ const ProfessinalDetail = () => {
         const res = await verifyPan(currentLeadId);
 
         if (res.status === 'Valid') {
+          setValidPancard(true);
           setProcessingPanCard(false);
           return;
         }
         setFieldError('pan_number', 'Please enter your valid PAN number');
         setProcessingPanCard(false);
+        setValidPancard(false);
       }
       if (allowCallCibilRule.Rule_Value === 'YES') {
         await checkCibil(currentLeadId);

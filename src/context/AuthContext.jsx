@@ -52,6 +52,8 @@ const AuthContextProvider = ({
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
+  const [processingPanCard, setProcessingPanCard] = useState(false);
+  const [validPancard, setValidPancard] = useState(false);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -84,6 +86,9 @@ const AuthContextProvider = ({
     getLeadById(_leadID).then((res) => {
       if (res.status !== 200) return;
       setIsLeadGenearted(true);
+      if (res.data.pan_number) {
+        setValidPancard(true);
+      }
       const data = {};
       Object.entries(res.data).forEach(([fieldName, fieldValue]) => {
         if (typeof fieldValue === 'number') {
@@ -158,6 +163,10 @@ const AuthContextProvider = ({
         acceptedTermsAndCondition,
         setAcceptedTermsAndCondition,
         updateFieldsFromServerData,
+        validPancard,
+        setValidPancard,
+        processingPanCard,
+        setProcessingPanCard,
       }}
     >
       {children}

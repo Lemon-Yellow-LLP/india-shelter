@@ -167,9 +167,17 @@ const LoanAgainstPropertyFields = () => {
               );
             }}
             onChange={(e) => {
+              if(e.currentTarget.value.length>6){
+                e.preventDefault()
+                return
+              }
               const value = e.currentTarget.value;
               if (!value) {
                 handleChange(e);
+                return;
+              }
+              if (value.charAt(0) === '0') {
+                e.preventDefault();
                 return;
               }
               const pattern = /[0-9]+/g;

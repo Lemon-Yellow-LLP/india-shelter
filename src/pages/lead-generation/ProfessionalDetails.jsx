@@ -64,7 +64,7 @@ const professionData = {
       label='Mode of Salary'
       required
       options={loanTypeData[0].options}
-      placeholder='Ex: Bank Transfer'
+      placeholder='Eg: Bank Transfer'
       onChange={selectDropDownOption}
       defaultSelected={defaultValue}
     />
@@ -74,7 +74,7 @@ const professionData = {
       label='Occupation'
       required
       options={loanTypeData[1].options}
-      placeholder='Ex: Purchase'
+      placeholder='Eg: Trading'
       onChange={selectDropDownOption}
       defaultSelected={defaultValue}
     />
@@ -296,7 +296,7 @@ const ProfessinalDetail = () => {
         hint='Total monthly earnings of all family members. <br /> This helps to improve your loan eligibility'
         required
         name='monthly_family_income'
-        placeholder='Ex: 1,00,000'
+        placeholder='Eg: 1,00,000'
         value={values.monthly_family_income}
         error={errors.monthly_family_income}
         touched={touched.monthly_family_income}
@@ -318,7 +318,7 @@ const ProfessinalDetail = () => {
         hint='Mention all of the ongoing monthly payments'
         required
         name='ongoing_emi'
-        placeholder='Ex: 10,000'
+        placeholder='Eg: 10,000'
         value={values.ongoing_emi}
         error={errors.ongoing_emi}
         touched={touched.ongoing_emi}

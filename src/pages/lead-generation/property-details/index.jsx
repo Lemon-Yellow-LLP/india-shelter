@@ -135,7 +135,7 @@ const PropertyDetail = () => {
         <DropDown
           label='Purpose of Loan'
           required
-          placeholder='Ex: Purchase'
+          placeholder='Eg: Purchase'
           options={propertyDetailsMap[selectedLoanType || 'Home Loan']['loanPurposeOptions']}
           onChange={handleLoanPursposeChange}
           defaultSelected={loanPurpose}
@@ -146,7 +146,7 @@ const PropertyDetail = () => {
           <DropDown
             label='Property Type'
             required
-            placeholder='Ex: Residential'
+            placeholder='Eg: Residential'
             options={
               propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][
                 loanPurpose
@@ -164,7 +164,7 @@ const PropertyDetail = () => {
           <TextInput
             label='Promo Code'
             hint='To avail advantages or perks associated with a loan'
-            placeholder='Ex: AH34bg'
+            placeholder='Eg: AH34bg'
             name='promo_code'
             value={values.promo_code}
             error={errors.promo_code}

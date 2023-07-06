@@ -128,6 +128,7 @@ const OtpInput = ({
             onInput={(e) => {
               if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
             }}
+            inputMode='numeric'
             onPaste={(e) => {
               e.preventDefault();
               const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
@@ -138,7 +139,7 @@ const OtpInput = ({
                 verifyOTPCB(text.join(''));
               }
             }}
-            type='number'
+            type='text'
           />
         ))}
       </div>

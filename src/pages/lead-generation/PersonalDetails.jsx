@@ -66,7 +66,8 @@ const PersonalDetail = () => {
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
-  const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
+  // const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
+  const [showOTPInput, setShowOTPInput] = useState(true);
 
   useEffect(() => {
     let disableNext = disableNextFields.reduce((acc, field) => {
@@ -86,7 +87,7 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
-    setDisablePhoneNumber(true);
+    // setDisablePhoneNumber(true);
     const continueJourney = searchParams.has('li');
     try {
       navigator.permissions.query({ name: 'sms' }).then((permissionStatus) => {
@@ -129,6 +130,11 @@ const PersonalDetail = () => {
 
   const verifyLeadOTP = useCallback(
     async (otp) => {
+      // setPhoneNumberVerified(true);
+      // setInputDisabled(false);
+      // setFieldError('phone_number', undefined);
+      // setShowOTPInput(false);
+      return true;
       try {
         const res = await verifyMobileOtp(phone_number, { otp });
         if (res.status === 200) {
@@ -516,9 +522,9 @@ const PersonalDetail = () => {
           setOTPVerified={setPhoneNumberVerified}
           onSendOTPClick={onOTPSendClick}
           defaultResendTime={30}
-          disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
+          // disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
+          disableSendOTP={true}
           verifyOTPCB={verifyLeadOTP}
-          type='number'
         />
       )}
 

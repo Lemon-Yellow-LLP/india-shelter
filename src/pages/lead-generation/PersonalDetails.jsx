@@ -364,7 +364,7 @@ const PersonalDetail = () => {
         placeholder='Eg: 123456'
         required
         name='pincode'
-        type='number'
+        type='tel'
         value={values.pincode}
         error={errors.pincode}
         touched={touched.pincode}

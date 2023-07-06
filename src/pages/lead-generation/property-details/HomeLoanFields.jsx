@@ -108,7 +108,7 @@ const HomeLoanFields = () => {
             value={values.property_pincode}
             error={errors.property_pincode}
             touched={touched.property_pincode}
-            type='number'
+            type='tel'
             pattern='\d*'
             min='0'
             onInput={(e) => {

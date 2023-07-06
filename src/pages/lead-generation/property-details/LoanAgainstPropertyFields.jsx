@@ -1,9 +1,9 @@
 import { useContext, useCallback, useEffect } from 'react';
 import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils';
+import { checkIsValidStatePincode, updateLeadDataOnBlur } from '../../../global';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
-import { updateLeadDataOnBlur } from '../../../global';
 
 const disableSubmitMap = {
   done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
@@ -30,7 +30,22 @@ const LoanAgainstPropertyFields = () => {
     setFieldValue,
     setDisableNextStep,
     currentLeadId,
+    setFieldError,
   } = useContext(AuthContext);
+
+  const { property_pincode } = values;
+
+  const handleOnPropertyPincodeChange = useCallback(async () => {
+    if (!property_pincode || property_pincode.toString().length < 5 || errors.property_pincode)
+      return;
+
+    const validStatePin = await checkIsValidStatePincode(property_pincode);
+    if (!validStatePin.length) {
+      setFieldError('property_pincode', 'Invalid Pincode');
+      return;
+    }
+
+  }, [errors.property_pincode, property_pincode, setFieldError]);
 
   useEffect(() => {
     setPropertyCategory(values.purpose_type);
@@ -160,6 +175,7 @@ const LoanAgainstPropertyFields = () => {
             inputClasses='hidearrow'
             onBlur={(e) => {
               handleBlur(e);
+              handleOnPropertyPincodeChange();
               updateLeadDataOnBlur(
                 currentLeadId,
                 'property_pincode',

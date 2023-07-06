@@ -1,5 +1,4 @@
 import { useState, useContext, useEffect, useCallback } from 'react';
-import TextInput from '../../components/TextInput';
 import CardRadio from '../../components/CardRadio';
 import DropDown from '../../components/DropDown';
 import IconSalaried from '../../assets/icons/salaried';
@@ -65,7 +64,7 @@ const professionData = {
       label='Mode of Salary'
       required
       options={loanTypeData[0].options}
-      placeholder='Ex: Bank Transfer'
+      placeholder='Eg: Bank Transfer'
       onChange={selectDropDownOption}
       defaultSelected={defaultValue}
     />
@@ -75,12 +74,21 @@ const professionData = {
       label='Occupation'
       required
       options={loanTypeData[1].options}
-      placeholder='Ex: Purchase'
+      placeholder='Eg: Trading'
       onChange={selectDropDownOption}
       defaultSelected={defaultValue}
     />
   ),
 };
+
+const disableNextFields = [
+  'pan_number',
+  'date_of_birth',
+  'profession',
+  'mode_of_salary',
+  'monthly_family_income',
+  'ongoing_emi',
+];
 
 const ProfessinalDetail = () => {
   const {
@@ -93,8 +101,11 @@ const ProfessinalDetail = () => {
     setFieldError,
     setDisableNextStep,
     currentLeadId,
+    validPancard,
+    setValidPancard,
+    processingPanCard,
+    setProcessingPanCard,
   } = useContext(AuthContext);
-  const { date_of_birth, monthly_family_income, ongoing_emi } = values;
   const [date, setDate] = useState();
   const [selectedProfession, setSelectedProfession] = useState(null);
 
@@ -108,43 +119,42 @@ const ProfessinalDetail = () => {
     setDate(new Date(values.date_of_birth));
   }, [values.date_of_birth, date]);
 
-  const onProfessionChange = (e) => {
-    const value = e.currentTarget.value;
-    setSelectedProfession(value);
-    setFieldValue('profession', value);
-    updateLeadDataOnBlur(currentLeadId, 'profession', value);
-  };
+  const onProfessionChange = useCallback(
+    (e) => {
+      const value = e.currentTarget.value;
+      setSelectedProfession(value);
+      setFieldValue('profession', value);
+      setFieldValue('mode_of_salary', null);
+      setFieldValue('occupation', null);
+      updateLeadDataOnBlur(currentLeadId, 'profession', value);
+    },
+    [currentLeadId, setFieldValue],
+  );
 
   useEffect(() => {
-    const moveToNextStep = () => {
-      if (
-        values.profession &&
-        !errors.pan_number &&
-        !errors.date_of_birth &&
-        date_of_birth &&
-        monthly_family_income > 0 &&
-        ongoing_emi > 0 &&
-        (values.occupation || values.mode_of_salary)
-      )
-        setDisableNextStep(false);
-      else setDisableNextStep(true);
-    };
-    moveToNextStep();
+    let disableNext = disableNextFields.reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !keys.includes(field);
+    }, !errors[disableNextFields[0]]);
+    disableNext =
+      disableNext &&
+      validPancard &&
+      (values.mode_of_salary || values.occupation) &&
+      !processingPanCard;
+    setDisableNextStep(!disableNext);
   }, [
-    date_of_birth,
-    monthly_family_income,
-    ongoing_emi,
+    errors,
+    processingPanCard,
+    validPancard,
     setDisableNextStep,
-    errors.pan_number,
-    errors.date_of_birth,
-    values.profession,
     values.mode_of_salary,
     values.occupation,
   ]);
 
   useEffect(() => {
     if (!date) return;
-    if (isEighteenOrAbove(date)) {
+    if (!isEighteenOrAbove(date)) {
       setFieldError('date_of_birth', 'To apply for loan the minimum age must be 18 or 18+');
       return;
     }
@@ -152,29 +162,37 @@ const ProfessinalDetail = () => {
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', date);
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 
-  const handleData = (value) => {
-    if (selectedProfession === 'Cash Salaried') {
-      setFieldValue('mode_of_salary', value);
-      setFieldValue('occupation', '');
-      updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', value);
-      updateLeadDataOnBlur(currentLeadId, 'occupation', null);
-    } else if (selectedProfession === 'Self Employed') {
-      setFieldValue('occupation', value);
-      setFieldValue('mode_of_salary', '');
-      updateLeadDataOnBlur(currentLeadId, 'occupation', value);
-      updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', null);
-    }
-  };
+  const handleOnProfessionChange = useCallback(
+    (value) => {
+      if (selectedProfession === 'Cash Salaried') {
+        setFieldValue('mode_of_salary', value);
+        setFieldValue('occupation', '');
+        updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', value);
+        updateLeadDataOnBlur(currentLeadId, 'occupation', null);
+      } else if (selectedProfession === 'Self Employed') {
+        setFieldValue('occupation', value);
+        setFieldValue('mode_of_salary', '');
+        updateLeadDataOnBlur(currentLeadId, 'occupation', value);
+        updateLeadDataOnBlur(currentLeadId, 'mode_of_salary', null);
+      }
+    },
+    [currentLeadId, selectedProfession, setFieldValue],
+  );
 
   const handleOnPanBlur = useCallback(
-    async (e) => {
+    async (_e) => {
       if (errors.pan_number) return;
+      setProcessingPanCard(true);
+      setValidPancard(false);
 
       const updatedPanCard = await editLeadById(currentLeadId, {
-        pan_number: e.currentTarget.value.toUpperCase(),
+        pan_number: values.pan_number,
       });
 
-      if (updatedPanCard?.status !== 200) return;
+      if (updatedPanCard?.status !== 200) {
+        setProcessingPanCard(false);
+        return;
+      }
 
       //call dedupe
       await checkDedupe(currentLeadId);
@@ -182,7 +200,10 @@ const ProfessinalDetail = () => {
       //call bre99
       const bre99Res = await checkBre99(currentLeadId);
 
-      if (bre99Res.status !== 200) return;
+      if (bre99Res.status !== 200) {
+        setProcessingPanCard(false);
+        return;
+      }
 
       const bre99Data = bre99Res.data.bre_99_response.body;
       const allowCallPanRule = bre99Data.find((rule) => rule.Rule_Name === 'PAN');
@@ -191,14 +212,21 @@ const ProfessinalDetail = () => {
       if (allowCallPanRule.Rule_Value === 'YES') {
         const res = await verifyPan(currentLeadId);
 
-        if (res.status === 'Valid') return;
+        if (res.status === 'Valid') {
+          setValidPancard(true);
+          setProcessingPanCard(false);
+          return;
+        }
         setFieldError('pan_number', 'Please enter your valid PAN number');
+        setProcessingPanCard(false);
+        setValidPancard(false);
       }
       if (allowCallCibilRule.Rule_Value === 'YES') {
         await checkCibil(currentLeadId);
       }
+      setProcessingPanCard(false);
     },
-    [currentLeadId, errors.pan_number, setFieldError],
+    [currentLeadId, errors.pan_number, setFieldError, values.pan_number],
   );
 
   return (
@@ -211,6 +239,7 @@ const ProfessinalDetail = () => {
         value={values.pan_number.toUpperCase()}
         error={errors.pan_number}
         touched={touched.pan_number}
+        processing={processingPanCard}
         onBlur={(e) => {
           handleBlur(e);
           handleOnPanBlur(e);
@@ -257,14 +286,17 @@ const ProfessinalDetail = () => {
       </div>
 
       {selectedProfession &&
-        professionData[selectedProfession](values.mode_of_salary || values.occupation, handleData)}
+        professionData[selectedProfession](
+          values.mode_of_salary || values.occupation,
+          handleOnProfessionChange,
+        )}
 
       <CurrencyInput
         label='Monthly Family Income'
         hint='Total monthly earnings of all family members. <br /> This helps to improve your loan eligibility'
         required
         name='monthly_family_income'
-        placeholder='Ex: 1,00,000'
+        placeholder='Eg: 1,00,000'
         value={values.monthly_family_income}
         error={errors.monthly_family_income}
         touched={touched.monthly_family_income}
@@ -283,10 +315,10 @@ const ProfessinalDetail = () => {
 
       <CurrencyInput
         label='Ongoing EMI'
-        hint='Mention all of the ongoing monthly payments'
+        hint='Please mention the ongoing monthly payments. <br /> If there are no EMI payments, please enter 0.'
         required
         name='ongoing_emi'
-        placeholder='Ex: 10,000'
+        placeholder='Eg: 10,000'
         value={values.ongoing_emi}
         error={errors.ongoing_emi}
         touched={touched.ongoing_emi}

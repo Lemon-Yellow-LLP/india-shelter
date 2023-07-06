@@ -43,6 +43,10 @@ const PropertyDetail = () => {
     setPropertyType(values.property_type);
   }, [values.property_type]);
 
+  useEffect(() => {
+    setDisableNextStep(true);
+  }, [setDisableNextStep]);
+
   const handleLoanPursposeChange = useCallback(
     (value) => {
       setLoanPurpose(value);
@@ -131,19 +135,23 @@ const PropertyDetail = () => {
         <DropDown
           label='Purpose of Loan'
           required
-          placeholder='Ex: Purchase'
+          placeholder='Eg: Purchase'
           options={propertyDetailsMap[selectedLoanType || 'Home Loan']['loanPurposeOptions']}
           onChange={handleLoanPursposeChange}
           defaultSelected={loanPurpose}
         />
 
         {propertyIdentificationOptions[0].value === propertyIdentified ||
-        selectedLoanType === 'Balance Transfer' ? (
+        selectedLoanType === 'Loan Transfer' ? (
           <DropDown
             label='Property Type'
             required
-            placeholder='Ex: Residential'
-            options={propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][loanPurpose] || []}
+            placeholder='Eg: Residential'
+            options={
+              propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][
+                loanPurpose
+              ] || []
+            }
             onChange={handlePropertyType}
             defaultSelected={propertyType}
             disabled={!loanPurpose}
@@ -156,7 +164,7 @@ const PropertyDetail = () => {
           <TextInput
             label='Promo Code'
             hint='To avail advantages or perks associated with a loan'
-            placeholder='Ex: AH34bg'
+            placeholder='Eg: AH34bg'
             name='promo_code'
             value={values.promo_code}
             error={errors.promo_code}

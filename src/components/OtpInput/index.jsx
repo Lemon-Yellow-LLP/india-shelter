@@ -4,7 +4,7 @@ import otpVerified from '../../assets/icons/otp-verified.svg';
 import otpNotVerified from '../../assets/icons/otp-not-verified.svg';
 
 let currentOtpIndex = 0;
-const DISALLOW_CHAR = ['e', 'E', '+', '-'];
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
 
 const OtpInput = ({
   label,
@@ -106,10 +106,10 @@ const OtpInput = ({
       <div className='flex gap-2 mt-1'>
         {otp.map((_, index) => (
           <input
+            autoComplete='one-time-code'
             disabled={inputDisabled}
             ref={index === activeOtpIndex ? inputRef : null}
             key={index}
-            type='number'
             className={`
               w-full h-12 border bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow
               ${inputClasses}
@@ -123,6 +123,11 @@ const OtpInput = ({
               handleKeyDown(e, index);
             }}
             value={otp[index]}
+            pattern='\d*'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
             onPaste={(e) => {
               e.preventDefault();
               const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
@@ -133,6 +138,7 @@ const OtpInput = ({
                 verifyOTPCB(text.join(''));
               }
             }}
+            type='number'
           />
         ))}
       </div>

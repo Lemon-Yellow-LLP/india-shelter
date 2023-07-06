@@ -2,7 +2,10 @@ import PropTypes from 'prop-types';
 
 const CardRadio = ({ label, current, children, value, name, onChange, containerClasses }) => {
   return (
-    <label htmlFor={value} className={`flex flex-col gap-2 w-full ${containerClasses}`}>
+    <label
+      htmlFor={value}
+      className={`flex flex-col gap-2 w-full ${containerClasses} cursor-pointer`}
+    >
       <div
         className={`w-full border rounded-lg py-4 flex items-center justify-center cursor-pointer
         ${

@@ -3,14 +3,17 @@ import AuthContextProvider from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { editLeadById } from '../../global';
+import { addToSalesForce, editLeadById } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
+import Loader from '../../components/Loader';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
   const formContainerRef = useRef(null);
   const [processingBRE, setProcessingBRE] = useState(false);
+  const [isQualified, setIsQualified] = useState(null);
+  const [loadingBRE_Status, setLoadingBRE_Status] = useState(processingBRE);
 
   const onFormButtonClick = useCallback(() => {
     modalRef.current?.snapTo(1);
@@ -19,11 +22,18 @@ const LeadGeneration = () => {
 
   const onSubmit = useCallback(async (leadId, values) => {
     editLeadById(leadId, values).then(() => setProcessingBRE(true));
+    addToSalesForce(leadId).then((res) => console.log(res));
   }, []);
 
   return (
-    <Suspense fallback={<h1>Loading...</h1>}>
-      <AuthContextProvider setProcessingBRE={setProcessingBRE}>
+    <Suspense fallback={<Loader />}>
+      <AuthContextProvider
+        setProcessingBRE={setProcessingBRE}
+        setIsQualified={setIsQualified}
+        isQualified={isQualified}
+        setLoadingBRE_Status={setLoadingBRE_Status}
+        loadingBRE_Status={loadingBRE_Status}
+      >
         {processingBRE ? (
           <AnimatePresence>
             <motion.div
@@ -32,7 +42,7 @@ const LeadGeneration = () => {
               exit={{ opacity: 0 }}
               className='w-full md:w-screen'
             >
-              <CongratulationBanner isLoading={processingBRE} setProcessingBRE={setProcessingBRE} />
+              <CongratulationBanner />
             </motion.div>
           </AnimatePresence>
         ) : (

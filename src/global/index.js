@@ -130,6 +130,11 @@ async function checkDedupe(id) {
   return res;
 }
 
+async function addToSalesForce(id) {
+  const res = await axios.get(`${API_URL}/salesforce/force-push/${id}`, {}, requestOptions);
+  return res;
+}
+
 function NaNorNull(value, toReturn = null) {
   return isNaN(value) ? toReturn : value;
 }
@@ -201,5 +206,6 @@ export {
   checkDedupe,
   NaNorNull,
   getWebOTP,
-  isEighteenOrAbove
+  isEighteenOrAbove,
+  addToSalesForce,
 };

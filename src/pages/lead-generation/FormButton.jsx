@@ -21,9 +21,18 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       loan_request_amount: parseFloat(values.loan_request_amount),
       middle_name: values.middle_name,
       last_name: values.last_name,
+      extra_params: {
+        resume_journey_index: activeStepIndex + 1,
+      },
     };
     if (activeStepIndex === 0) {
       editLeadById(currentLeadId, filteredValue);
+    } else {
+      editLeadById(currentLeadId, {
+        extra_params: {
+          resume_journey_index: activeStepIndex + 1,
+        },
+      });
     }
     goToNextStep();
     onButtonClickCB && onButtonClickCB();
@@ -50,18 +59,26 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 45.31%)',
       }}
       className={`${
-        activeStepIndex > 0 ? 'justify-center' : 'justify-end'
-      } btn-bg absolute h-[128px] md:h-[166px] flex gap-4 md:gap-6 bottom-0 w-full md:pr-[175px] md:pl-1  md:w-[732px] items-end pb-6 px-4 md:px-0`}
+        activeStepIndex > 0 ? 'justify-between' : 'justify-end'
+      } btn-bg absolute h-[128px] md:h-[166px] flex bottom-0 w-full md:pr-[175px] md:pl-1  md:w-[732px] items-end pb-6 px-4 md:px-0`}
     >
-      {activeStepIndex > 0 && (
-        <Button type='button' onClick={onPreviousButtonClick}>
-          Previous
-        </Button>
-      )}
+      <Button
+        type='button'
+        onClick={onPreviousButtonClick}
+        inputClasses={`w-2/4 ${
+          activeStepIndex === 0
+            ? 'pointer-events-none opacity-0'
+            : 'opacity-100 pointer-events-auto'
+        }`}
+      >
+        Previous
+      </Button>
+
       <Button
         disabled={disableNextStep}
         type={activeStepIndex === steps.length - 1 ? 'submit' : 'button'}
         primary
+        inputClasses='ml-4 md:ml-6 w-2/4 self-end'
         onClick={
           activeStepIndex === steps.length - 1
             ? (e) => {
@@ -82,7 +99,8 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
                 );
                 filteredValue['phone_number'] = filteredValue['phone_number']?.toString();
                 filteredValue['ongoing_emi'] = NaNorNull(parseFloat(filteredValue['ongoing_emi']));
-                filteredValue['Out_Of_Geographic_Limit'] = false;
+                filteredValue['Out_Of_Geographic_Limit'] =
+                  filteredValue['Out_Of_Geographic_Limit'] || false;
                 filteredValue['Total_Property_Value'] = NaNorNull(
                   parseInt(filteredValue['property_estimation']),
                 );
@@ -92,6 +110,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
                 filteredValue['extra_params'] = '';
                 filteredValue['loan_amount'] = filteredValue['loan_amount']?.toString();
                 filteredValue['loan_tenure'] = filteredValue['loan_tenure']?.toString();
+                filteredValue['is_submitted'] = true;
                 onSubmit(currentLeadId, filteredValue);
               }
             : onNextButtonClick

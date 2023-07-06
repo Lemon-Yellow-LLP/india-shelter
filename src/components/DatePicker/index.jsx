@@ -10,10 +10,12 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
   return (
     <ReactDatePicker
       {...props}
-      customInput={<DatePickerInput {...props} label={label} />}
+      customInput={<DatePickerInput {...props} label={label} datepickerref={datePickerRef} />}
       ref={datePickerRef}
       className='bg-white z-50'
-      shouldCloseOnSelect={false}
+      // Close popper when date is selected
+      shouldCloseOnSelect={true}
+      closeOnScroll={false}
       selected={startDate}
       renderCustomHeader={(props) => <DatePickerHeader {...props} />}
       showYearDropdown
@@ -21,7 +23,7 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
       calendarClassName='bg-white w-[328px] border border-light-grey border-opacity-20 px-5 shadow-calendar rounded-lg'
       dayClassName={(date) => {
         const defaultDateStyles =
-          'font-normal h-8 w-8 rounded-full hover:rounded-full text-base inline-flex items-center justify-center ';
+          'font-normal h-8 w-8 rounded-full hover:rounded-full text-sm inline-flex items-center justify-center ';
         if (!startDate) {
           const today = new Date();
           if (date.getMonth() !== today.getMonth()) return defaultDateStyles + ' text-light-grey';
@@ -40,7 +42,7 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
           );
         else return defaultDateStyles + ' text-primary-black';
       }}
-      weekDayClassName={(_) => 'mx-1.5 text-light-grey font-semibold text-base mx-auto my-0'}
+      weekDayClassName={(_) => 'mx-1 text-light-grey font-semibold text-base mx-auto my-0'}
       onChange={(date) => setStartDate(date)}
       // maxDate={today}
       dateFormat='dd/MM/yyyy'

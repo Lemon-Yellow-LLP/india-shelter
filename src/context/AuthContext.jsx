@@ -38,12 +38,22 @@ export const defaultValues = {
 
 export const AuthContext = createContext(defaultValues);
 
-const AuthContextProvider = ({ children, setProcessingBRE }) => {
+const AuthContextProvider = ({
+  children,
+  setProcessingBRE,
+  loadingBRE_Status,
+  setLoadingBRE_Status,
+  setIsQualified,
+  isQualified,
+}) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
+  const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
+  const [processingPanCard, setProcessingPanCard] = useState(false);
+  const [validPancard, setValidPancard] = useState(false);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -53,6 +63,21 @@ const AuthContextProvider = ({ children, setProcessingBRE }) => {
     },
   });
 
+  const updateFieldsFromServerData = useCallback(
+    (map) => {
+      const data = {};
+      Object.entries(map).forEach(([fieldName, fieldValue]) => {
+        if (typeof fieldValue === 'number') {
+          data[fieldName] = fieldValue.toString();
+          return;
+        }
+        data[fieldName] = fieldValue || '';
+      });
+      formik.setValues({ ...formik.values, ...data });
+    },
+    [formik],
+  );
+
   useEffect(() => {
     const _leadID = searchParams.get('li');
     if (!_leadID) return;
@@ -61,6 +86,9 @@ const AuthContextProvider = ({ children, setProcessingBRE }) => {
     getLeadById(_leadID).then((res) => {
       if (res.status !== 200) return;
       setIsLeadGenearted(true);
+      if (res.data.pan_number) {
+        setValidPancard(true);
+      }
       const data = {};
       Object.entries(res.data).forEach(([fieldName, fieldValue]) => {
         if (typeof fieldValue === 'number') {
@@ -128,6 +156,17 @@ const AuthContextProvider = ({ children, setProcessingBRE }) => {
         phoneNumberVerified,
         setPhoneNumberVerified,
         setProcessingBRE,
+        isQualified,
+        setIsQualified,
+        loadingBRE_Status,
+        setLoadingBRE_Status,
+        acceptedTermsAndCondition,
+        setAcceptedTermsAndCondition,
+        updateFieldsFromServerData,
+        validPancard,
+        setValidPancard,
+        processingPanCard,
+        setProcessingPanCard,
       }}
     >
       {children}
@@ -139,4 +178,9 @@ export default AuthContextProvider;
 
 AuthContextProvider.propTypes = {
   children: PropTypes.element,
+  setProcessingBRE: PropTypes.func,
+  setIsQualified: PropTypes.func,
+  isQualified: PropTypes.bool,
+  loadingBRE_Status: PropTypes.bool,
+  setLoadingBRE_Status: PropTypes.func,
 };

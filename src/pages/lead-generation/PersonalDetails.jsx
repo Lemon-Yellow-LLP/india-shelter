@@ -14,18 +14,26 @@ import {
 import { loanTypeOptions } from './utils';
 import termsAndConditions from '../../global/terms-conditions';
 import privacyPolicy from '../../global/privacy-policy';
-import { createLead, getPincode, getWebOTP, sendMobileOTP, verifyMobileOtp } from '../../global';
+import {
+  createLead,
+  getLeadByPhoneNumber,
+  getPincode,
+  getWebOTP,
+  sendMobileOTP,
+  verifyMobileOtp,
+} from '../../global';
 import { useSearchParams } from 'react-router-dom';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+const disableNextFields = ['loan_request_amount', 'first_name', 'pincode', 'phone_number'];
 
 const PersonalDetail = () => {
   const [searchParams] = useSearchParams();
 
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-  const [canCreateLead, setCanCreateLead] = useState(false);
+  const [leadExists, setLeadExists] = useState(false);
 
   const {
     values,
@@ -46,35 +54,35 @@ const PersonalDetail = () => {
     phoneNumberVerified,
     setPhoneNumberVerified,
     setProcessingBRE,
+    setLoading,
+    setIsQualified,
+    setActiveStepIndex,
+    setValues,
+    acceptedTermsAndCondition,
+    setAcceptedTermsAndCondition,
+    updateFieldsFromServerData,
+    setValidPancard,
   } = useContext(AuthContext);
-  const { loan_request_amount, first_name, pincode, phone_number, loan_type } = values;
+  const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
   const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
 
   useEffect(() => {
-    const moveToNextStep = () => {
-      if (
-        loan_request_amount &&
-        first_name &&
-        pincode &&
-        phone_number &&
-        phoneNumberVerified &&
-        loan_type
-      ) {
-        if (isTermsAccepted) setDisableNextStep(false);
-      }
-    };
-    moveToNextStep();
+    let disableNext = disableNextFields.reduce((acc, field) => {
+      const keys = Object.keys(errors);
+      if (!keys.length) return acc && false;
+      return acc && !keys.includes(field);
+    }, !errors[disableNextFields[0]]);
+    disableNext =
+      disableNext && acceptedTermsAndCondition && phoneNumberVerified && selectedLoanType;
+    setDisableNextStep(!disableNext);
   }, [
-    loan_type,
-    loan_request_amount,
-    first_name,
-    pincode,
-    phone_number,
-    isTermsAccepted,
-    setDisableNextStep,
+    acceptedTermsAndCondition,
+    errors,
     phoneNumberVerified,
+    selectedLoanType,
+    setDisableNextStep,
   ]);
 
   const onOTPSendClick = useCallback(() => {
@@ -105,7 +113,7 @@ const PersonalDetail = () => {
         console.error(err);
       }
     });
-  }, [phone_number, searchParams, setFieldError]);
+  }, [leadExists, phone_number, searchParams, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
@@ -126,7 +134,7 @@ const PersonalDetail = () => {
         if (res.status === 200) {
           setPhoneNumberVerified(true);
           setInputDisabled(false);
-          setFieldError('phone_number', '');
+          setFieldError('phone_number', undefined);
           setShowOTPInput(false);
           return true;
         }
@@ -144,23 +152,66 @@ const PersonalDetail = () => {
     if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
 
     const data = await getPincode(pincode);
-    if (!data || data.ogl) {
-      setCanCreateLead(false);
+    if (!data) {
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
-    setCanCreateLead(true);
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
+  const handleOnPhoneNumberChange = useCallback(async (e) => {
+    const phoneNumber = e.currentTarget.value;
+    if (phoneNumber?.length < 10) {
+      setLeadExists(false);
+      setShowOTPInput(false);
+      return;
+    }
+    const data = await getLeadByPhoneNumber(phoneNumber);
+    if (data.length) {
+      setLeadExists(true);
+      setShowOTPInput(true);
+    }
+  }, []);
+
   useEffect(() => {
-    if (isLeadGenerated) return;
-    const enableSubmit = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
+    if (leadExists && phoneNumberVerified) {
+      getLeadByPhoneNumber(values.phone_number).then((data) => {
+        if (!data.length) return;
+        const leadData = data[0];
+        updateFieldsFromServerData(leadData);
+        setCurrentLeadId(leadData.id);
+        if (leadData.is_submitted) {
+          setProcessingBRE(true);
+          setIsQualified(true);
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [leadExists, phoneNumberVerified]);
+
+  const onResumeJourneyClick = useCallback(() => {
+    const resumeJourneyIndex = values.extra_params.resume_journey_index;
+    if (values.pan_number) {
+      setValidPancard(true);
+    }
+    if (resumeJourneyIndex) {
+      setActiveStepIndex(parseInt(resumeJourneyIndex));
+    }
+  }, [
+    setActiveStepIndex,
+    setValidPancard,
+    values.extra_params.resume_journey_index,
+    values.pan_number,
+  ]);
+
+  useEffect(() => {
+    if (isLeadGenerated || leadExists) return;
+    const canCreateLead = fieldsRequiredForLeadGeneration.reduce((acc, field) => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
       return acc && !Object.keys(errors).includes(field);
     }, true);
-    if (enableSubmit && canCreateLead) {
+    if (canCreateLead) {
       createLead({
         first_name,
         pincode,
@@ -171,30 +222,33 @@ const PersonalDetail = () => {
             setIsLeadGenearted(true);
             setShowOTPInput(true);
             setCurrentLeadId(res.data.id);
-            setFieldError('phone_number', '');
+            setFieldError('phone_number', undefined);
             return;
           }
         })
         .catch((res) => {
-          if (res.response.data.status === 500) {
-            setProcessingBRE(true);
-          }
-          return;
+          console.error(res);
         });
 
-      setFieldError('pincode', '');
+      setFieldError('pincode', undefined);
     }
   }, [
-    canCreateLead,
     errors,
     first_name,
     isLeadGenerated,
+    leadExists,
     phone_number,
     pincode,
+    setActiveStepIndex,
     setCurrentLeadId,
     setFieldError,
     setIsLeadGenearted,
     setProcessingBRE,
+    setIsQualified,
+    setLoading,
+    setProcessingBRE,
+    setValues,
+    values,
   ]);
 
   return (
@@ -258,7 +312,7 @@ const PersonalDetail = () => {
 
       <TextInput
         label='First Name'
-        placeholder='Ex: Suresh, Priya'
+        placeholder='Eg: Suresh, Priya'
         required
         name='first_name'
         value={values.first_name}
@@ -280,7 +334,7 @@ const PersonalDetail = () => {
           <TextInput
             value={values.middle_name}
             label='Middle Name'
-            placeholder='Ex: Ramji, Sreenath'
+            placeholder='Eg: Ramji, Sreenath'
             name='middle_name'
             disabled={inputDisabled}
             onBlur={handleBlur}
@@ -299,7 +353,7 @@ const PersonalDetail = () => {
             value={values.last_name}
             onBlur={handleBlur}
             label='Last Name'
-            placeholder='Ex: Swami, Singh'
+            placeholder='Eg: Swami, Singh'
             disabled={inputDisabled}
             name='last_name'
             onChange={(e) => {
@@ -315,7 +369,7 @@ const PersonalDetail = () => {
       </div>
       <TextInput
         label='Current Pincode'
-        placeholder='Ex: 123456'
+        placeholder='Eg: 123456'
         required
         name='pincode'
         type='number'
@@ -327,13 +381,41 @@ const PersonalDetail = () => {
           handleBlur(e);
           handleOnPincodeChange();
         }}
-        onChange={handleChange}
+        min='0'
+        onInput={(e) => {
+          if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+        }}
+        onChange={(e) => {
+          if (e.currentTarget.value.length > 6) {
+            e.preventDefault();
+            return;
+          }
+          const value = e.currentTarget.value;
+          if (value.charAt(0) === '0') {
+            e.preventDefault();
+            return;
+          }
+          handleChange(e);
+        }}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C
-          (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e', 'E', '-', '+'].includes(e.key)
+          (e.key == 'v' && (e.metaKey || e.ctrlKey)) ||
+          DISALLOW_CHAR.includes(e.key) ||
+          e.key === 'ArrowUp' ||
+          e.key === 'ArrowDown'
             ? e.preventDefault()
             : null;
         }}
+        pattern='\d*'
+        onFocus={(e) =>
+          e.target.addEventListener(
+            'wheel',
+            function (e) {
+              e.preventDefault();
+            },
+            { passive: false },
+          )
+        }
         onPaste={(e) => {
           e.preventDefault();
           const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
@@ -353,9 +435,26 @@ const PersonalDetail = () => {
         error={errors.phone_number}
         touched={touched.phone_number}
         onBlur={handleBlur}
+        pattern='\d*'
+        onFocus={(e) =>
+          e.target.addEventListener(
+            'wheel',
+            function (e) {
+              e.preventDefault();
+            },
+            { passive: false },
+          )
+        }
+        min='0'
+        onInput={(e) => {
+          if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+        }}
         onChange={(e) => {
+          if (e.currentTarget.value < 0) {
+            e.preventDefault();
+            return;
+          }
           if (values.phone_number.length >= 10) {
-            console.log('greater than 10');
             return;
           }
           const value = e.currentTarget.value;
@@ -364,6 +463,13 @@ const PersonalDetail = () => {
             return;
           }
           setFieldValue('phone_number', value);
+          handleOnPhoneNumberChange(e);
+        }}
+        onPaste={(e) => {
+          e.preventDefault();
+          const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+          e.target.value = text;
+          handleChange(e);
         }}
         onKeyDown={(e) => {
           if (e.key === 'Backspace') {
@@ -371,6 +477,11 @@ const PersonalDetail = () => {
               'phone_number',
               values.phone_number.slice(0, values.phone_number.length - 1),
             );
+            e.preventDefault();
+            return;
+          }
+          if (DISALLOW_CHAR.includes(e.key)) {
+            e.preventDefault();
             return;
           }
         }}
@@ -385,6 +496,18 @@ const PersonalDetail = () => {
         }
       />
 
+      {!errors.phone_number && leadExists && !phoneNumberVerified && (
+        <span className='text-xs text-primary-red -mt-4'>
+          Lead with that phone number already exists. <br /> Verify OTP to resume journey
+        </span>
+      )}
+
+      {values?.extra_params?.resume_journey_index && leadExists && phoneNumberVerified && (
+        <button onClick={onResumeJourneyClick} className='self-start my-2 text-xs text-primary-red'>
+          Resume journey
+        </button>
+      )}
+
       {showOTPInput && (
         <OtpInput
           label='Enter OTP'
@@ -393,16 +516,18 @@ const PersonalDetail = () => {
           setOTPVerified={setPhoneNumberVerified}
           onSendOTPClick={onOTPSendClick}
           defaultResendTime={30}
-          disableSendOTP={isLeadGenerated && !phoneNumberVerified}
+          disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
+          type='number'
         />
       )}
 
       <div className='flex gap-2'>
         <CheckBox
+          checked={acceptedTermsAndCondition}
           name='terms-agreed'
           onChange={(e) => {
-            setIsTermsAccepted(e.currentTarget.checked);
+            setAcceptedTermsAndCondition(e.currentTarget.checked);
           }}
         />
         <div className='text-xs text-dark-grey'>

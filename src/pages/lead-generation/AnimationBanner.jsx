@@ -59,7 +59,12 @@ const AnimationBanner = () => {
           <img className='w-full h-full pointer-events-none' src={iconBack} alt='Back' />
         </button>
         <div className='flex flex-col gap-7 items-center flex-1'>
-          <img className='hidden md:inline' src={logo} alt='India Shelter' />
+          <img
+            style={{ maxWidth: 175 }}
+            className='hidden md:inline'
+            src={logo}
+            alt='India Shelter'
+          />
           <h4
             style={{ color: '#04584C' }}
             className='text-center text-base md:text-xl font-medium pr-4 md:pr-0'

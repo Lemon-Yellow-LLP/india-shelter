@@ -10,6 +10,8 @@ const disableSubmitMap = {
   'not-yet': ['purpose_of_loan'],
 };
 
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+
 const LoanAgainstPropertyFields = () => {
   const {
     setPropertyIdentified,
@@ -32,7 +34,7 @@ const LoanAgainstPropertyFields = () => {
 
   useEffect(() => {
     setPropertyCategory(values.purpose_type);
-  }, [values.purpose_type]);
+  }, [setPropertyCategory, values.purpose_type]);
 
   const handleOnPropertyCategoryChange = useCallback(
     (e) => {
@@ -140,11 +142,42 @@ const LoanAgainstPropertyFields = () => {
             value={values.property_pincode}
             error={errors.property_pincode}
             touched={touched.property_pincode}
-            onBlur={handleBlur}
+            type='number'
+            pattern='\d*'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
+            onFocus={(e) =>
+              e.target.addEventListener(
+                'wheel',
+                function (e) {
+                  e.preventDefault();
+                },
+                { passive: false },
+              )
+            }
+            inputClasses='hidearrow'
+            onBlur={(e) => {
+              handleBlur(e);
+              updateLeadDataOnBlur(
+                currentLeadId,
+                'property_pincode',
+                parseInt(e.currentTarget.value),
+              );
+            }}
             onChange={(e) => {
+              if(e.currentTarget.value.length>6){
+                e.preventDefault()
+                return
+              }
               const value = e.currentTarget.value;
               if (!value) {
                 handleChange(e);
+                return;
+              }
+              if (value.charAt(0) === '0') {
+                e.preventDefault();
                 return;
               }
               const pattern = /[0-9]+/g;
@@ -154,16 +187,14 @@ const LoanAgainstPropertyFields = () => {
             }}
             onKeyDown={(e) => {
               //capturing ctrl V and ctrl C
-              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
-              ? e.preventDefault()
-              : null;
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || DISALLOW_CHAR.includes(e.key)
+                ? e.preventDefault()
+                : null;
             }}
             onPaste={(e) => {
               e.preventDefault();
-              const clipboardData = e.clipboardData;
-              const pastedValue = clipboardData.getData('text/plain');
-              const santisedValue = pastedValue.replace(/[^0-9]/g, '');
-              e.target.value = santisedValue;
+              const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+              e.target.value = text;
               handleChange(e);
             }}
           />

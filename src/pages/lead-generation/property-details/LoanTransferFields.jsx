@@ -1,10 +1,11 @@
 import { CurrencyInput, DropDown, TextInput } from '../../../components';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
-import { loanTenureOptions } from '../utils';
+import { loanTenureOptions, loanTypeOptions } from '../utils';
 import { updateLeadDataOnBlur } from '../../../global';
 import { PropertyDetailContext } from '.';
+import { useDebounce } from '../../../hooks';
 
 const fieldsRequiredForSubmitting = [
   'banker_name',
@@ -14,10 +15,41 @@ const fieldsRequiredForSubmitting = [
   'property_type',
 ];
 
-const BalanceTransferFields = () => {
+const LoanTransferFields = () => {
   const { showOTPInput, emailOTPVerified } = useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    setDisableNextStep,
+    currentLeadId,
+    setFieldValue,
+  } = useContext(AuthContext);
+
+  const [selectedLoanTenure, setSelectedLoanTenure] = useState(loanTypeOptions[0].value);
+
+  const deferredFilteredLoanTenure = useDebounce(values.loan_tenure, 5000);
+
+  useEffect(() => {
+    const fileteredValueOnBlur = () => {
+      if (selectedLoanTenure === 'years') {
+        if (deferredFilteredLoanTenure) {
+          const filteredValue = deferredFilteredLoanTenure * 12;
+          console.log(filteredValue.toString());
+          updateLeadDataOnBlur(currentLeadId, 'loan_tenure', filteredValue.toString());
+        }
+      } else {
+        console.log(typeof parseInt(deferredFilteredLoanTenure));
+        if (deferredFilteredLoanTenure) {
+          console.log('data sent');
+          updateLeadDataOnBlur(currentLeadId, 'loan_tenure', deferredFilteredLoanTenure.toString());
+        }
+      }
+    };
+    fileteredValueOnBlur();
+  }, [selectedLoanTenure, deferredFilteredLoanTenure, currentLeadId]);
 
   useEffect(() => {
     if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
@@ -35,7 +67,7 @@ const BalanceTransferFields = () => {
         name='banker_name'
         label='Banker Name'
         required
-        placeholder='Ex: Axis'
+        placeholder='Eg: Axis'
         value={values.banker_name}
         error={errors.banker_name}
         touched={touched.banker_name}
@@ -57,19 +89,43 @@ const BalanceTransferFields = () => {
         <div className='grow'>
           <TextInput
             name='loan_tenure'
-            placeholder='Ex: 10'
+            placeholder='Eg: 10'
             label='Loan Tenure'
             required
             value={values.loan_tenure}
             displayError={false}
             onBlur={(e) => {
-              const target = e.currentTarget;
               handleBlur(e);
-              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+              // fileteredValueOnBlur(e);
+              // updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
             }}
-            onChange={handleChange}
+            onChange={(e) => {
+              if (e.currentTarget.value < 0) {
+                e.preventDefault();
+                return;
+              }
+              if (values.loan_tenure.length >= 2) {
+                return;
+              }
+              const value = e.currentTarget.value;
+              setFieldValue('loan_tenure', value);
+            }}
             type='number'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
             inputClasses='hidearrow'
+            onKeyDown={(e) => {
+              if (e.key === 'Backspace') {
+                setFieldValue(
+                  'loan_tenure',
+                  values.loan_tenure.slice(0, values.loan_tenure.length - 1),
+                );
+                e.preventDefault();
+                return;
+              }
+            }}
           />
         </div>
         <div className='mt-1 grow'>
@@ -78,6 +134,12 @@ const BalanceTransferFields = () => {
             placeholder='Months'
             showError={false}
             showIcon={false}
+            value={selectedLoanTenure}
+            defaultSelected='months'
+            onChange={(value) => {
+              setSelectedLoanTenure(value);
+              console.log(value);
+            }}
           />
         </div>
       </div>
@@ -90,6 +152,7 @@ const BalanceTransferFields = () => {
         name='loan_amount'
         label='Loan Amount'
         required
+        pattern='\d*'
         Icon={IconRupee}
         placeholder='1,00,000'
         value={values.loan_amount}
@@ -107,4 +170,4 @@ const BalanceTransferFields = () => {
   );
 };
 
-export default BalanceTransferFields;
+export default LoanTransferFields;

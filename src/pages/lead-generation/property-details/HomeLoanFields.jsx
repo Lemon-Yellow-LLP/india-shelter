@@ -11,11 +11,21 @@ const disableSubmitMap = {
   'not-yet': ['purpose_of_loan'],
 };
 
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+
 const HomeLoanFields = () => {
   const { setPropertyIdentified, propertyIdentified, showOTPInput, emailOTPVerified } =
     useContext(PropertyDetailContext);
-  const { values, errors, touched, handleBlur, handleChange, setDisableNextStep, currentLeadId, setFieldValue } =
-    useContext(AuthContext);
+  const {
+    values,
+    errors,
+    touched,
+    handleBlur,
+    handleChange,
+    setDisableNextStep,
+    currentLeadId,
+    setFieldValue,
+  } = useContext(AuthContext);
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
@@ -24,7 +34,7 @@ const HomeLoanFields = () => {
       setFieldValue('property_identification', value);
       updateLeadDataOnBlur(currentLeadId, 'property_identification', value);
     },
-    [currentLeadId, setPropertyIdentified],
+    [currentLeadId, setFieldValue, setPropertyIdentified],
   );
 
   useEffect(() => {
@@ -99,6 +109,20 @@ const HomeLoanFields = () => {
             error={errors.property_pincode}
             touched={touched.property_pincode}
             type='number'
+            pattern='\d*'
+            min='0'
+            onInput={(e) => {
+              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+            }}
+            onFocus={(e) =>
+              e.target.addEventListener(
+                'wheel',
+                function (e) {
+                  e.preventDefault();
+                },
+                { passive: false },
+              )
+            }
             inputClasses='hidearrow'
             onBlur={(e) => {
               handleBlur(e);
@@ -109,9 +133,17 @@ const HomeLoanFields = () => {
               );
             }}
             onChange={(e) => {
+              if(e.currentTarget.value.length>6){
+                e.preventDefault()
+                return
+              }
               const value = e.currentTarget.value;
               if (!value) {
                 handleChange(e);
+                return;
+              }
+              if (value.charAt(0) === '0') {
+                e.preventDefault();
                 return;
               }
               const pattern = /[0-9]+/g;
@@ -121,9 +153,9 @@ const HomeLoanFields = () => {
             }}
             onKeyDown={(e) => {
               //capturing ctrl V and ctrl C
-              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || ['e','E','-','+'].includes(e.key)
-              ? e.preventDefault()
-              : null;
+              (e.key == 'v' && (e.metaKey || e.ctrlKey)) || DISALLOW_CHAR.includes(e.key)
+                ? e.preventDefault()
+                : null;
             }}
             onPaste={(e) => {
               e.preventDefault();

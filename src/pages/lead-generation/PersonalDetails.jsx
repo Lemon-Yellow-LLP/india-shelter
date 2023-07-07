@@ -94,11 +94,7 @@ const PersonalDetail = () => {
         return;
       }
       try {
-        navigator.permissions.query({ name: 'sms' }).then((permissionStatus) => {
-          if (permissionStatus.state === 'granted') {
-            alert(getWebOTP());
-          }
-        });
+        alert(getWebOTP());
       } catch (err) {
         console.error(err);
       }

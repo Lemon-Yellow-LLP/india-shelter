@@ -201,3 +201,12 @@ body {
   margin: 0;
   padding: 0;
 }
+
+
+@media (min-width:786px){
+  .no-scrollbar::-webkit-scrollbar{
+    display: block;
+    width: 10px;
+  }
+
+}

@@ -141,6 +141,8 @@ function NaNorNull(value, toReturn = null) {
 
 function getWebOTP() {
   if ('OTPCredential' in window) {
+    console.info('Debug: OTP credential is supported');
+    alert('Debug: OTP credential is supported');
     window.addEventListener('DOMContentLoaded', (_) => {
       const ac = new AbortController();
       navigator.credentials

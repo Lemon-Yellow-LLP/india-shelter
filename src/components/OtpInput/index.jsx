@@ -140,8 +140,8 @@ const OtpInput = ({
               if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
             }}
             inputMode='numeric'
-            // onPaste={onPaste}
-            // onPasteCapture={onPaste}
+            onPaste={onPaste}
+            onPasteCapture={onPaste}
             type='text'
           />
         ))}

@@ -55,6 +55,17 @@ const OtpInput = ({
     setTimer(true);
   }, [onSendOTPClick]);
 
+  const onPaste = useCallback((e) => {
+    e.preventDefault();
+    const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
+    const copiedOTP = new Array(5).fill('').map((_, i) => text[i] || '');
+    setOtp(copiedOTP);
+    if (text.length === otp.length) {
+      setActiveOtpIndex(null);
+      verifyOTPCB(text.join(''));
+    }
+  }, []);
+
   useEffect(() => {
     let interval = null;
     if (timer) {
@@ -129,16 +140,8 @@ const OtpInput = ({
               if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
             }}
             inputMode='numeric'
-            onPaste={(e) => {
-              e.preventDefault();
-              const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
-              const copiedOTP = new Array(5).fill('').map((_, i) => text[i] || '');
-              setOtp(copiedOTP);
-              if (text.length === otp.length) {
-                setActiveOtpIndex(null);
-                verifyOTPCB(text.join(''));
-              }
-            }}
+            onPaste={onPaste}
+            onPasteCapture={onPaste}
             type='text'
           />
         ))}

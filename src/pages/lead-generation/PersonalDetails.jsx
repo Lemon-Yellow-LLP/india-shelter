@@ -66,8 +66,7 @@ const PersonalDetail = () => {
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
-  // const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
-  const [showOTPInput, setShowOTPInput] = useState(true);
+  const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
 
   useEffect(() => {
     let disableNext = disableNextFields.reduce((acc, field) => {
@@ -87,18 +86,8 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
-    // setDisablePhoneNumber(true);
+    setDisablePhoneNumber(true);
     const continueJourney = searchParams.has('li');
-    try {
-      navigator.permissions.query({ name: 'sms' }).then((permissionStatus) => {
-        if (permissionStatus.state === 'granted') {
-          console.log(getWebOTP());
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
-    return;
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
         setFieldError('phone_number', res.data.message);
@@ -107,14 +96,14 @@ const PersonalDetail = () => {
       try {
         navigator.permissions.query({ name: 'sms' }).then((permissionStatus) => {
           if (permissionStatus.state === 'granted') {
-            console.log(getWebOTP());
+            alert(getWebOTP());
           }
         });
       } catch (err) {
         console.error(err);
       }
     });
-  }, [leadExists, phone_number, searchParams, setFieldError]);
+  }, [phone_number, searchParams, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
     setSelectedLoanType(e.currentTarget.value);
@@ -130,11 +119,6 @@ const PersonalDetail = () => {
 
   const verifyLeadOTP = useCallback(
     async (otp) => {
-      // setPhoneNumberVerified(true);
-      // setInputDisabled(false);
-      // setFieldError('phone_number', undefined);
-      // setShowOTPInput(false);
-      return true;
       try {
         const res = await verifyMobileOtp(phone_number, { otp });
         if (res.status === 200) {
@@ -522,8 +506,7 @@ const PersonalDetail = () => {
           setOTPVerified={setPhoneNumberVerified}
           onSendOTPClick={onOTPSendClick}
           defaultResendTime={30}
-          // disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
-          disableSendOTP={true}
+          disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
         />
       )}

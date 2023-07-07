@@ -1,5 +1,5 @@
 import { CurrencyInput, TextInput } from '../../../components';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
 import { updateLeadDataOnBlur } from '../../../global';
@@ -23,21 +23,16 @@ const LoanTransferFields = () => {
     handleChange,
     setDisableNextStep,
     currentLeadId,
-    setFieldValue
+    setFieldValue,
   } = useContext(AuthContext);
 
-  const [loanTenureError, setLoanTeureError] = useState('')
-
-  const fileteredValueOnBlur = (e) => {
-    const target = e.currentTarget;
-    if(target.value && target.value > 30){
-      setLoanTeureError('Loan Tenure should must be in between 1-30 year')
-    }else{
-      console.log(target.value);
-      setLoanTeureError('');
+  const handleOnLoanTenureBlur = useCallback(
+    (e) => {
+      const target = e.currentTarget;
       updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value.toString());
-    }
-  }; 
+    },
+    [currentLeadId],
+  );
 
   useEffect(() => {
     if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
@@ -48,8 +43,6 @@ const LoanTransferFields = () => {
     }, true);
     setDisableNextStep(!disableSubmit);
   }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput]);
-
-
 
   return (
     <div className='flex flex-col gap-2'>
@@ -83,10 +76,9 @@ const LoanTransferFields = () => {
             placeholder='Eg.10'
             required
             value={values.loan_tenure}
-            displayError={false}
             onBlur={(e) => {
               handleBlur(e);
-              fileteredValueOnBlur(e);
+              handleOnLoanTenureBlur(e);
             }}
             onChange={(e) => {
               if (e.currentTarget.value < 0) {
@@ -96,14 +88,15 @@ const LoanTransferFields = () => {
               if (values.loan_tenure.length >= 2) {
                 return;
               }
-              const value = e.currentTarget.value;
-              setFieldValue('loan_tenure', value);
+              handleChange(e);
             }}
             type='number'
             min='0'
             onInput={(e) => {
               if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
             }}
+            error={errors.loan_tenure}
+            touched={touched.loan_tenure}
             inputClasses='hidearrow'
             onKeyDown={(e) => {
               if (e.key === 'Backspace') {
@@ -116,15 +109,11 @@ const LoanTransferFields = () => {
               }
             }}
           />
-          <span className='absolute top-6 bottom-0 right-4 flex items-center text-base text-light-grey'>
+          <span className='absolute top-1 bottom-0 right-4 flex items-center text-base text-light-grey'>
             years
-          </span>{' '}
+          </span>
         </div>
       </div>
-
-      <span className='text-xs text-primary-red'>
-        {loanTenureError && touched.loan_tenure ? loanTenureError : String.fromCharCode(160)}
-      </span>
 
       <CurrencyInput
         name='loan_amount'

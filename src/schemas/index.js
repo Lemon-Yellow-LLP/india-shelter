@@ -39,7 +39,10 @@ export const signUpSchema = Yup.object({
   ),
   purpose_of_loan: Yup.string().required('Please select the purpose of the loan.'),
   property_type: Yup.string().required('Please select the property type.'),
-  loan_tenure: Yup.string().required('Please enter the Loan tenure period'),
+  loan_tenure: Yup.number()
+    .required('Please enter the Loan tenure period')
+    .min(1, 'Loan Tenure should must be in between 1-30 year')
+    .max(30, 'Loan Tenure should must be in between 1-30 year'),
   loan_amount: Yup.string().required('Please enter the loan amount.'),
   purpose_type: Yup.string().required('Property category not selected.'),
 

@@ -1,11 +1,9 @@
-import { CurrencyInput, DropDown, TextInput } from '../../../components';
-import { useContext, useEffect, useState } from 'react';
+import { CurrencyInput, TextInput } from '../../../components';
+import { useCallback, useContext, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 import { IconRupee } from '../../../assets/icons';
-import { loanTenureOptions, loanTypeOptions } from '../utils';
 import { updateLeadDataOnBlur } from '../../../global';
 import { PropertyDetailContext } from '.';
-import { useDebounce } from '../../../hooks';
 
 const fieldsRequiredForSubmitting = [
   'banker_name',
@@ -28,28 +26,13 @@ const LoanTransferFields = () => {
     setFieldValue,
   } = useContext(AuthContext);
 
-  const [selectedLoanTenure, setSelectedLoanTenure] = useState(loanTypeOptions[0].value);
-
-  const deferredFilteredLoanTenure = useDebounce(values.loan_tenure, 5000);
-
-  useEffect(() => {
-    const fileteredValueOnBlur = () => {
-      if (selectedLoanTenure === 'years') {
-        if (deferredFilteredLoanTenure) {
-          const filteredValue = deferredFilteredLoanTenure * 12;
-          console.log(filteredValue.toString());
-          updateLeadDataOnBlur(currentLeadId, 'loan_tenure', filteredValue.toString());
-        }
-      } else {
-        console.log(typeof parseInt(deferredFilteredLoanTenure));
-        if (deferredFilteredLoanTenure) {
-          console.log('data sent');
-          updateLeadDataOnBlur(currentLeadId, 'loan_tenure', deferredFilteredLoanTenure.toString());
-        }
-      }
-    };
-    fileteredValueOnBlur();
-  }, [selectedLoanTenure, deferredFilteredLoanTenure, currentLeadId]);
+  const handleOnLoanTenureBlur = useCallback(
+    (e) => {
+      const target = e.currentTarget;
+      updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value.toString());
+    },
+    [currentLeadId],
+  );
 
   useEffect(() => {
     if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
@@ -86,18 +69,16 @@ const LoanTransferFields = () => {
       />
 
       <div className='flex gap-2 items-end'>
-        <div className='grow'>
+        <div className='grow relative'>
           <TextInput
             name='loan_tenure'
-            placeholder='Eg: 10'
             label='Loan Tenure'
+            placeholder='Eg.10'
             required
             value={values.loan_tenure}
-            displayError={false}
             onBlur={(e) => {
               handleBlur(e);
-              // fileteredValueOnBlur(e);
-              // updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+              handleOnLoanTenureBlur(e);
             }}
             onChange={(e) => {
               if (e.currentTarget.value < 0) {
@@ -107,14 +88,15 @@ const LoanTransferFields = () => {
               if (values.loan_tenure.length >= 2) {
                 return;
               }
-              const value = e.currentTarget.value;
-              setFieldValue('loan_tenure', value);
+              handleChange(e);
             }}
             type='number'
             min='0'
             onInput={(e) => {
               if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
             }}
+            error={errors.loan_tenure}
+            touched={touched.loan_tenure}
             inputClasses='hidearrow'
             onKeyDown={(e) => {
               if (e.key === 'Backspace') {
@@ -127,26 +109,11 @@ const LoanTransferFields = () => {
               }
             }}
           />
-        </div>
-        <div className='mt-1 grow'>
-          <DropDown
-            options={loanTenureOptions}
-            placeholder='Months'
-            showError={false}
-            showIcon={false}
-            value={selectedLoanTenure}
-            defaultSelected='months'
-            onChange={(value) => {
-              setSelectedLoanTenure(value);
-              console.log(value);
-            }}
-          />
+          <span className='absolute top-1 bottom-0 right-4 flex items-center text-base text-light-grey'>
+            years
+          </span>
         </div>
       </div>
-
-      <span className='text-xs text-primary-red'>
-        {errors.loan_tenure && touched.loan_tenure ? errors.loan_tenure : String.fromCharCode(160)}
-      </span>
 
       <CurrencyInput
         name='loan_amount'

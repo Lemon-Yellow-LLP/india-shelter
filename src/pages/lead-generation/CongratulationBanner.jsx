@@ -106,15 +106,15 @@ const CongratulationBanner = () => {
                 ? 'Get the right value for your property'
                 : 'Find your shelter with us'}
             </span>
-            <button
-              onKeyDown={() => setProcessingBRE(false)}
-              onClick={() => setProcessingBRE(false)}
-              className='bg-white rounded-full p-0.5'
-            >
-              <IconClose />
-            </button>
           </h4>
         </div>
+        <button
+          onKeyDown={() => setProcessingBRE(false)}
+          onClick={() => setProcessingBRE(false)}
+          className='bg-white rounded-full p-0.5'
+        >
+          <IconClose />
+        </button>
       </div>
 
       <AnimatePresence>
@@ -140,7 +140,11 @@ const CongratulationBanner = () => {
               }}
               className='md:hidden md:absolute bottom-0 md:bottom-10 left-0 md:left-2/4 md:-translate-x-2/4 w-full max-h-[318px]'
             />
-            <HomeLoanDesktopAnimation play loop={false} className='hidden md:block' />
+            <HomeLoanDesktopAnimation
+              play
+              loop={false}
+              className='hidden md:block md:absolute md:w-screen md:bottom-[-270px]'
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -156,7 +160,11 @@ const CongratulationBanner = () => {
               play
               className='md:hidden md:absolute bottom-0 left-0 md:left-2/4 md:-translate-x-2/4 w-full md:h-2/4'
             />
-            <LoanAgainstPropertyDesktopAnimation play loop={false} className='hidden md:block' />
+            <LoanAgainstPropertyDesktopAnimation
+              play
+              loop={false}
+              className='hidden md:block md:absolute md:w-screen md:bottom-[-220px]'
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -182,7 +190,7 @@ const CongratulationBanner = () => {
             </svg>
           </div>
           <div
-            className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-1/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
+            className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-2/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
               loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
             } md:bg-opacity-0`}
           >
@@ -224,10 +232,11 @@ const CongratulationBanner = () => {
                   className='text-[32px] font-semibold mt-3 md:mt-4'
                 >
                   ₹ {currencyFormatter.format(allowedLoanAmount)}/-
+                  <sup className='text-[22px] font-medium text-primary-black mt-2'>*</sup>
                 </div>
-                <div className='text-dark-grey md:text-base mt-1 md:mt-4 font-semibold'>
+                {/* <div className='text-dark-grey md:text-base mt-1 md:mt-4 font-semibold'>
                   Terms and Condition applied!
-                </div>
+                </div> */}
                 <div className='flex w-full gap-2 p-6 mt-[18px] md:mt-1 md:p-0 justify-center'>
                   <img src={time24} role='presentation' alt='Time 24' />
                   <div className='text-xs md:text-sm text-black font-normal text-center text-opacity-50'>
@@ -253,7 +262,7 @@ const CongratulationBanner = () => {
       )}
       {values.loan_type !== 'LAP' && (
         <div
-          className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-1/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
+          className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-2/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
             loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
           } md:bg-opacity-0`}
         >
@@ -295,9 +304,7 @@ const CongratulationBanner = () => {
                 className='text-[32px] font-semibold mt-3 md:mt-4'
               >
                 ₹ {currencyFormatter.format(allowedLoanAmount)}/-
-              </div>
-              <div className='text-dark-grey md:text-base mt-1 md:mt-4 font-semibold'>
-                Terms and Condition applied!
+                <sup className='text-[22px] font-medium text-primary-black mt-2'>*</sup>
               </div>
               <div className='flex w-full gap-2 p-6 mt-[18px] md:mt-1 md:p-0 justify-center'>
                 <img src={time24} role='presentation' alt='Time 24' />
@@ -320,6 +327,14 @@ const CongratulationBanner = () => {
             ''
           )}
         </div>
+      )}
+
+      {!loadingBRE_Status && isQualified ? (
+        <div className='absolute z-50 w-full text-center bottom-4 text-xs text-light-grey md:text-dark-grey md:text-right md:text-sm md:bottom-5 md:right-14'>
+          *Terms and Conditions applied
+        </div>
+      ) : (
+        ''
       )}
     </div>
   );

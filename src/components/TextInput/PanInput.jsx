@@ -73,6 +73,7 @@ const PanInput = ({
 
         <input
           type={inputType}
+          inputMode={inputType === 'number' ? 'numeric' : 'text'}
           ref={tempInputRef}
           name={name}
           className='w-2 hidearrow text-transparent placeholder:text-transparent'

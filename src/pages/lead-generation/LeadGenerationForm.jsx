@@ -41,7 +41,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
             role='presentation'
             onClick={onClick}
             onKeyDown={onClick}
-            className='mt-6 pb-[180px] md:pb-[260px] h-full overflow-auto md:pr-[175px] no-scrollbar px-1'
+            className='mt-6 md:mr-3 pb-[180px] md:pb-[260px] h-full overflow-auto md:pr-[156px] no-scrollbar px-1'
           >
             <ActiveStepComponent />
           </div>

@@ -426,7 +426,7 @@ const PersonalDetail = () => {
         placeholder='Please enter 10 digit mobile no'
         required
         name='phone_number'
-        type='number'
+        type='tel'
         value={values.phone_number}
         error={errors.phone_number}
         touched={touched.phone_number}

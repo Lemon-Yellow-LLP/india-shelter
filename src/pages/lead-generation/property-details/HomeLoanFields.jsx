@@ -3,7 +3,7 @@ import { CardRadio, CurrencyInput, TextInput } from '../../../components';
 import { propertyIdentificationOptions } from '../utils';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
-import { updateLeadDataOnBlur } from '../../../global';
+import { checkIsValidStatePincode, updateLeadDataOnBlur } from '../../../global';
 import { currencyToFloat } from '../../../components/CurrencyInput';
 
 const disableSubmitMap = {
@@ -25,7 +25,22 @@ const HomeLoanFields = () => {
     setDisableNextStep,
     currentLeadId,
     setFieldValue,
+    setFieldError,
   } = useContext(AuthContext);
+
+  const { property_pincode } = values;
+
+  const handleOnPropertyPincodeChange = useCallback(async () => {
+    if (!property_pincode || property_pincode.toString().length < 5 || errors.property_pincode)
+      return;
+
+    const validStatePin = await checkIsValidStatePincode(property_pincode);
+    if (!validStatePin.length) {
+      setFieldError('property_pincode', 'Invalid Pincode');
+      return;
+    }
+
+  }, [errors.property_pincode, property_pincode, setFieldError]);
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
@@ -126,6 +141,7 @@ const HomeLoanFields = () => {
             inputClasses='hidearrow'
             onBlur={(e) => {
               handleBlur(e);
+              handleOnPropertyPincodeChange();
               updateLeadDataOnBlur(
                 currentLeadId,
                 'property_pincode',

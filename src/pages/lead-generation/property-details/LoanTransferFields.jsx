@@ -13,6 +13,8 @@ const fieldsRequiredForSubmitting = [
   'property_type',
 ];
 
+const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
+
 const LoanTransferFields = () => {
   const { showOTPInput, emailOTPVerified } = useContext(PropertyDetailContext);
   const {
@@ -72,8 +74,8 @@ const LoanTransferFields = () => {
         <div className='grow relative'>
           <TextInput
             name='loan_tenure'
-            label='Loan Tenure'
-            placeholder='Eg.10'
+            label='Balance Tenure'
+            placeholder='Eg. 10'
             required
             value={values.loan_tenure}
             onBlur={(e) => {
@@ -100,14 +102,24 @@ const LoanTransferFields = () => {
             inputClasses='hidearrow'
             onKeyDown={(e) => {
               if (e.key === 'Backspace') {
-                setFieldValue(
-                  'loan_tenure',
-                  values.loan_tenure.slice(0, values.loan_tenure.length - 1),
-                );
+                if (values.loan_tenure.length > 0) {
+                  const updatedLoanTenure = values.loan_tenure.slice(0, values.loan_tenure.length - 1);
+                  setFieldValue('loan_tenure', updatedLoanTenure);
+                }
+              }
+              if (e.key === 'v' || DISALLOW_CHAR.includes(e.key)) {
                 e.preventDefault();
-                return;
               }
             }}
+            onFocus={(e) =>
+              e.target.addEventListener(
+                'wheel',
+                function (e) {
+                  e.preventDefault();
+                },
+                { passive: false },
+              )
+            }
           />
           <span className='absolute top-1 bottom-0 right-4 flex items-center text-base text-light-grey'>
             years

@@ -211,7 +211,7 @@ const PersonalDetail = () => {
     if (canCreateLead) {
       createLead({
         first_name,
-        pincode,
+        pincode: parseInt(pincode),
         phone_number: phone_number.toString(),
       })
         .then((res) => {

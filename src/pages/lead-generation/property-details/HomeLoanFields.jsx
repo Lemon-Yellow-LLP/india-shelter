@@ -35,11 +35,10 @@ const HomeLoanFields = () => {
       return;
 
     const validStatePin = await checkIsValidStatePincode(property_pincode);
-    if (!validStatePin.length) {
+    if (!validStatePin) {
       setFieldError('property_pincode', 'Invalid Pincode');
       return;
     }
-
   }, [errors.property_pincode, property_pincode, setFieldError]);
 
   const handleOnPropertyIdentificationChange = useCallback(
@@ -149,9 +148,9 @@ const HomeLoanFields = () => {
               );
             }}
             onChange={(e) => {
-              if(e.currentTarget.value.length>6){
-                e.preventDefault()
-                return
+              if (e.currentTarget.value.length > 6) {
+                e.preventDefault();
+                return;
               }
               const value = e.currentTarget.value;
               if (!value) {

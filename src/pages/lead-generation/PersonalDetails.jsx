@@ -151,7 +151,7 @@ const PersonalDetail = () => {
     if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
 
     const validStatePin = await checkIsValidStatePincode(pincode);
-    if(!validStatePin.length){
+    if(!validStatePin){
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }

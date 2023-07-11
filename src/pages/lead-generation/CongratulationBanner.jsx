@@ -8,9 +8,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import logo from '../../assets/logo.svg';
 import { checkBre100 } from '../../global';
 import { IconClose } from '../../assets/icons';
-import HomeLoanDesktopAnimation from './HomeLoanDesktopAnimation';
-import LoanAgainstPropertyDesktopAnimation from './LapDesktopAnimation';
 
+const LoanAgainstPropertyDesktopAnimation = lazy(() => import('./LapDesktopAnimation'));
+const HomeLoanDesktopAnimation = lazy(() => import('./HomeLoanDesktopAnimation'));
 const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
 const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
 const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
@@ -81,8 +81,8 @@ const CongratulationBanner = () => {
 
   return (
     <div
-      style={{ backgroundColor: loadingBRE_Status ? '#FFF1CD' : '#EEF0DD' }}
-      className='flex flex-col w-full relative transition-colors ease-out duration-300 min-h-screen overflow-hidden'
+      style={{ backgroundColor: loadingBRE_Status ? '#FFF1CD' : '#EEF0DD', minHeight: '100dvh' }}
+      className='flex flex-col w-full relative transition-colors ease-out duration-300 overflow-hidden'
     >
       <div className='relative md:hidden'>
         <Header />

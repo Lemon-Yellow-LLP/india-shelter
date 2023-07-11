@@ -1,15 +1,18 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import LeadGeneration from './pages/lead-generation';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <LeadGeneration />,
-  },
-]);
+import { Suspense } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { LeadGenerationRoute } from './pages';
+import Loader from './components/Loader';
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<Loader />}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='*' element={<LeadGenerationRoute />} />
+        </Routes>
+      </BrowserRouter>
+    </Suspense>
+  );
 }
 
 export default App;

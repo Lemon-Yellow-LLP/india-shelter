@@ -1,15 +1,22 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import LeadGeneration from './pages/lead-generation';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <LeadGeneration />,
-  },
-]);
+import WelcomeBackResumeJourney from './pages/lead-generation/WelcomeBackResumeJourney';
 
 function App() {
-  return <RouterProvider router={router} />;
+  const router = createBrowserRouter([
+    {
+      path: '/:id',
+      element: <WelcomeBackResumeJourney />,
+    },
+    {
+      path: '/',
+      element: <LeadGeneration />,
+    },
+  ]);
+
+  return (
+      <RouterProvider router={router} />
+  );
 }
 
 export default App;

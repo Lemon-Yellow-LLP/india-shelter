@@ -2,7 +2,7 @@ import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
 import PropTypes from 'prop-types';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getLeadById } from '../global';
 
 export const defaultValues = {
@@ -54,6 +54,7 @@ const AuthContextProvider = ({
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
   const [processingPanCard, setProcessingPanCard] = useState(false);
   const [validPancard, setValidPancard] = useState(false);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -81,24 +82,7 @@ const AuthContextProvider = ({
   useEffect(() => {
     const _leadID = searchParams.get('li');
     if (!_leadID) return;
-    setCurrentLeadId(_leadID);
-    setInputDisabled(true);
-    getLeadById(_leadID).then((res) => {
-      if (res.status !== 200) return;
-      setIsLeadGenearted(true);
-      if (res.data.pan_number) {
-        setValidPancard(true);
-      }
-      const data = {};
-      Object.entries(res.data).forEach(([fieldName, fieldValue]) => {
-        if (typeof fieldValue === 'number') {
-          data[fieldName] = fieldValue.toString();
-          return;
-        }
-        data[fieldName] = fieldValue || '';
-      });
-      formik.setValues({ ...formik.values, ...data });
-    });
+    navigate(`/${_leadID}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -111,7 +95,7 @@ const AuthContextProvider = ({
   useEffect(() => {
     setSelectedLoanType(formik.values.loan_type);
   }, [formik.values.loan_type]);
-
+  
   useEffect(() => {
     const promoCode = searchParams.get('promo_code');
     if (promoCode) {
@@ -125,7 +109,7 @@ const AuthContextProvider = ({
       return prev - 1;
     });
   }, []);
-
+  
   const goToNextStep = useCallback(() => {
     setActiveStepIndex((prev) => {
       previousStepIndex.current = prev;

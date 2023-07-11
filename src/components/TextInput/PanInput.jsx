@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import loading from '../../assets/icons/loading.svg';
 
 const PanInput = ({
   label,
@@ -9,7 +8,6 @@ const PanInput = ({
   error,
   touched,
   onChange,
-  processing,
   displayError = true,
   ...props
 }) => {
@@ -100,12 +98,6 @@ const PanInput = ({
           }}
           onBlur={props.onBlur}
         />
-
-        {processing ? (
-          <div className='ml-auto'>
-            <img src={loading} alt='loading' className='animate-spin duration-300 ease-out' />
-          </div>
-        ) : null}
       </div>
 
       {displayError ? (

@@ -44,8 +44,6 @@ const AuthContextProvider = ({ children }) => {
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
-  const [processingPanCard, setProcessingPanCard] = useState(false);
-  const [validPancard, setValidPancard] = useState(false);
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -87,6 +85,10 @@ const AuthContextProvider = ({ children }) => {
   const [hidePromoCode, setHidePromoCode] = useState(false);
   const [selectedLoanType, setSelectedLoanType] = useState(formik.values.loan_type);
   const [disableNextStep, setDisableNextStep] = useState(true);
+  const [allowCallPanAndCibil, setAllowCallPanAndCibil] = useState({
+    allowCallPanRule: false,
+    allowCallCibilRule: false,
+  });
 
   useEffect(() => {
     setSelectedLoanType(formik.values.loan_type);
@@ -144,10 +146,8 @@ const AuthContextProvider = ({ children }) => {
         acceptedTermsAndCondition,
         setAcceptedTermsAndCondition,
         updateFieldsFromServerData,
-        validPancard,
-        setValidPancard,
-        processingPanCard,
-        setProcessingPanCard,
+        allowCallPanAndCibil,
+        setAllowCallPanAndCibil
       }}
     >
       {children}

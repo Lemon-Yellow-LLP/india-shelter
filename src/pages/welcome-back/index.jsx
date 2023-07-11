@@ -18,7 +18,6 @@ const WelcomeBack = () => {
     setCurrentLeadId,
     setInputDisabled,
     setIsLeadGenearted,
-    setValidPancard,
     setValues,
     setFieldError,
     setActiveStepIndex,
@@ -36,9 +35,6 @@ const WelcomeBack = () => {
     getLeadById(leadId).then((res) => {
       if (res.status !== 200) return;
       setIsLeadGenearted(true);
-      if (res.data.pan_number) {
-        setValidPancard(true);
-      }
       const data = {};
       Object.entries(res.data).forEach(([fieldName, fieldValue]) => {
         if (typeof fieldValue === 'number') {
@@ -50,7 +46,7 @@ const WelcomeBack = () => {
       setValues({ ...values, ...data });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setValues, setCurrentLeadId, setInputDisabled, setIsLeadGenearted, setValidPancard]);
+  }, [setValues, setCurrentLeadId, setInputDisabled, setIsLeadGenearted]);
 
   const onOTPSendClick = useCallback(() => {
     sendMobileOTP(values.phone_number, true).then((res) => {

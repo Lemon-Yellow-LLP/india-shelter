@@ -226,7 +226,14 @@ const ProfessinalDetail = () => {
       }
       setProcessingPanCard(false);
     },
-    [currentLeadId, errors.pan_number, setFieldError, values.pan_number],
+    [
+      currentLeadId,
+      errors.pan_number,
+      setFieldError,
+      setProcessingPanCard,
+      setValidPancard,
+      values.pan_number,
+    ],
   );
 
   return (

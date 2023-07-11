@@ -129,7 +129,7 @@ const PersonalDetail = () => {
   const verifyLeadOTP = useCallback(
     async (otp) => {
       try {
-        const res = await verifyMobileOtp(phone_number, { otp });
+        const res = await verifyMobileOtp(phone_number, { otp, sms_link: true });
         if (res.status === 200) {
           setPhoneNumberVerified(true);
           setInputDisabled(false);
@@ -151,13 +151,13 @@ const PersonalDetail = () => {
     if (!pincode || pincode.toString().length < 5 || errors.pincode) return;
 
     const validStatePin = await checkIsValidStatePincode(pincode);
-    if(!validStatePin){
+    if (!validStatePin) {
       setFieldError('pincode', 'Invalid Pincode');
       return;
     }
 
     const data = await getPincode(pincode);
-    
+
     setFieldValue('Out_Of_Geographic_Limit', data.ogl);
   }, [errors.pincode, pincode, setFieldError, setFieldValue]);
 
@@ -199,7 +199,12 @@ const PersonalDetail = () => {
     if (resumeJourneyIndex) {
       setActiveStepIndex(parseInt(resumeJourneyIndex));
     }
-  }, [setActiveStepIndex, values.extra_params.resume_journey_index]);
+  }, [
+    setActiveStepIndex,
+    setValidPancard,
+    values.extra_params.resume_journey_index,
+    values.pan_number,
+  ]);
 
   useEffect(() => {
     if (isLeadGenerated || leadExists) return;
@@ -211,7 +216,7 @@ const PersonalDetail = () => {
     if (canCreateLead) {
       createLead({
         first_name,
-        pincode,
+        pincode: parseInt(pincode),
         phone_number: phone_number.toString(),
       })
         .then((res) => {
@@ -382,16 +387,16 @@ const PersonalDetail = () => {
           if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
         }}
         onChange={(e) => {
-          if(e.currentTarget.value.length>6){
-            e.preventDefault()
-            return
+          if (e.currentTarget.value.length > 6) {
+            e.preventDefault();
+            return;
           }
-          const value = e.currentTarget.value
+          const value = e.currentTarget.value;
           if (value.charAt(0) === '0') {
             e.preventDefault();
             return;
           }
-          handleChange(e)
+          handleChange(e);
         }}
         onKeyDown={(e) => {
           //capturing ctrl V and ctrl C

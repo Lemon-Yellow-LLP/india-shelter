@@ -2,8 +2,7 @@ import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
 import PropTypes from 'prop-types';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { getLeadById } from '../global';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 export const defaultValues = {
   phone_number: '',
@@ -38,14 +37,7 @@ export const defaultValues = {
 
 export const AuthContext = createContext(defaultValues);
 
-const AuthContextProvider = ({
-  children,
-  setProcessingBRE,
-  loadingBRE_Status,
-  setLoadingBRE_Status,
-  setIsQualified,
-  isQualified,
-}) => {
+const AuthContextProvider = ({ children }) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState(null);
@@ -86,6 +78,10 @@ const AuthContextProvider = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  const [processingBRE, setProcessingBRE] = useState(false);
+  const [isQualified, setIsQualified] = useState(null);
+  const [loadingBRE_Status, setLoadingBRE_Status] = useState(processingBRE);
+
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const previousStepIndex = useRef(activeStepIndex);
   const [hidePromoCode, setHidePromoCode] = useState(false);
@@ -95,7 +91,7 @@ const AuthContextProvider = ({
   useEffect(() => {
     setSelectedLoanType(formik.values.loan_type);
   }, [formik.values.loan_type]);
-  
+
   useEffect(() => {
     const promoCode = searchParams.get('promo_code');
     if (promoCode) {
@@ -109,7 +105,7 @@ const AuthContextProvider = ({
       return prev - 1;
     });
   }, []);
-  
+
   const goToNextStep = useCallback(() => {
     setActiveStepIndex((prev) => {
       previousStepIndex.current = prev;
@@ -139,6 +135,7 @@ const AuthContextProvider = ({
         setInputDisabled,
         phoneNumberVerified,
         setPhoneNumberVerified,
+        processingBRE,
         setProcessingBRE,
         isQualified,
         setIsQualified,
@@ -158,7 +155,15 @@ const AuthContextProvider = ({
   );
 };
 
-export default AuthContextProvider;
+const AuthContextLayout = () => {
+  return (
+    <AuthContextProvider>
+      <Outlet />
+    </AuthContextProvider>
+  );
+};
+
+export default AuthContextLayout;
 
 AuthContextProvider.propTypes = {
   children: PropTypes.element,

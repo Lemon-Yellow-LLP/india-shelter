@@ -3,27 +3,33 @@ import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { useCallback, useContext, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { addToSalesForce, editLeadById } from '../../global';
+import { addToSalesForce, editLeadById, verifyPan, checkCibil } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
   const formContainerRef = useRef(null);
-  const { processingBRE, setProcessingBRE } = useContext(AuthContext);
+  const { processingBRE, setProcessingBRE, allowCallPanAndCibil } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
     modalRef.current?.snapTo(1);
     formContainerRef.current?.scrollTo(0, 0);
   }, []);
 
-  const onSubmit = useCallback(
-    async (leadId, values) => {
-      editLeadById(leadId, values).then(() => setProcessingBRE(true));
-      addToSalesForce(leadId).then((res) => console.log(res));
-    },
-    [setProcessingBRE],
-  );
+  const onSubmit = useCallback(async (leadId, values) => {
+    editLeadById(leadId, values).then(() => setProcessingBRE(true));
+    if (allowCallPanAndCibil.allowCallPanRule) {
+      console.log("called pan");
+      await verifyPan(leadId);
+    }
+    console.log(allowCallPanAndCibil.allowCallCibilRule)
+    if (allowCallPanAndCibil.allowCallCibilRule) {
+      console.log("called cibil");
+      await checkCibil(leadId);
+    }
+    addToSalesForce(leadId).then((res) => console.log(res));
+  }, [allowCallPanAndCibil]);
 
   if (processingBRE) {
     return (

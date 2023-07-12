@@ -50,8 +50,8 @@ const loanTypeData = [
         value: 'Services',
       },
       {
-        label: 'Occupation 4',
-        value: 'Occupation-4',
+        label: 'Others',
+        value: 'Others',
       },
     ],
   },

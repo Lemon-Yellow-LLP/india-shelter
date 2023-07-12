@@ -101,6 +101,17 @@ const AuthContextProvider = ({ children }) => {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    const utmParams = {};
+    searchParams.forEach((value, key) => {
+      if (key.includes('extra')) {
+        utmParams[key] = value;
+      }
+    });
+    formik.setValues((prev) => ({ ...prev, ...utmParams }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
   const goToPreviousStep = useCallback(() => {
     setActiveStepIndex((prev) => {
       previousStepIndex.current = prev;
@@ -147,7 +158,7 @@ const AuthContextProvider = ({ children }) => {
         setAcceptedTermsAndCondition,
         updateFieldsFromServerData,
         allowCallPanAndCibil,
-        setAllowCallPanAndCibil
+        setAllowCallPanAndCibil,
       }}
     >
       {children}

@@ -33,6 +33,21 @@ export const defaultValues = {
   Out_Of_Geographic_Limit: false,
   Total_Property_Value: '',
   extra_params: {},
+  extra_1: null,
+  extra_2: null,
+  extra_3: null,
+  extra_4: null,
+  extra_5: null,
+  extra_6: null,
+  extra_7: null,
+  extra_8: null,
+  extra_9: null,
+  extra_10: null,
+  extra_11: null,
+  extra_12: null,
+  extra_13: null,
+  extra_14: null,
+  extra_15: null,
 };
 
 export const AuthContext = createContext(defaultValues);

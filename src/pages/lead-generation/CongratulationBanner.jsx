@@ -163,7 +163,7 @@ const CongratulationBanner = () => {
             <LoanAgainstPropertyDesktopAnimation
               play
               loop={false}
-              className='hidden md:block md:absolute md:w-screen md:bottom-[-220px]'
+              className='hidden md:block md:absolute md:w-screen md:bottom-[-235px]'
             />
           </motion.div>
         )}

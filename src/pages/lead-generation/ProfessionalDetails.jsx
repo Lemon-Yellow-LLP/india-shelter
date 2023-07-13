@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useCallback, useRef } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import CardRadio from '../../components/CardRadio';
 import DropDown from '../../components/DropDown';
 import IconSalaried from '../../assets/icons/salaried';
@@ -12,7 +12,6 @@ import {
   editLeadById,
   isEighteenOrAbove,
   updateLeadDataOnBlur,
-  verifyPan,
 } from '../../global';
 import { currencyToFloat } from '../../components/CurrencyInput';
 
@@ -144,7 +143,7 @@ const ProfessinalDetail = () => {
       return;
     }
     setFieldValue('date_of_birth', date);
-    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', date);
+    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', new Date(date.toUTCString()));
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 
   const handleOnProfessionChange = useCallback(

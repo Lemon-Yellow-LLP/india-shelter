@@ -103,7 +103,10 @@ const LoanTransferFields = () => {
             onKeyDown={(e) => {
               if (e.key === 'Backspace') {
                 if (values.loan_tenure.length > 0) {
-                  const updatedLoanTenure = values.loan_tenure.slice(0, values.loan_tenure.length - 1);
+                  const updatedLoanTenure = values.loan_tenure.slice(
+                    0,
+                    values.loan_tenure.length - 1,
+                  );
                   setFieldValue('loan_tenure', updatedLoanTenure);
                 }
               }

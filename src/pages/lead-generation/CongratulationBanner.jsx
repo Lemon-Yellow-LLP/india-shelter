@@ -188,8 +188,9 @@ const CongratulationBanner = () => {
             </svg>
           </div>
           <div
-            className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-2/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
-              } md:bg-opacity-0`}
+            className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-2/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
+              loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
+            } md:bg-opacity-0`}
           >
             {loadingBRE_Status ? (
               <>
@@ -259,8 +260,9 @@ const CongratulationBanner = () => {
       )}
       {values.loan_type !== 'LAP' && (
         <div
-          className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-2/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
-            } md:bg-opacity-0`}
+          className={`md:fixed top-1/4 left-2/4 md:-translate-x-2/4 md:-translate-y-2/4 flex-1 transition-colors ease-out duration-300 flex flex-col items-center z-50 ${
+            loadingBRE_Status ? 'bg-[#FFF1CD]' : 'bg-[#EEF0DD]'
+          } md:bg-opacity-0`}
         >
           {loadingBRE_Status ? (
             <>

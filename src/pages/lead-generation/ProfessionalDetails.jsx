@@ -133,9 +133,8 @@ const ProfessinalDetail = () => {
       if (!keys.length) return acc && false;
       return acc && !keys.includes(field);
     }, !errors[disableNextFields[0]]);
-    disableNext =
-      disableNext && (values.mode_of_salary || values.occupation)
-      setDisableNextStep(!disableNext);
+    disableNext = disableNext && (values.mode_of_salary || values.occupation);
+    setDisableNextStep(!disableNext);
   }, [errors, setDisableNextStep, values.mode_of_salary, values.occupation]);
 
   useEffect(() => {
@@ -189,11 +188,10 @@ const ProfessinalDetail = () => {
         const allowCallCibilRule = bre99Data.find((rule) => rule.Rule_Name === 'Bureau');
 
         if (allowCallCibilRule.Rule_Value === 'YES') {
-          setAllowCallPanAndCibil(prev => ({ ...prev, allowCallCibilRule: true }));
+          setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallCibilRule: true }));
         }
-        console.log(allowCallCibilRule); 
         if (allowCallPanRule.Rule_Value === 'YES') {
-          setAllowCallPanAndCibil(prev => ({ ...prev, allowCallPanRule: true }));
+          setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallPanRule: true }));
         }
       } catch (err) {
         console.log(err);

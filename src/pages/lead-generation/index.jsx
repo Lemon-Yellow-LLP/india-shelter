@@ -17,19 +17,19 @@ const LeadGeneration = () => {
     formContainerRef.current?.scrollTo(0, 0);
   }, []);
 
-  const onSubmit = useCallback(async (leadId, values) => {
-    editLeadById(leadId, values).then(() => setProcessingBRE(true));
-    if (allowCallPanAndCibil.allowCallPanRule) {
-      console.log("called pan");
-      await verifyPan(leadId);
-    }
-    console.log(allowCallPanAndCibil.allowCallCibilRule)
-    if (allowCallPanAndCibil.allowCallCibilRule) {
-      console.log("called cibil");
-      await checkCibil(leadId);
-    }
-    addToSalesForce(leadId).then((res) => console.log(res));
-  }, [allowCallPanAndCibil]);
+  const onSubmit = useCallback(
+    async (leadId, values) => {
+      editLeadById(leadId, values).then(() => setProcessingBRE(true));
+      if (allowCallPanAndCibil.allowCallPanRule) {
+        await verifyPan(leadId).catch(() => {});
+      }
+      if (allowCallPanAndCibil.allowCallCibilRule) {
+        await checkCibil(leadId).catch(() => {});
+      }
+      await addToSalesForce(leadId).catch(() => {});
+    },
+    [allowCallPanAndCibil],
+  );
 
   if (processingBRE) {
     return (

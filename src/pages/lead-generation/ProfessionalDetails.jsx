@@ -143,7 +143,7 @@ const ProfessinalDetail = () => {
       return;
     }
     setFieldValue('date_of_birth', date);
-    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', new Date(date.toUTCString()));
+    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', new Date(date.toString() + 'EDT'));
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 
   const handleOnProfessionChange = useCallback(
@@ -196,7 +196,7 @@ const ProfessinalDetail = () => {
         console.log(err);
       }
     },
-    [currentLeadId, errors.pan_number, setFieldError, values.pan_number],
+    [currentLeadId, errors.pan_number, setAllowCallPanAndCibil, values.pan_number],
   );
 
   return (

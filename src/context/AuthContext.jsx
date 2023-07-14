@@ -59,6 +59,7 @@ const AuthContextProvider = ({ children }) => {
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -89,6 +90,13 @@ const AuthContextProvider = ({ children }) => {
     if (!_leadID) return;
     navigate(`/${_leadID}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  useEffect(() => {
+    const terms_and_condition = searchParams.has('tc');
+    if (terms_and_condition) {
+      setShowTerms(true);
+    }
   }, [searchParams]);
 
   const [processingBRE, setProcessingBRE] = useState(false);
@@ -174,6 +182,8 @@ const AuthContextProvider = ({ children }) => {
         updateFieldsFromServerData,
         allowCallPanAndCibil,
         setAllowCallPanAndCibil,
+        showTerms,
+        setShowTerms,
       }}
     >
       {children}

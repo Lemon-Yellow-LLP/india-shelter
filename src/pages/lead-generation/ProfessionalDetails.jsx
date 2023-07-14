@@ -173,8 +173,8 @@ const ProfessinalDetail = () => {
 
       if (updatedPanCard?.status !== 200) return;
 
-      //call dedupe
-      await checkDedupe(currentLeadId);
+      //Ignoring dedupe
+      // await checkDedupe(currentLeadId);
 
       //call bre99
       try {

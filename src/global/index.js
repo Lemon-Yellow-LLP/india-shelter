@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://scotttiger.in/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://agile.indiashelter.in/api';
 const API_LEAD_URL = `${API_URL}/lead`;
 
 const requestOptions = {};

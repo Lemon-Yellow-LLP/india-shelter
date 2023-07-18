@@ -14,7 +14,11 @@
     "format": "npm run prettier:fix && npm run lint:fix"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@lottiefiles/lottie-interactivity": "^1.6.2",
+    "@mui/material": "^5.14.0",
+    "@mui/styled-engine-sc": "^5.12.0",
     "axios": "^1.4.0",
     "formik": "^2.2.9",
     "framer-motion": "^10.12.16",
@@ -24,6 +28,7 @@
     "react-lottie-player": "^1.5.4",
     "react-modal-sheet": "^2.0.0",
     "react-router-dom": "^6.13.0",
+    "styled-components": "^5.3.11",
     "yup": "^1.1.1"
   },
   "devDependencies": {

@@ -184,7 +184,7 @@ const PersonalDetail = () => {
         setCurrentLeadId(leadData.id);
         if (leadData.is_submitted) {
           setProcessingBRE(true);
-          setIsQualified(true);
+          setIsQualified(!!leadData.bre_100_amount_offered);
         }
       });
     }

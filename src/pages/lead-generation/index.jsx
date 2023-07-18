@@ -3,14 +3,22 @@ import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { useCallback, useContext, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { addToSalesForce, editLeadById, verifyPan, checkCibil } from '../../global';
+import { addToSalesForce, editLeadById, verifyPan, checkCibil, checkBre100 } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
   const formContainerRef = useRef(null);
-  const { processingBRE, setProcessingBRE, allowCallPanAndCibil } = useContext(AuthContext);
+  const {
+    processingBRE,
+    setProcessingBRE,
+    allowCallPanAndCibil,
+    setProgress,
+    setIsQualified,
+    setLoadingBRE_Status,
+    setAllowedLoanAmount,
+  } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
     modalRef.current?.snapTo(1);
@@ -18,17 +26,67 @@ const LeadGeneration = () => {
   }, []);
 
   const onSubmit = useCallback(
-    async (leadId, values) => {
-      editLeadById(leadId, values).then(() => setProcessingBRE(true));
-      if (allowCallPanAndCibil.allowCallPanRule) {
-        await verifyPan(leadId).catch(() => {});
-      }
-      if (allowCallPanAndCibil.allowCallCibilRule) {
-        await checkCibil(leadId).catch(() => {});
-      }
-      await addToSalesForce(leadId).catch(() => {});
+    (leadId, values) => {
+      editLeadById(leadId, values).then(async () => {
+        let interval = null;
+        setProcessingBRE(true);
+        if (allowCallPanAndCibil.allowCallPanRule) {
+          try {
+            interval = setInterval(() => {
+              setProgress((prev) => {
+                if (prev >= 20) {
+                  clearInterval(interval);
+                  return 20;
+                }
+                return prev + 1;
+              }, 1000);
+            });
+
+            await verifyPan(leadId);
+          } catch (err) {}
+        }
+        if (allowCallPanAndCibil.allowCallCibilRule) {
+          try {
+            interval = setInterval(() => {
+              setProgress((prev) => {
+                if (prev >= 40) {
+                  clearInterval(interval);
+                  return 40;
+                }
+                return prev + 1;
+              }, 1000);
+            });
+            await checkCibil(leadId);
+          } catch (err) {}
+        }
+        checkBre100(leadId).then((res) => {
+          interval = setInterval(() => {
+            setProgress((prev) => {
+              if (prev >= 100) {
+                clearInterval(interval);
+                return 100;
+              }
+              return prev + 20;
+            }, 1000);
+          });
+          const breResponse = res.data.bre_100_response;
+          if (breResponse.statusCode === 200) {
+            setLoadingBRE_Status(false);
+            setIsQualified(true);
+            const offeredAmount = breResponse.body.find(
+              (rule) => rule.Rule_Name === 'Amount_Offered',
+            );
+            setAllowedLoanAmount(offeredAmount.Rule_Value);
+          } else {
+            setIsQualified(false);
+            setLoadingBRE_Status(false);
+          }
+          setLoadingBRE_Status(false);
+        });
+        await addToSalesForce(leadId).catch(() => {});
+      });
     },
-    [allowCallPanAndCibil],
+    [allowCallPanAndCibil, setProcessingBRE, setIsQualified, setLoadingBRE_Status],
   );
 
   if (processingBRE) {

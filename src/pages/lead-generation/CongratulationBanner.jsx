@@ -6,7 +6,6 @@ import { currencyFormatter } from '../../components/CurrencyInput';
 import time24 from '../../assets/icons/time-24.svg';
 import { AnimatePresence, motion } from 'framer-motion';
 import logo from '../../assets/logo.svg';
-import { checkBre100 } from '../../global';
 import { IconClose } from '../../assets/icons';
 
 const LoanAgainstPropertyDesktopAnimation = lazy(() => import('./LapDesktopAnimation'));
@@ -19,14 +18,12 @@ const CongratulationBanner = () => {
   const {
     values,
     currentLeadId,
-    setProcessingBRE,
-    setIsQualified,
     isQualified,
     setLoadingBRE_Status,
     loadingBRE_Status,
+    progress,
+    allowedLoanAmount,
   } = useContext(AuthContext);
-  const [allowedLoanAmount, setAllowedLoanAmount] = useState(values.bre_100_amount_offered || 0);
-  const [progress, setProgress] = useState(10);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -44,40 +41,7 @@ const CongratulationBanner = () => {
   useEffect(() => {
     if (!currentLeadId || isQualified !== null) return;
     setLoadingBRE_Status(true);
-    let interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev > 98) {
-          clearInterval(interval);
-          return prev;
-        }
-        return (prev += 1);
-      });
-    }, 120);
-
-    checkBre100(currentLeadId).then((res) => {
-      clearInterval(interval);
-      interval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            return 100;
-          }
-          return prev + 20;
-        });
-      });
-      const breResponse = res.data.bre_100_response;
-      if (breResponse.statusCode === 200) {
-        setLoadingBRE_Status(false);
-        setIsQualified(true);
-        const offeredAmount = breResponse.body.find((rule) => rule.Rule_Name === 'Amount_Offered');
-        setAllowedLoanAmount(offeredAmount.Rule_Value);
-      } else {
-        setIsQualified(false);
-        setLoadingBRE_Status(false);
-      }
-      setLoadingBRE_Status(false);
-    });
-  }, [currentLeadId, isQualified, setIsQualified, setLoadingBRE_Status]);
+  }, [currentLeadId, isQualified, setLoadingBRE_Status]);
 
   return (
     <div
@@ -246,7 +210,7 @@ const CongratulationBanner = () => {
               ''
             )}
 
-            {!loadingBRE_Status && !isQualified ? (
+            {!loadingBRE_Status && isQualified !== null && isQualified === false ? (
               <h3 className='mx-4 text-center text-[22px] md:text-[32px] leading-8 md:leading-[48px]'>
                 Thank you for choosing us.
                 <br />
@@ -315,7 +279,7 @@ const CongratulationBanner = () => {
             ''
           )}
 
-          {!loadingBRE_Status && !isQualified ? (
+          {!loadingBRE_Status && isQualified !== null && isQualified === false ? (
             <h3 className='mx-4 text-center text-[22px] md:text-[32px] leading-8 md:leading-[48px]'>
               Thank you for choosing us.
               <br />

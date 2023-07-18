@@ -102,7 +102,8 @@ const AuthContextProvider = ({ children }) => {
   const [processingBRE, setProcessingBRE] = useState(false);
   const [isQualified, setIsQualified] = useState(null);
   const [loadingBRE_Status, setLoadingBRE_Status] = useState(processingBRE);
-
+  const [progress, setProgress] = useState(10);
+  const [allowedLoanAmount, setAllowedLoanAmount] = useState(0);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const previousStepIndex = useRef(activeStepIndex);
   const [hidePromoCode, setHidePromoCode] = useState(false);
@@ -112,6 +113,10 @@ const AuthContextProvider = ({ children }) => {
     allowCallPanRule: false,
     allowCallCibilRule: false,
   });
+
+  useEffect(() => {
+    setAllowedLoanAmount(formik.values?.bre_100_amount_offered || 0);
+  }, [formik.values]);
 
   useEffect(() => {
     setSelectedLoanType(formik.values.loan_type);
@@ -184,6 +189,10 @@ const AuthContextProvider = ({ children }) => {
         setAllowCallPanAndCibil,
         showTerms,
         setShowTerms,
+        progress,
+        setProgress,
+        allowedLoanAmount,
+        setAllowedLoanAmount,
       }}
     >
       {children}

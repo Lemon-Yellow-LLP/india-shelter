@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import LeadGeneration from './pages/lead-generation';
+import LoanOfficer from './pages/loanOfficer';
 
 const router = createBrowserRouter([
   {
@@ -8,7 +9,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/loanOfficer',
-    element: <LeadGeneration />,
+    element: <LoanOfficer />,
   },
 ]);
 

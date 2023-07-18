@@ -99,7 +99,7 @@ const WelcomeBack = () => {
   const onResumeClick = useCallback(() => {
     if (values.is_submitted) {
       setProcessingBRE(true);
-      setIsQualified(true);
+      setIsQualified(!!values.bre_100_amount_offered);
       navigate('/');
       return;
     }
@@ -116,6 +116,7 @@ const WelcomeBack = () => {
     setProcessingBRE,
     values.extra_params.resume_journey_index,
     values.is_submitted,
+    values.bre_100_amount_offered,
   ]);
 
   return (

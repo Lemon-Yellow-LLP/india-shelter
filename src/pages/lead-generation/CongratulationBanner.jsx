@@ -17,9 +17,7 @@ const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAni
 const CongratulationBanner = () => {
   const {
     values,
-    currentLeadId,
     isQualified,
-    setLoadingBRE_Status,
     loadingBRE_Status,
     progress,
     allowedLoanAmount,
@@ -37,11 +35,6 @@ const CongratulationBanner = () => {
       path.style.fill = loadingBRE_Status ? '#FFF1CD' : '#EEF0DD';
     });
   }, [loadingBRE_Status]);
-
-  useEffect(() => {
-    if (!currentLeadId || isQualified !== null) return;
-    setLoadingBRE_Status(true);
-  }, [currentLeadId, isQualified, setLoadingBRE_Status]);
 
   return (
     <div

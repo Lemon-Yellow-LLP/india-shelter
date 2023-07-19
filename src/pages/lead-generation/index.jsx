@@ -30,28 +30,31 @@ const LeadGeneration = () => {
       editLeadById(leadId, values).then(async () => {
         let interval = null;
         setProcessingBRE(true);
+        setLoadingBRE_Status(true);
+
         if (allowCallPanAndCibil.allowCallPanRule) {
           try {
             interval = setInterval(() => {
               setProgress((prev) => {
-                if (prev >= 20) {
+                if (prev >= 30) {
                   clearInterval(interval);
-                  return 20;
+                  return 30;
                 }
                 return prev + 1;
               }, 1000);
             });
-
             await verifyPan(leadId);
           } catch (err) {}
         }
+
         if (allowCallPanAndCibil.allowCallCibilRule) {
           try {
             interval = setInterval(() => {
               setProgress((prev) => {
-                if (prev >= 40) {
+                if (prev >= 60) {
+                  console.log(prev);
                   clearInterval(interval);
-                  return 40;
+                  return 60;
                 }
                 return prev + 1;
               }, 1000);
@@ -59,30 +62,35 @@ const LeadGeneration = () => {
             await checkCibil(leadId);
           } catch (err) {}
         }
-        checkBre100(leadId).then((res) => {
-          interval = setInterval(() => {
-            setProgress((prev) => {
-              if (prev >= 100) {
-                clearInterval(interval);
-                return 100;
-              }
-              return prev + 20;
-            }, 1000);
-          });
-          const breResponse = res.data.bre_100_response;
-          if (breResponse.statusCode === 200) {
-            setLoadingBRE_Status(false);
-            setIsQualified(true);
-            const offeredAmount = breResponse.body.find(
-              (rule) => rule.Rule_Name === 'Amount_Offered',
-            );
-            setAllowedLoanAmount(offeredAmount.Rule_Value);
-          } else {
-            setIsQualified(false);
-            setLoadingBRE_Status(false);
-          }
-          setLoadingBRE_Status(false);
+
+        interval = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              return 100;
+            }
+            return prev + 1;
+          }, 1000);
         });
+
+        checkBre100(leadId)
+          .then((res) => {
+            const breResponse = res.data.bre_100_response;
+            if (breResponse.statusCode === 200) {
+              setLoadingBRE_Status(false);
+              setIsQualified(true);
+              const offeredAmount = breResponse.body.find(
+                (rule) => rule.Rule_Name === 'Amount_Offered',
+              );
+              setAllowedLoanAmount(offeredAmount.Rule_Value);
+            } else {
+              setIsQualified(false);
+              setLoadingBRE_Status(false);
+            }
+            setLoadingBRE_Status(false);
+          })
+          .catch(() => {});
+
         await addToSalesForce(leadId).catch(() => {});
       });
     },

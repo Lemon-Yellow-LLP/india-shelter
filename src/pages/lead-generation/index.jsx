@@ -1,74 +1,137 @@
-import AuthContextProvider from '../../context/AuthContext';
+import LeadGenerationForm from './LeadGenerationForm';
+import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
-import { Suspense, useCallback, useRef, useState } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { addToSalesForce, editLeadById } from '../../global';
+import { addToSalesForce, editLeadById, verifyPan, checkCibil, checkBre100 } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
-import Loader from '../../components/Loader';
-import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
 
 const LeadGeneration = () => {
   const modalRef = useRef(null);
   const formContainerRef = useRef(null);
-  const [processingBRE, setProcessingBRE] = useState(false);
-  const [isQualified, setIsQualified] = useState(null);
-  const [loadingBRE_Status, setLoadingBRE_Status] = useState(processingBRE);
+  const {
+    processingBRE,
+    setProcessingBRE,
+    allowCallPanAndCibil,
+    setProgress,
+    setIsQualified,
+    setLoadingBRE_Status,
+    setAllowedLoanAmount,
+  } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
     modalRef.current?.snapTo(1);
     formContainerRef.current?.scrollTo(0, 0);
   }, []);
 
-  const onSubmit = useCallback(async (leadId, values) => {
-    editLeadById(leadId, values).then(() => setProcessingBRE(true));
-    addToSalesForce(leadId).then((res) => console.log(res));
-  }, []);
+  const onSubmit = useCallback(
+    (leadId, values) => {
+      editLeadById(leadId, values).then(async () => {
+        let interval = -20;
+        setProcessingBRE(true);
+        setLoadingBRE_Status(true);
+
+        if (allowCallPanAndCibil.allowCallPanRule) {
+          try {
+            interval = setInterval(() => {
+              setProgress((prev) => {
+                if (prev >= 30) {
+                  clearInterval(interval);
+                  return 30;
+                }
+                return prev + 1;
+              }, 1000);
+            });
+            await verifyPan(leadId);
+          } catch (err) {}
+        }
+
+        if (allowCallPanAndCibil.allowCallCibilRule) {
+          try {
+            interval = setInterval(() => {
+              setProgress((prev) => {
+                if (prev >= 60) {
+                  clearInterval(interval);
+                  return 60;
+                }
+                return prev + 1;
+              }, 1000);
+            });
+            await checkCibil(leadId);
+          } catch (err) {}
+        }
+
+        interval = setInterval(() => {
+          setProgress((prev) => {
+            if (prev >= 100) {
+              clearInterval(interval);
+              return 100;
+            }
+            return prev + 1;
+          }, 1000);
+        });
+
+        checkBre100(leadId)
+          .then((res) => {
+            const breResponse = res.data.bre_100_response;
+            if (breResponse.statusCode === 200) {
+              setLoadingBRE_Status(false);
+              setIsQualified(true);
+              const offeredAmount = breResponse.body.find(
+                (rule) => rule.Rule_Name === 'Amount_Offered',
+              );
+              setAllowedLoanAmount(offeredAmount.Rule_Value);
+            } else {
+              setIsQualified(false);
+              setLoadingBRE_Status(false);
+            }
+            setLoadingBRE_Status(false);
+          })
+          .catch(() => {});
+
+        await addToSalesForce(leadId).catch(() => {});
+      });
+    },
+    [allowCallPanAndCibil, setProcessingBRE, setIsQualified, setLoadingBRE_Status],
+  );
+
+  if (processingBRE) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, transitionDuration: 2 }}
+          exit={{ opacity: 0 }}
+          className='w-full md:w-screen'
+        >
+          <CongratulationBanner />
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   return (
-    <Suspense fallback={<Loader />}>
-      <AuthContextProvider
-        setProcessingBRE={setProcessingBRE}
-        setIsQualified={setIsQualified}
-        isQualified={isQualified}
-        setLoadingBRE_Status={setLoadingBRE_Status}
-        loadingBRE_Status={loadingBRE_Status}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, transitionDuration: 2 }}
+        exit={{ opacity: 0 }}
+        className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start min-h-screen md:gap-[111px] overflow-y-hidden'
       >
-        {processingBRE ? (
-          <AnimatePresence>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transitionDuration: 2 }}
-              exit={{ opacity: 0 }}
-              className='w-full md:w-screen'
-            >
-              <CongratulationBanner />
-            </motion.div>
-          </AnimatePresence>
-        ) : (
-          <AnimatePresence>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transitionDuration: 2 }}
-              exit={{ opacity: 0 }}
-              className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen md:gap-[111px] overflow-y-hidden'
-            >
-              <AnimationBanner />
-              <form
-                onSubmit={(e) => e.preventDefault()}
-                id='lead-form-container'
-                className='w-full md:max-w-[732px]'
-              >
-                <div className='overflow-auto'>
-                  <SwipeableDrawerComponent formContainerRef={formContainerRef} />
-                </div>
-                <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
-              </form>
-            </motion.div>
-          </AnimatePresence>
-        )}
-      </AuthContextProvider>
-    </Suspense>
+        <AnimationBanner />
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          id='lead-form-container'
+          className='w-full md:max-w-[732px]'
+        >
+          <div className='h-screen overflow-auto'>
+            <LeadGenerationForm modalRef={modalRef} formContainerRef={formContainerRef} />
+          </div>
+          <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
+        </form>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 

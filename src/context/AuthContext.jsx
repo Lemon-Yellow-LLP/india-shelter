@@ -2,8 +2,7 @@ import { createContext, useCallback, useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { signUpSchema } from '../schemas/index';
 import PropTypes from 'prop-types';
-import { useSearchParams } from 'react-router-dom';
-import { getLeadById } from '../global';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 export const defaultValues = {
   phone_number: '',
@@ -34,26 +33,34 @@ export const defaultValues = {
   Out_Of_Geographic_Limit: false,
   Total_Property_Value: '',
   extra_params: {},
+  extra_1: null,
+  extra_2: null,
+  extra_3: null,
+  extra_4: null,
+  extra_5: null,
+  extra_6: null,
+  extra_7: null,
+  extra_8: null,
+  extra_9: null,
+  extra_10: null,
+  extra_11: null,
+  extra_12: null,
+  extra_13: null,
+  extra_14: null,
+  extra_15: null,
 };
 
 export const AuthContext = createContext(defaultValues);
 
-const AuthContextProvider = ({
-  children,
-  setProcessingBRE,
-  loadingBRE_Status,
-  setLoadingBRE_Status,
-  setIsQualified,
-  isQualified,
-}) => {
+const AuthContextProvider = ({ children }) => {
   const [searchParams] = useSearchParams();
   const [isLeadGenerated, setIsLeadGenearted] = useState(false);
   const [currentLeadId, setCurrentLeadId] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
-  const [processingPanCard, setProcessingPanCard] = useState(false);
-  const [validPancard, setValidPancard] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -81,32 +88,35 @@ const AuthContextProvider = ({
   useEffect(() => {
     const _leadID = searchParams.get('li');
     if (!_leadID) return;
-    setCurrentLeadId(_leadID);
-    setInputDisabled(true);
-    getLeadById(_leadID).then((res) => {
-      if (res.status !== 200) return;
-      setIsLeadGenearted(true);
-      if (res.data.pan_number) {
-        setValidPancard(true);
-      }
-      const data = {};
-      Object.entries(res.data).forEach(([fieldName, fieldValue]) => {
-        if (typeof fieldValue === 'number') {
-          data[fieldName] = fieldValue.toString();
-          return;
-        }
-        data[fieldName] = fieldValue || '';
-      });
-      formik.setValues({ ...formik.values, ...data });
-    });
+    navigate(`/${_leadID}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
+  useEffect(() => {
+    const terms_and_condition = searchParams.has('tc');
+    if (terms_and_condition) {
+      setShowTerms(true);
+    }
+  }, [searchParams]);
+
+  const [processingBRE, setProcessingBRE] = useState(false);
+  const [isQualified, setIsQualified] = useState(null);
+  const [loadingBRE_Status, setLoadingBRE_Status] = useState(processingBRE);
+  const [progress, setProgress] = useState(0);
+  const [allowedLoanAmount, setAllowedLoanAmount] = useState(0);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const previousStepIndex = useRef(activeStepIndex);
   const [hidePromoCode, setHidePromoCode] = useState(false);
   const [selectedLoanType, setSelectedLoanType] = useState(formik.values.loan_type);
   const [disableNextStep, setDisableNextStep] = useState(true);
+  const [allowCallPanAndCibil, setAllowCallPanAndCibil] = useState({
+    allowCallPanRule: false,
+    allowCallCibilRule: false,
+  });
+
+  useEffect(() => {
+    setAllowedLoanAmount(formik.values?.bre_100_amount_offered || 0);
+  }, [formik.values]);
 
   useEffect(() => {
     setSelectedLoanType(formik.values.loan_type);
@@ -117,6 +127,17 @@ const AuthContextProvider = ({
     if (promoCode) {
       setHidePromoCode(true);
     }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const utmParams = {};
+    searchParams.forEach((value, key) => {
+      if (key.includes('extra')) {
+        utmParams[key] = value;
+      }
+    });
+    formik.setValues((prev) => ({ ...prev, ...utmParams }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const goToPreviousStep = useCallback(() => {
@@ -155,6 +176,7 @@ const AuthContextProvider = ({
         setInputDisabled,
         phoneNumberVerified,
         setPhoneNumberVerified,
+        processingBRE,
         setProcessingBRE,
         isQualified,
         setIsQualified,
@@ -163,10 +185,14 @@ const AuthContextProvider = ({
         acceptedTermsAndCondition,
         setAcceptedTermsAndCondition,
         updateFieldsFromServerData,
-        validPancard,
-        setValidPancard,
-        processingPanCard,
-        setProcessingPanCard,
+        allowCallPanAndCibil,
+        setAllowCallPanAndCibil,
+        showTerms,
+        setShowTerms,
+        progress,
+        setProgress,
+        allowedLoanAmount,
+        setAllowedLoanAmount,
       }}
     >
       {children}
@@ -174,7 +200,15 @@ const AuthContextProvider = ({
   );
 };
 
-export default AuthContextProvider;
+const AuthContextLayout = () => {
+  return (
+    <AuthContextProvider>
+      <Outlet />
+    </AuthContextProvider>
+  );
+};
+
+export default AuthContextLayout;
 
 AuthContextProvider.propTypes = {
   children: PropTypes.element,

@@ -1,9 +1,12 @@
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://agile.indiashelter.in/api';
 const API_LEAD_URL = `${API_URL}/lead`;
 
 const requestOptions = {};
+
+axiosRetry(axios, { retries: 0 });
 
 async function pingAPI() {
   const res = await axios.get(`${API_URL}`, {}, requestOptions);
@@ -83,7 +86,16 @@ async function verifyEmailOtp(email, leadOtp) {
 }
 
 async function verifyPan(id) {
-  const res = await axios.post(`${API_URL}/pan/${id}`, {}, requestOptions);
+  const res = await axios.post(
+    `${API_URL}/pan/${id}`,
+    {},
+    {
+      'axios-retry': {
+        retries: 3,
+      },
+      ...requestOptions,
+    },
+  );
   return res.data;
 }
 
@@ -126,7 +138,19 @@ async function checkBre100(id, options = {}) {
 }
 
 async function checkCibil(id) {
-  const res = await axios.post(`${API_URL}/cibil/${id}`, {}, requestOptions);
+  const res = await axios.post(
+    `${API_URL}/cibil/${id}`,
+    {},
+    {
+      'axios-retry': {
+        retries: 3,
+        onRetry: (e) => {
+          console.log(e);
+        },
+      },
+      ...requestOptions,
+    },
+  );
   return res;
 }
 
@@ -136,7 +160,19 @@ async function checkDedupe(id) {
 }
 
 async function addToSalesForce(id) {
-  const res = await axios.get(`${API_URL}/salesforce/force-push/${id}`, {}, requestOptions);
+  const res = await axios.get(
+    `${API_URL}/salesforce/force-push/${id}`,
+    {},
+    {
+      'axios-retry': {
+        retries: 3,
+        onRetry: (e) => {
+          console.log(e);
+        },
+      },
+      ...requestOptions,
+    },
+  );
   return res;
 }
 

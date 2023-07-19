@@ -31,7 +31,6 @@ const disableNextFields = ['loan_request_amount', 'first_name', 'pincode', 'phon
 const PersonalDetail = () => {
   const [searchParams] = useSearchParams();
 
-  const [showTerms, setShowTerms] = useState(false);
   const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [leadExists, setLeadExists] = useState(false);
 
@@ -61,7 +60,8 @@ const PersonalDetail = () => {
     acceptedTermsAndCondition,
     setAcceptedTermsAndCondition,
     updateFieldsFromServerData,
-    setValidPancard,
+    showTerms,
+    setShowTerms,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -184,7 +184,7 @@ const PersonalDetail = () => {
         setCurrentLeadId(leadData.id);
         if (leadData.is_submitted) {
           setProcessingBRE(true);
-          setIsQualified(true);
+          setIsQualified(!!leadData.bre_100_amount_offered);
         }
       });
     }
@@ -193,18 +193,10 @@ const PersonalDetail = () => {
 
   const onResumeJourneyClick = useCallback(() => {
     const resumeJourneyIndex = values.extra_params.resume_journey_index;
-    if (values.pan_number) {
-      setValidPancard(true);
-    }
     if (resumeJourneyIndex) {
       setActiveStepIndex(parseInt(resumeJourneyIndex));
     }
-  }, [
-    setActiveStepIndex,
-    setValidPancard,
-    values.extra_params.resume_journey_index,
-    values.pan_number,
-  ]);
+  }, [setActiveStepIndex, values.extra_params.resume_journey_index, values.pan_number]);
 
   useEffect(() => {
     if (isLeadGenerated || leadExists) return;

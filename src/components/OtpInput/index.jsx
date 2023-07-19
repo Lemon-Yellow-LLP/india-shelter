@@ -80,7 +80,7 @@ const OtpInput = ({
   }, [verified, timer, setOTPVerified, defaultResendTime]);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    inputRef.current?.focus({ preventScroll: true });
   }, [activeOtpIndex]);
 
   const handleKeyDown = useCallback((e, index) => {

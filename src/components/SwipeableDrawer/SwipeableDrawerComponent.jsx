@@ -118,6 +118,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
           swipeAreaWidth={drawerBleeding}
           allowSwipeInChildren={true}
           disableSwipeToOpen={false}
+          disableBackdropTransition
           ModalProps={{
             keepMounted: true,
           }}

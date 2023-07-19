@@ -28,7 +28,7 @@ const LeadGeneration = () => {
   const onSubmit = useCallback(
     (leadId, values) => {
       editLeadById(leadId, values).then(async () => {
-        let interval = null;
+        let interval = -20;
         setProcessingBRE(true);
         setLoadingBRE_Status(true);
 
@@ -52,7 +52,6 @@ const LeadGeneration = () => {
             interval = setInterval(() => {
               setProgress((prev) => {
                 if (prev >= 60) {
-                  console.log(prev);
                   clearInterval(interval);
                   return 60;
                 }

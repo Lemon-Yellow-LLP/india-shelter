@@ -57,6 +57,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       style={{
         height: 127,
         background: 'linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 45.31%)',
+        position: 'fixed',
       }}
       className={`${
         activeStepIndex > 0 ? 'justify-between' : 'justify-end'

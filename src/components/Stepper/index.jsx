@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 const Stepper = ({ steps, activeStep }) => {
   return (
-    <div className='flex md:hidden justify-between mt-2'>
+    <div className='pt-5 pl-4 pr-4 flex md:hidden justify-between mt-2'>
       {steps.map(
         (step, index) =>
           activeStep === index && (

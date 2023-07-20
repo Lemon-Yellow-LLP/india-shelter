@@ -64,7 +64,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
       >
         <Sheet.Container>
           <Sheet.Header
-            className='py-2 px-4 flex justify-center flex-col'
+            className='py-2 px-4 flex justify-center flex-col bg-white'
             onPanEnd={(e) => {
               if (window.innerHeight * 0.8 < e.y) {
                 modalRef.current?.snapTo(1);
@@ -74,7 +74,9 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
             <BottomSheetHandle />
             <Stepper steps={steps} activeStep={activeStepIndex} />
           </Sheet.Header>
-          <Sheet.Content className='px-3 text-dark-grey leading-6 mb-4'>{Form}</Sheet.Content>
+          <Sheet.Content className='px-3 text-dark-grey leading-6 mb-4'>
+            <Sheet.Scroller draggableAt='top'>{Form}</Sheet.Scroller>
+          </Sheet.Content>
         </Sheet.Container>
       </Sheet>
     );

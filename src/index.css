@@ -6,6 +6,7 @@ body {
   font-family: 'Poppins', sans-serif;
   overflow-behaviour: none;
   @apply text-natural-black;
+  -webkit-user-select: none;
 }
 
 @layer base {
@@ -208,3 +209,8 @@ body {
     width: 10px;
   }
 }
+
+/* .react-modal-sheet-container div:last-child {
+  overflow-y: auto;
+  @apply no-scrollbar;
+} */

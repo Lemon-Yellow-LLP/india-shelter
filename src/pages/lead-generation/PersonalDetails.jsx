@@ -270,8 +270,7 @@ const PersonalDetail = () => {
                 name='loan-type'
                 value={option.value}
                 current={selectedLoanType}
-                // onChange={handleOnLoanPurposeChange}
-                handleOnLoanPurposeChange={handleOnLoanPurposeChange}
+                onChange={handleOnLoanPurposeChange}
                 containerClasses='flex-1'
               >
                 {option.icon}

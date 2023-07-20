@@ -1,15 +1,6 @@
 import PropTypes from 'prop-types';
 
-const CardRadio = ({
-  label,
-  current,
-  children,
-  value,
-  name,
-  onChange,
-  containerClasses,
-  handleOnLoanPurposeChange,
-}) => {
+const CardRadio = ({ label, current, children, value, name, onChange, containerClasses }) => {
   return (
     <div
       // htmlFor={value}
@@ -25,8 +16,8 @@ const CardRadio = ({
         tabIndex={0}
         role='radio'
         aria-checked={current === value}
-        onClick={() => handleOnLoanPurposeChange(value)}
-        onTouchStart={() => handleOnLoanPurposeChange(value)}
+        onClick={() => onChange(value)}
+        onTouchStart={() => onChange(value)}
       >
         {/* <input
           type='radio'

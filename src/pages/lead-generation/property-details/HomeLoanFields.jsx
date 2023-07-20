@@ -43,7 +43,8 @@ const HomeLoanFields = () => {
 
   const handleOnPropertyIdentificationChange = useCallback(
     (e) => {
-      const value = e.currentTarget.value;
+      // const value = e.currentTarget.value;
+      const value = e;
       setPropertyIdentified(value);
       setFieldValue('property_identification', value);
       updateLeadDataOnBlur(currentLeadId, 'property_identification', value);

@@ -1,4 +1,3 @@
-import LeadGenerationForm from './LeadGenerationForm';
 import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { useCallback, useContext, useRef } from 'react';
@@ -9,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
 
 const LeadGeneration = () => {
-  const modalRef = useRef(null);
   const formContainerRef = useRef(null);
   const {
     processingBRE,
@@ -28,7 +26,7 @@ const LeadGeneration = () => {
     myDiv.scrollTop = 0;
     setDrawerOpen(false);
     formContainerRef.current?.scrollTo(0, 0);
-  }, []);
+  }, [setDrawerOpen]);
 
   const onSubmit = useCallback(
     (leadId, values) => {
@@ -53,7 +51,9 @@ const LeadGeneration = () => {
         if (allowCallPanAndCibil.allowCallPanRule) {
           try {
             await verifyPan(leadId);
-          } catch (err) {}
+          } catch (err) {
+            console.error(err);
+          }
         }
 
         if (allowCallPanAndCibil.allowCallCibilRule) {
@@ -68,7 +68,9 @@ const LeadGeneration = () => {
               }, 1000);
             });
             await checkCibil(leadId);
-          } catch (err) {}
+          } catch (err) {
+            console.error(err);
+          }
         }
 
         interval = setInterval(() => {
@@ -102,7 +104,15 @@ const LeadGeneration = () => {
         await addToSalesForce(leadId).catch(() => {});
       });
     },
-    [allowCallPanAndCibil, setProcessingBRE, setIsQualified, setLoadingBRE_Status],
+    [
+      setProcessingBRE,
+      setLoadingBRE_Status,
+      allowCallPanAndCibil.allowCallPanRule,
+      allowCallPanAndCibil.allowCallCibilRule,
+      setProgress,
+      setIsQualified,
+      setAllowedLoanAmount,
+    ],
   );
 
   if (processingBRE) {

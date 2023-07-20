@@ -176,6 +176,18 @@ body {
   margin: 0;
 }
 
+.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+  background-color: transparent !important;
+}
+
+.MuiDrawer-root > .MuiPaper-root {
+  visibility: visible !important;
+}
+
+.css-9emuhu-MuiPaper-root-MuiDrawer-paper {
+  box-shadow: none !important;
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;

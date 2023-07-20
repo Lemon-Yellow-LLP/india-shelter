@@ -176,6 +176,14 @@ body {
   margin: 0;
 }
 
+.MuiBackdrop-root {
+  background-color: transparent !important;
+}
+
+.MuiDrawer-root > .MuiPaper-root {
+  visibility: visible !important;
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -188,6 +196,16 @@ body {
 
 .btn-bg {
   z-index: 10000000;
+}
+
+.indiaShelterLogo {
+  max-width: 192px;
+}
+
+@media (max-width: 1024px) {
+  .indiaShelterLogo {
+    max-width: 160px;
+  }
 }
 
 @media (min-width: 728px) {

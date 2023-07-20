@@ -137,7 +137,7 @@ const WelcomeBack = () => {
         <Header />
       </div>
       <div className='hidden md:block px-16 pt-10 pb-4 border-b border-solid border-stroke w-full'>
-        <img style={{ maxWidth: 192 }} src={indiaShelterLogo} alt='India Shelter' />
+        <img className='indiaShelterLogo' src={indiaShelterLogo} alt='India Shelter' />
       </div>
 
       <div

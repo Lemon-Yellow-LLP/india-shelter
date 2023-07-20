@@ -47,7 +47,8 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
       // maxDate={today}
       dateFormat='dd/MM/yyyy'
     >
-      <div className='w-full h-fit flex justify-end'>
+      {/* Removed Apply button */}
+      {/* <div className='w-full h-fit flex justify-end'>
         <button
           onClick={() => {
             setStartDate(datePickerRef.current.state.preSelection);
@@ -59,7 +60,7 @@ const DatePicker = ({ startDate, setStartDate, label, ...props }) => {
         >
           Apply
         </button>
-      </div>
+      </div> */}
     </ReactDatePicker>
   );
 };

@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import './SwipableDrawer.css';
 import { useContext } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';

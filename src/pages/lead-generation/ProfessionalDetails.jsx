@@ -116,7 +116,8 @@ const ProfessinalDetail = () => {
 
   const onProfessionChange = useCallback(
     (e) => {
-      const value = e.currentTarget.value;
+      // const value = e.currentTarget.value;
+      const value = e;
       setSelectedProfession(value);
       setFieldValue('profession', value);
       setFieldValue('mode_of_salary', null);

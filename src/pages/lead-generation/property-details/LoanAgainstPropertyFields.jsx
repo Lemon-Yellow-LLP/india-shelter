@@ -52,8 +52,9 @@ const LoanAgainstPropertyFields = () => {
   }, [setPropertyCategory, values.purpose_type]);
 
   const handleOnPropertyCategoryChange = useCallback(
-    (e) => {
-      const value = e.currentTarget.value;
+    (value) => {
+      // const value = e.currentTarget.value;
+
       setPropertyCategory(value);
       setFieldValue('purpose_type', value);
       updateLeadDataOnBlur(currentLeadId, 'purpose_type', value);
@@ -62,10 +63,12 @@ const LoanAgainstPropertyFields = () => {
   );
 
   const handleOnPropertyIdentificationChange = useCallback(
-    (e) => {
-      const value = e.currentTarget.value;
-      setPropertyIdentified(e.currentTarget.value);
-      setFieldValue('property_identification', e.currentTarget.value);
+    (value) => {
+      console.log(value);
+      // const value = e.currentTarget.value;
+
+      setPropertyIdentified(value);
+      setFieldValue('property_identification', value);
       updateLeadDataOnBlur(currentLeadId, 'property_identification', value);
     },
     [currentLeadId, setFieldValue, setPropertyIdentified],

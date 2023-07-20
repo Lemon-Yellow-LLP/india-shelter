@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 
 const CardRadio = ({ label, current, children, value, name, onChange, containerClasses }) => {
   return (
-    <label
-      htmlFor={value}
-      className={`flex flex-col gap-2 w-full ${containerClasses} cursor-pointer`}
+    <div
+      // htmlFor={value}
+      className={`flex flex-col gap-2 w-full cursor-pointer`}
     >
       <div
         className={`w-full border rounded-lg py-4 flex items-center justify-center cursor-pointer
@@ -16,15 +16,17 @@ const CardRadio = ({ label, current, children, value, name, onChange, containerC
         tabIndex={0}
         role='radio'
         aria-checked={current === value}
+        onClick={() => onChange(value)}
+        onTouchStart={() => onChange(value)}
       >
-        <input
+        {/* <input
           type='radio'
           name={name}
           value={value}
           id={value}
           className='hidden'
           onChange={onChange}
-        />
+        /> */}
         {children}
       </div>
 
@@ -41,7 +43,7 @@ const CardRadio = ({ label, current, children, value, name, onChange, containerC
           {label}
         </div>
       )}
-    </label>
+    </div>
   );
 };
 

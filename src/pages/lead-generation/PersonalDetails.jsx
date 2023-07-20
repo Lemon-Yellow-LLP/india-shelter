@@ -85,6 +85,8 @@ const PersonalDetail = () => {
     setDisableNextStep,
   ]);
 
+  console.log(selectedLoanType);
+
   const onOTPSendClick = useCallback(() => {
     setDisablePhoneNumber(true);
     const continueJourney = searchParams.has('li') || leadExists;
@@ -115,8 +117,10 @@ const PersonalDetail = () => {
   }, [leadExists, phone_number, searchParams, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
-    setSelectedLoanType(e.currentTarget.value);
-    setFieldValue('loan_type', e.currentTarget.value);
+    // setSelectedLoanType(e.currentTarget.value);
+    // setFieldValue('loan_type', e.currentTarget.value);
+    setSelectedLoanType(e);
+    setFieldValue('loan_type', e);
   };
 
   const handleLoanAmountChange = useCallback(

@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 const BackgroundAnimation = lazy(() => import('./BackgroundAnimation'));
 const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
 import LoanAgainstPropertyAnimation from './LoanAgainstPropertyAnimation';
+import { useState } from 'react';
 
 const frames = [
   [0, 3],
@@ -20,6 +21,16 @@ const AnimationBanner = () => {
   const { activeStepIndex, previousStepIndex, goToPreviousStep, selectedLoanType } =
     useContext(AuthContext);
   const lottiePlayerRef = useRef(null);
+
+  const [innerWidth, setInnerWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    function handleWindowResize() {
+      setInnerWidth(window.innerWidth);
+    }
+    window.addEventListener('resize', handleWindowResize);
+    return () => window.removeEventListener('resize', handleWindowResize);
+  });
 
   useEffect(() => {
     if (lottiePlayerRef.current && selectedLoanType !== 'LAP')
@@ -41,7 +52,11 @@ const AnimationBanner = () => {
 
   return (
     <div
-      style={{ backgroundColor: '#CCE2BE' }}
+      style={
+        innerWidth < 768
+          ? { backgroundColor: '#CCE2BE', position: 'fixed' }
+          : { backgroundColor: '#CCE2BE' }
+      }
       className='flex flex-col w-full md:w-[597px] 2xl:w-2/4 relative transition-colors ease-out duration-300'
     >
       <div className='relative md:hidden'>

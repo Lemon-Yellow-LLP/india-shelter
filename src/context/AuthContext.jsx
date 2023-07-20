@@ -114,6 +114,8 @@ const AuthContextProvider = ({ children }) => {
     allowCallCibilRule: false,
   });
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   useEffect(() => {
     setAllowedLoanAmount(formik.values?.bre_100_amount_offered || 0);
   }, [formik.values]);
@@ -193,6 +195,8 @@ const AuthContextProvider = ({ children }) => {
         setProgress,
         allowedLoanAmount,
         setAllowedLoanAmount,
+        drawerOpen,
+        setDrawerOpen,
       }}
     >
       {children}

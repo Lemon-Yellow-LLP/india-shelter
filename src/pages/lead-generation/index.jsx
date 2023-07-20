@@ -28,21 +28,25 @@ const LeadGeneration = () => {
   const onSubmit = useCallback(
     (leadId, values) => {
       editLeadById(leadId, values).then(async () => {
-        let interval = -20;
+        let interval = 10;
+
         setProcessingBRE(true);
         setLoadingBRE_Status(true);
 
+        setTimeout(() => {
+          interval = setInterval(() => {
+            setProgress((prev) => {
+              if (prev >= 40) {
+                clearInterval(interval);
+                return 40;
+              }
+              return prev + 1;
+            }, 1000);
+          });
+        }, 2000);
+
         if (allowCallPanAndCibil.allowCallPanRule) {
           try {
-            interval = setInterval(() => {
-              setProgress((prev) => {
-                if (prev >= 30) {
-                  clearInterval(interval);
-                  return 30;
-                }
-                return prev + 1;
-              }, 1000);
-            });
             await verifyPan(leadId);
           } catch (err) {}
         }
@@ -51,9 +55,9 @@ const LeadGeneration = () => {
           try {
             interval = setInterval(() => {
               setProgress((prev) => {
-                if (prev >= 60) {
+                if (prev >= 80) {
                   clearInterval(interval);
-                  return 60;
+                  return 80;
                 }
                 return prev + 1;
               }, 1000);
@@ -69,7 +73,7 @@ const LeadGeneration = () => {
               return 100;
             }
             return prev + 1;
-          }, 1000);
+          }, 2000);
         });
 
         checkBre100(leadId)

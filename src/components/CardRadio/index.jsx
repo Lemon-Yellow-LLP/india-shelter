@@ -26,6 +26,7 @@ const CardRadio = ({
         role='radio'
         aria-checked={current === value}
         onClick={() => handleOnLoanPurposeChange(value)}
+        onTouchStart={() => handleOnLoanPurposeChange(value)}
       >
         {/* <input
           type='radio'

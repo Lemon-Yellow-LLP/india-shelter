@@ -62,6 +62,8 @@ const PersonalDetail = () => {
     updateFieldsFromServerData,
     showTerms,
     setShowTerms,
+    drawerOpen,
+    setDrawerOpen,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -121,6 +123,7 @@ const PersonalDetail = () => {
     // setFieldValue('loan_type', e.currentTarget.value);
     setSelectedLoanType(e);
     setFieldValue('loan_type', e);
+    setDrawerOpen(true);
   };
 
   const handleLoanAmountChange = useCallback(

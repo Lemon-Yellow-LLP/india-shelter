@@ -44,8 +44,9 @@ const Puller = styled(Box)(({ theme }) => ({
 }));
 
 export default function SwipeableDrawerComponent({ formContainerRef }, props) {
+  const { drawerOpen, setDrawerOpen } = useContext(AuthContext);
   const { window2 } = props;
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const { activeStepIndex } = useContext(AuthContext);
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
@@ -58,9 +59,9 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
     return () => window.removeEventListener('resize', handleWindowResize);
   });
 
-  const onClick = useCallback(() => {
-    setOpen(true);
-  }, [open]);
+  // const onClick = useCallback(() => {
+  //   setDrawerOpen(true);
+  // }, [drawerOpen]);
 
   const ActiveStepComponent = steps.find((_, index) => index === activeStepIndex)?.Component;
 
@@ -72,9 +73,9 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
 
           <div
             ref={formContainerRef}
-            // role='presentation'
-            onClick={onClick}
-            onKeyDown={onClick}
+            role='presentation'
+            // onClick={onClick}
+            // onKeyDown={onClick}
             className={
               innerWidth < 768
                 ? 'mt-6 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px]  px-1 no-scrollbar'
@@ -86,14 +87,13 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
         </div>
       </Suspense>
     ),
-    [activeStepIndex, formContainerRef, onClick, innerWidth],
+    [activeStepIndex, formContainerRef, innerWidth],
   );
 
   const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
+    setDrawerOpen(newOpen);
   };
 
-  // This is used only for the example
   const container = window2 !== undefined ? () => window2().document.body : undefined;
 
   if (innerWidth < 768) {
@@ -104,7 +104,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
           styles={{
             '.MuiDrawer-root > .MuiPaper-root': {
               height: `calc(90% - ${drawerBleeding}px)`,
-              overflow: 'visible', // tried to set to scroll and auto
+              overflow: 'visible',
             },
           }}
         />
@@ -112,7 +112,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
         <SwipeableDrawer
           container={container}
           anchor='bottom'
-          open={open}
+          open={drawerOpen}
           onClose={toggleDrawer(false)}
           onOpen={toggleDrawer(true)}
           swipeAreaWidth={drawerBleeding}
@@ -142,7 +142,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
 
           <StyledBox
             sx={
-              open
+              drawerOpen
                 ? {
                     px: 2,
                     pb: 6,

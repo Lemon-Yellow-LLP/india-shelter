@@ -190,6 +190,16 @@ body {
   z-index: 10000000;
 }
 
+.indiaShelterLogo {
+  max-width: 192px;
+}
+
+@media (max-width: 1024px) {
+  .indiaShelterLogo {
+    max-width: 160px;
+  }
+}
+
 @media (min-width: 728px) {
   .btn-bg {
     z-index: 10;

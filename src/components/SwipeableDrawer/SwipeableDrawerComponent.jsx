@@ -59,9 +59,9 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
     return () => window.removeEventListener('resize', handleWindowResize);
   });
 
-  // const onClick = useCallback(() => {
-  //   setDrawerOpen(true);
-  // }, [drawerOpen]);
+  const onClick = useCallback(() => {
+    setDrawerOpen(true);
+  }, [drawerOpen]);
 
   const ActiveStepComponent = steps.find((_, index) => index === activeStepIndex)?.Component;
 
@@ -74,8 +74,9 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
           <div
             ref={formContainerRef}
             role='presentation'
-            // onClick={onClick}
-            // onKeyDown={onClick}
+            onClick={onClick}
+            onKeyDown={onClick}
+            onTouchStart={onClick}
             className={
               innerWidth < 768
                 ? 'mt-6 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px]  px-1 no-scrollbar'
@@ -141,6 +142,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
           </StyledBox>
 
           <StyledBox
+            id='formStyledBox'
             sx={
               drawerOpen
                 ? {

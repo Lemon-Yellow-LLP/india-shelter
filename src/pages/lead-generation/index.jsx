@@ -19,10 +19,14 @@ const LeadGeneration = () => {
     setIsQualified,
     setLoadingBRE_Status,
     setAllowedLoanAmount,
+    setDrawerOpen,
   } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
-    modalRef.current?.snapTo(1);
+    // modalRef.current?.snapTo(1);
+    let myDiv = document.getElementById('formStyledBox');
+    myDiv.scrollTop = 0;
+    setDrawerOpen(false);
     formContainerRef.current?.scrollTo(0, 0);
   }, []);
 

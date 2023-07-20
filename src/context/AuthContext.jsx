@@ -102,7 +102,7 @@ const AuthContextProvider = ({ children }) => {
   const [processingBRE, setProcessingBRE] = useState(false);
   const [isQualified, setIsQualified] = useState(null);
   const [loadingBRE_Status, setLoadingBRE_Status] = useState(processingBRE);
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(10);
   const [allowedLoanAmount, setAllowedLoanAmount] = useState(0);
   const [activeStepIndex, setActiveStepIndex] = useState(0);
   const previousStepIndex = useRef(activeStepIndex);

@@ -150,7 +150,7 @@ const LoanAgainstPropertyFields = () => {
               );
               updateLeadDataOnBlur(
                 currentLeadId,
-                'Total_Property_Estimation',
+                'Total_Property_Value',
                 currencyToFloat(target.value),
               );
             }}

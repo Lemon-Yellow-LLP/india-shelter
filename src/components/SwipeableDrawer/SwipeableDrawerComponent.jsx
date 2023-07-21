@@ -17,7 +17,7 @@ import DesktopStepper from '../DesktopStepper';
 import Stepper from '../Stepper';
 import propTypes from 'prop-types';
 
-const drawerBleeding = 320;
+const drawerBleeding = 300;
 
 const Root = styled('div')(({ theme }) => ({
   height: '100%',

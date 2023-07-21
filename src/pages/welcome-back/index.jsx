@@ -159,7 +159,7 @@ const WelcomeBack = () => {
         style={{
           maxWidth: 534,
         }}
-        className='mt-4 md:mt-8 flex flex-col gap-2 md:gap-4 px-4 md:self-center w-full'
+        className='mt-4 md:mt-8 flex flex-col gap-2 md:gap-4 px-4 md:self-center w-full '
       >
         <TextInput
           label='Mobile number'
@@ -251,7 +251,7 @@ const WelcomeBack = () => {
           type='button'
           title='Resume'
           primary
-          inputClasses='flex-1'
+          inputClasses='flex-1 resumeButtonWelcomePage'
           disabled={!!showOTPInput}
           onClick={onResumeClick}
         >

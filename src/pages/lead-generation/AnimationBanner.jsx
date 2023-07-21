@@ -54,7 +54,7 @@ const AnimationBanner = () => {
     <div
       style={
         innerWidth < 768
-          ? { backgroundColor: '#CCE2BE', position: 'fixed' }
+          ? { backgroundColor: '#CCE2BE', position: 'fixed', overflow: 'hidden' }
           : { backgroundColor: '#CCE2BE' }
       }
       className='flex flex-col w-full md:w-[597px] 2xl:w-2/4 relative transition-colors ease-out duration-300'

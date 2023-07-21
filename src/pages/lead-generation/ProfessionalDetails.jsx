@@ -143,7 +143,10 @@ const ProfessinalDetail = () => {
       return;
     }
     setFieldValue('date_of_birth', date);
-    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', new Date(date.toString() + 'EDT'));
+    let returnDate = new Date(date.toString() + "EDT")
+    returnDate = returnDate.toISOString().split('T')[0]
+    returnDate = new Date(returnDate)
+    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', returnDate);
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 
   const handleOnProfessionChange = useCallback(

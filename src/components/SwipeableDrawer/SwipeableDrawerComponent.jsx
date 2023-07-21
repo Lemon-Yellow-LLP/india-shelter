@@ -40,7 +40,7 @@ const Puller = styled(Box)(({ theme }) => ({
 
 export default function SwipeableDrawerComponent({ formContainerRef }, props) {
   const { drawerOpen, setDrawerOpen } = useContext(AuthContext);
-  const { window2 } = props;
+  // const { window2 } = props;
   // const [open, setOpen] = useState(false);
   const { activeStepIndex } = useContext(AuthContext);
 
@@ -90,7 +90,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
     setDrawerOpen(newOpen);
   };
 
-  const container = window2 !== undefined ? () => window2().document.body : undefined;
+  // const container = window2 !== undefined ? () => window2().document.body : undefined;
 
   if (innerWidth < 768) {
     return (
@@ -106,7 +106,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
         />
 
         <SwipeableDrawer
-          container={container}
+          // container={container}
           anchor='bottom'
           open={drawerOpen}
           onClose={toggleDrawer(false)}
@@ -150,6 +150,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
                     pb: 6,
                   }
             }
+            className='no-scrollbar'
           >
             {Form}
           </StyledBox>

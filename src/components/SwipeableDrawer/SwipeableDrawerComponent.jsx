@@ -44,7 +44,6 @@ const Puller = styled(Box)(({ theme }) => ({
 export default function SwipeableDrawerComponent({ formContainerRef }, props) {
   const { drawerOpen, setDrawerOpen } = useContext(AuthContext);
   const { window2 } = props;
-  // const [open, setOpen] = useState(false);
   const { activeStepIndex } = useContext(AuthContext);
 
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
@@ -79,7 +78,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
             onClick={onClick}
             onKeyDown={onClick}
             onTouchStart={onClick}
-            className={`mt-2 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px] px-1 no-scrollbar
+            className={`mt-2 md:mr-3 pb-24 md:pb-[260px] md:pr-[156px] px-1 no-scrollbar
               ${innerWidth < 768 ? "" : "h-screen overflow-auto no-scrollbar"}`}
           >
             <ActiveStepComponent />

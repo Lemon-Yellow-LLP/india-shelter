@@ -21,7 +21,7 @@ import DesktopStepper from '../DesktopStepper';
 import Stepper from '../Stepper';
 import FormButton from '../../pages/lead-generation/FormButton';
 
-const drawerBleeding = 320;
+const drawerBleeding = 300;
 
 const Root = styled('div')(({ theme }) => ({
   height: '100%',

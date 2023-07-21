@@ -199,12 +199,21 @@ body {
 }
 
 .indiaShelterLogo {
-  max-width: 192px;
+  max-width: 160px;
+}
+
+.resumeButtonWelcomePage {
+  max-width: 200px !important;
+  max-height: 50px !important;
+}
+
+.mobileInputWelcomePage{
+  max-height: 50px !important;
 }
 
 @media (max-width: 1024px) {
   .indiaShelterLogo {
-    max-width: 160px;
+    max-width: 140px;
   }
 }
 

@@ -144,9 +144,7 @@ async function checkCibil(id) {
     {
       'axios-retry': {
         retries: 3,
-        onRetry: (e) => {
-          console.log(e);
-        },
+        onRetry: () => {},
       },
       ...requestOptions,
     },
@@ -166,9 +164,7 @@ async function addToSalesForce(id) {
     {
       'axios-retry': {
         retries: 3,
-        onRetry: (e) => {
-          console.log(e);
-        },
+        onRetry: () => {},
       },
       ...requestOptions,
     },

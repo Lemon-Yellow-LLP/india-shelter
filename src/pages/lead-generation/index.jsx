@@ -86,13 +86,15 @@ const LeadGeneration = () => {
         checkBre100(leadId)
           .then((res) => {
             const breResponse = res.data.bre_100_response;
-            console.log(breResponse.statusCode);
             if (breResponse.statusCode === 200) {
               setLoadingBRE_Status(false);
               setIsQualified(true);
               const offeredAmount = breResponse.body.find(
                 (rule) => rule.Rule_Name === 'Amount_Offered',
               );
+              if (offeredAmount.Rule_Value == 0) {
+                throw new Error("Loan amount is 0")
+              }
               setAllowedLoanAmount(offeredAmount.Rule_Value);
             } else {
               setIsQualified(false);
@@ -100,8 +102,7 @@ const LeadGeneration = () => {
             }
             setLoadingBRE_Status(false);
           })
-          .catch((err) => {
-            console.log(err);
+          .catch(() => {
             setIsQualified(false);
             setLoadingBRE_Status(false);
           });

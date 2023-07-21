@@ -64,7 +64,6 @@ const LoanAgainstPropertyFields = () => {
 
   const handleOnPropertyIdentificationChange = useCallback(
     (value) => {
-      console.log(value);
       // const value = e.currentTarget.value;
 
       setPropertyIdentified(value);

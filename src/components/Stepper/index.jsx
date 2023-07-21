@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 const Stepper = ({ steps, activeStep }) => {
   return (
-    <div className='pt-5 pl-4 pr-4 flex md:hidden justify-between mt-2'>
+    <div className='py-2 pl-4 pr-4 flex md:hidden justify-between'>
       {steps.map(
         (step, index) =>
           activeStep === index && (
@@ -13,7 +13,7 @@ const Stepper = ({ steps, activeStep }) => {
       )}
       <div>
         {steps.map(
-          (step, index) =>
+          (_, index) =>
             activeStep === index && (
               <h4 className='text-xs text-right text-primary-black leading-[18px]' key={index}>
                 <span className='font-semibold text-xs'>{activeStep + 1}</span>/{steps.length}

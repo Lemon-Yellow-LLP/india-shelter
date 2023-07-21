@@ -1,41 +1,44 @@
-import { Global } from '@emotion/react';
-import { styled } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { grey } from '@mui/material/colors';
-import Box from '@mui/material/Box';
-import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-import { useContext } from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import { AuthContext } from '../../context/AuthContext';
-import { useMemo } from 'react';
-import { useCallback } from 'react';
-import { steps } from '../../pages/lead-generation/utils';
-import { Suspense } from 'react';
-import Loader from '../Loader';
-import DesktopStepper from '../DesktopStepper';
-import Stepper from '../Stepper';
-import propTypes from 'prop-types';
+import { Global } from "@emotion/react";
+import { styled } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { grey } from "@mui/material/colors";
+import Box from "@mui/material/Box";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import { useContext } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useMemo } from "react";
+import { useCallback } from "react";
+import { steps } from "../../pages/lead-generation/utils";
+import { Suspense } from "react";
+import Loader from "../Loader";
+import DesktopStepper from "../DesktopStepper";
+import Stepper from "../Stepper";
+import propTypes from "prop-types";
+import BottomSheetHandle from "../BottomSheetHandle";
 
 const drawerBleeding = 300;
 
-const Root = styled('div')(({ theme }) => ({
-  height: '100%',
-  backgroundColor: theme.palette.mode === 'light' ? grey[100] : theme.palette.background.default,
+const Root = styled("div")(({ theme }) => ({
+  height: "100%",
+  backgroundColor: theme.palette.mode === "light"
+    ? grey[100]
+    : theme.palette.background.default,
 }));
 
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'light' ? '#fff' : grey[800],
+  backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
 }));
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,
   height: 6,
-  backgroundColor: theme.palette.mode === 'light' ? grey[300] : grey[900],
+  backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
   borderRadius: 3,
-  position: 'absolute',
+  position: "absolute",
   top: 8,
-  left: 'calc(50% - 15px)',
+  left: "calc(50% - 15px)",
 }));
 
 export default function SwipeableDrawerComponent({ formContainerRef }, props) {
@@ -50,33 +53,34 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
     function handleWindowResize() {
       setInnerWidth(window.innerWidth);
     }
-    window.addEventListener('resize', handleWindowResize);
-    return () => window.removeEventListener('resize', handleWindowResize);
+    window.addEventListener("resize", handleWindowResize);
+    return () => window.removeEventListener("resize", handleWindowResize);
   });
 
   const onClick = useCallback(() => {
     setDrawerOpen(true);
   }, [setDrawerOpen]);
 
-  const ActiveStepComponent = steps.find((_, index) => index === activeStepIndex)?.Component;
+  const ActiveStepComponent = steps.find((_, index) =>
+    index === activeStepIndex
+  )?.Component;
 
   const Form = useMemo(
     () => (
-      <Suspense fallback={<Loader extraClasses='bg-transparent md:pr-[175px]' />}>
-        <div className={innerWidth < 768 ? 'relative' : 'relative h-full'}>
+      <Suspense
+        fallback={<Loader extraClasses="bg-transparent md:pr-[175px]" />}
+      >
+        <div className={innerWidth < 768 ? "relative" : "relative h-full"}>
           <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 
           <div
             ref={formContainerRef}
-            role='presentation'
+            role="presentation"
             onClick={onClick}
             onKeyDown={onClick}
             onTouchStart={onClick}
-            className={
-              innerWidth < 768
-                ? 'mt-6 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px]  px-1 no-scrollbar'
-                : 'mt-6 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px]  px-1 h-screen overflow-auto no-scrollbar'
-            }
+            className={`mt-2 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px] px-1 no-scrollbar
+              ${innerWidth < 768 ? "" : "h-screen overflow-auto no-scrollbar"}`}
           >
             <ActiveStepComponent />
           </div>
@@ -90,7 +94,9 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
     setDrawerOpen(newOpen);
   };
 
-  const container = window2 !== undefined ? () => window2().document.body : undefined;
+  const container = window2 !== undefined
+    ? () => window2().document.body
+    : undefined;
 
   if (innerWidth < 768) {
     return (
@@ -98,16 +104,16 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
         <CssBaseline />
         <Global
           styles={{
-            '.MuiDrawer-root > .MuiPaper-root': {
+            ".MuiDrawer-root > .MuiPaper-root": {
               height: `calc(90% - ${drawerBleeding}px)`,
-              overflow: 'visible',
+              overflow: "visible",
             },
           }}
         />
 
         <SwipeableDrawer
           container={container}
-          anchor='bottom'
+          anchor="bottom"
           open={drawerOpen}
           onClose={toggleDrawer(false)}
           onOpen={toggleDrawer(true)}
@@ -121,35 +127,34 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
         >
           <StyledBox
             sx={{
-              position: 'relative',
+              position: "relative",
               marginTop: `${-drawerBleeding}px`,
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
-              visibility: 'visible',
+              visibility: "visible",
 
               right: 0,
               left: 0,
             }}
           >
-            <Puller />
-            {/* <Typography sx={{ p: 2, color: 'text.secondary' }}>Title</Typography> */}
-            <Stepper steps={steps} activeStep={activeStepIndex} />
+            <div className="pt-2 flex justify-center flex-col">
+              <BottomSheetHandle />
+              <Stepper steps={steps} activeStep={activeStepIndex} />
+            </div>
           </StyledBox>
 
           <StyledBox
-            id='formStyledBox'
-            sx={
-              drawerOpen
-                ? {
-                    px: 2,
-                    pb: 6,
-                    overflow: 'auto',
-                  }
-                : {
-                    px: 2,
-                    pb: 6,
-                  }
-            }
+            id="formStyledBox"
+            sx={drawerOpen
+              ? {
+                px: 2,
+                pb: 6,
+                overflow: "auto",
+              }
+              : {
+                px: 2,
+                pb: 6,
+              }}
           >
             {Form}
           </StyledBox>

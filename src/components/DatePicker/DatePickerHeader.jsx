@@ -17,10 +17,6 @@ const DatePickerHeader = ({
   date,
   changeYear,
   changeMonth,
-  decreaseMonth,
-  increaseMonth,
-  prevMonthButtonDisabled,
-  nextMonthButtonDisabled,
 }) => {
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(() => getMonthFromDate(date));
   const [selectedYearIndex, setSelectedYearIndex] = useState(() => getYearFromDate(date));

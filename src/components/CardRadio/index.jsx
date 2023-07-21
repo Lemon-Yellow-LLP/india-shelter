@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 
-const CardRadio = ({ label, current, children, value, name, onChange, containerClasses }) => {
+const CardRadio = ({ label, current, children, value, onChange }) => {
   return (
     <div
-      // htmlFor={value}
       className={`flex flex-col gap-2 w-full cursor-pointer`}
     >
       <div
@@ -19,14 +18,6 @@ const CardRadio = ({ label, current, children, value, name, onChange, containerC
         onClick={() => onChange(value)}
         onTouchStart={() => onChange(value)}
       >
-        {/* <input
-          type='radio'
-          name={name}
-          value={value}
-          id={value}
-          className='hidden'
-          onChange={onChange}
-        /> */}
         {children}
       </div>
 

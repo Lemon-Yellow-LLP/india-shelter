@@ -15,13 +15,8 @@ const HomeLoanAnimation = lazy(() => import('./HomeLoanAnimation'));
 const LoanAgainstPropertyAnimation = lazy(() => import('./LoanAgainstPropertyAnimation'));
 
 const CongratulationBanner = () => {
-  const {
-    values,
-    isQualified,
-    loadingBRE_Status,
-    progress,
-    allowedLoanAmount,
-  } = useContext(AuthContext);
+  const { values, isQualified, loadingBRE_Status, progress, allowedLoanAmount } =
+    useContext(AuthContext);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';

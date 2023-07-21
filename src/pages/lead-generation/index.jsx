@@ -1,4 +1,3 @@
-import LeadGenerationForm from './LeadGenerationForm';
 import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { useCallback, useContext, useRef } from 'react';
@@ -9,7 +8,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
 
 const LeadGeneration = () => {
-  const modalRef = useRef(null);
   const formContainerRef = useRef(null);
   const {
     processingBRE,
@@ -28,43 +26,51 @@ const LeadGeneration = () => {
     myDiv.scrollTop = 0;
     setDrawerOpen(false);
     formContainerRef.current?.scrollTo(0, 0);
-  }, []);
+  }, [setDrawerOpen]);
 
   const onSubmit = useCallback(
     (leadId, values) => {
       editLeadById(leadId, values).then(async () => {
-        let interval = -20;
+        let interval = 10;
+
         setProcessingBRE(true);
         setLoadingBRE_Status(true);
 
+        setTimeout(() => {
+          interval = setInterval(() => {
+            setProgress((prev) => {
+              if (prev >= 40) {
+                clearInterval(interval);
+                return 40;
+              }
+              return prev + 1;
+            }, 1000);
+          });
+        }, 2000);
+
         if (allowCallPanAndCibil.allowCallPanRule) {
           try {
-            interval = setInterval(() => {
-              setProgress((prev) => {
-                if (prev >= 30) {
-                  clearInterval(interval);
-                  return 30;
-                }
-                return prev + 1;
-              }, 1000);
-            });
             await verifyPan(leadId);
-          } catch (err) {}
+          } catch (err) {
+            console.error(err);
+          }
         }
 
         if (allowCallPanAndCibil.allowCallCibilRule) {
           try {
             interval = setInterval(() => {
               setProgress((prev) => {
-                if (prev >= 60) {
+                if (prev >= 80) {
                   clearInterval(interval);
-                  return 60;
+                  return 80;
                 }
                 return prev + 1;
               }, 1000);
             });
             await checkCibil(leadId);
-          } catch (err) {}
+          } catch (err) {
+            console.error(err);
+          }
         }
 
         interval = setInterval(() => {
@@ -74,7 +80,7 @@ const LeadGeneration = () => {
               return 100;
             }
             return prev + 1;
-          }, 1000);
+          }, 2000);
         });
 
         checkBre100(leadId)
@@ -98,7 +104,15 @@ const LeadGeneration = () => {
         await addToSalesForce(leadId).catch(() => {});
       });
     },
-    [allowCallPanAndCibil, setProcessingBRE, setIsQualified, setLoadingBRE_Status],
+    [
+      setProcessingBRE,
+      setLoadingBRE_Status,
+      allowCallPanAndCibil.allowCallPanRule,
+      allowCallPanAndCibil.allowCallCibilRule,
+      setProgress,
+      setIsQualified,
+      setAllowedLoanAmount,
+    ],
   );
 
   if (processingBRE) {

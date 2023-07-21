@@ -4,6 +4,7 @@ import { propertyCategoryOptions, propertyIdentificationOptions } from '../utils
 import { checkIsValidStatePincode, updateLeadDataOnBlur } from '../../../global';
 import { AuthContext } from '../../../context/AuthContext';
 import { PropertyDetailContext } from '.';
+import { currencyToFloat } from '../../../components/CurrencyInput';
 
 const disableSubmitMap = {
   done: ['property_estimation', 'property_pincode', 'purpose_of_loan', 'property_type'],
@@ -145,8 +146,16 @@ const LoanAgainstPropertyFields = () => {
             onBlur={(e) => {
               const target = e.currentTarget;
               handleBlur(e);
-              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
-              updateLeadDataOnBlur(currentLeadId, 'Total_Property_Estimation', target.value);
+              updateLeadDataOnBlur(
+                currentLeadId,
+                target.getAttribute('name'),
+                currencyToFloat(target.value),
+              );
+              updateLeadDataOnBlur(
+                currentLeadId,
+                'Total_Property_Value',
+                currencyToFloat(target.value),
+              );
             }}
             onChange={handleChange}
             inputClasses='font-semibold'

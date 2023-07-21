@@ -1,12 +1,8 @@
-import * as React from 'react';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { grey } from '@mui/material/colors';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
-import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 import { useContext } from 'react';
 import { useState } from 'react';
@@ -19,7 +15,7 @@ import { Suspense } from 'react';
 import Loader from '../Loader';
 import DesktopStepper from '../DesktopStepper';
 import Stepper from '../Stepper';
-import FormButton from '../../pages/lead-generation/FormButton';
+import propTypes from 'prop-types';
 
 const drawerBleeding = 300;
 
@@ -60,7 +56,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
 
   const onClick = useCallback(() => {
     setDrawerOpen(true);
-  }, [drawerOpen]);
+  }, [setDrawerOpen]);
 
   const ActiveStepComponent = steps.find((_, index) => index === activeStepIndex)?.Component;
 
@@ -87,7 +83,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
         </div>
       </Suspense>
     ),
-    [activeStepIndex, formContainerRef, innerWidth],
+    [activeStepIndex, formContainerRef, innerWidth, onClick],
   );
 
   const toggleDrawer = (newOpen) => () => {
@@ -163,3 +159,8 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
   }
   return Form;
 }
+
+SwipeableDrawerComponent.propTypes = {
+  formContainerRef: propTypes.object,
+  window2: propTypes.object,
+};

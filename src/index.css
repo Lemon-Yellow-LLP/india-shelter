@@ -5,6 +5,8 @@
 body {
   font-family: 'Poppins', sans-serif !important;
   overflow-behaviour: none;
+  overflow: hidden;
+  background-color: white;
   @apply text-natural-black;
 }
 
@@ -207,7 +209,7 @@ body {
   max-height: 50px !important;
 }
 
-.mobileInputWelcomePage{
+.mobileInputWelcomePage {
   max-height: 50px !important;
 }
 

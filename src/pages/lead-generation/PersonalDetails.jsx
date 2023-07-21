@@ -85,8 +85,6 @@ const PersonalDetail = () => {
     setDisableNextStep,
   ]);
 
-  console.log(selectedLoanType);
-
   const onOTPSendClick = useCallback(() => {
     setDisablePhoneNumber(true);
     const continueJourney = searchParams.has('li') || leadExists;

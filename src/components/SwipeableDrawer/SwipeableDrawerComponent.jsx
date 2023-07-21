@@ -16,6 +16,7 @@ import Loader from '../Loader';
 import DesktopStepper from '../DesktopStepper';
 import Stepper from '../Stepper';
 import propTypes from 'prop-types';
+import BottomSheetHandle from '../BottomSheetHandle';
 
 const drawerBleeding = 300;
 
@@ -72,11 +73,8 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
             onClick={onClick}
             onKeyDown={onClick}
             onTouchStart={onClick}
-            className={
-              innerWidth < 768
-                ? 'mt-6 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px]  px-1 no-scrollbar'
-                : 'mt-6 md:mr-3 pb-[180px] md:pb-[260px] md:pr-[156px]  px-1 h-screen overflow-auto no-scrollbar'
-            }
+            className={`mt-2 md:mr-3 pb-24 md:pb-[260px] md:pr-[156px] px-1 no-scrollbar
+              ${innerWidth < 768 ? '' : 'h-screen overflow-auto no-scrollbar'}`}
           >
             <ActiveStepComponent />
           </div>
@@ -131,9 +129,10 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
               left: 0,
             }}
           >
-            <Puller />
-            {/* <Typography sx={{ p: 2, color: 'text.secondary' }}>Title</Typography> */}
-            <Stepper steps={steps} activeStep={activeStepIndex} />
+            <div className='pt-2 flex justify-center flex-col'>
+              <BottomSheetHandle />
+              <Stepper steps={steps} activeStep={activeStepIndex} />
+            </div>
           </StyledBox>
 
           <StyledBox

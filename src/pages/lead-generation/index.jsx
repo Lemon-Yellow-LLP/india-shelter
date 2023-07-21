@@ -75,9 +75,9 @@ const LeadGeneration = () => {
 
         interval = setInterval(() => {
           setProgress((prev) => {
-            if (prev >= 100) {
+            if (prev >= 99) {
               clearInterval(interval);
-              return 100;
+              return 99;
             }
             return prev + 1;
           }, 2000);
@@ -86,6 +86,7 @@ const LeadGeneration = () => {
         checkBre100(leadId)
           .then((res) => {
             const breResponse = res.data.bre_100_response;
+            console.log(breResponse.statusCode);
             if (breResponse.statusCode === 200) {
               setLoadingBRE_Status(false);
               setIsQualified(true);
@@ -99,7 +100,11 @@ const LeadGeneration = () => {
             }
             setLoadingBRE_Status(false);
           })
-          .catch(() => {});
+          .catch((err) => {
+            console.log(err);
+            setIsQualified(false);
+            setLoadingBRE_Status(false);
+          });
 
         await addToSalesForce(leadId).catch(() => {});
       });

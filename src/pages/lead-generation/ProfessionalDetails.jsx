@@ -116,7 +116,6 @@ const ProfessinalDetail = () => {
 
   const onProfessionChange = useCallback(
     (e) => {
-      // const value = e.currentTarget.value;
       const value = e;
       setSelectedProfession(value);
       setFieldValue('profession', value);
@@ -174,8 +173,8 @@ const ProfessinalDetail = () => {
 
       if (updatedPanCard?.status !== 200) return;
 
-      //Ignoring dedupe
-      // await checkDedupe(currentLeadId);
+      // call dedupe
+      await checkDedupe(currentLeadId);
 
       //call bre99
       try {

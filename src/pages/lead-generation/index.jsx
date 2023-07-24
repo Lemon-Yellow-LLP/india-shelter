@@ -87,29 +87,28 @@ const LeadGeneration = () => {
           }, 2000);
         });
 
-        checkBre100(leadId)
-          .then((res) => {
-            const breResponse = res.data.bre_100_response;
-            if (breResponse.statusCode === 200) {
-              setLoadingBRE_Status(false);
-              setIsQualified(true);
-              const offeredAmount = breResponse.body.find(
-                (rule) => rule.Rule_Name === 'Amount_Offered',
-              );
-              if (offeredAmount.Rule_Value == 0) {
-                throw new Error('Loan amount is 0');
-              }
-              setAllowedLoanAmount(offeredAmount.Rule_Value);
-            } else {
-              setIsQualified(false);
-              setLoadingBRE_Status(false);
-            }
+        try {
+          const res = await checkBre100(leadId);
+          const breResponse = res.data.bre_100_response;
+          if (breResponse.statusCode === 200) {
             setLoadingBRE_Status(false);
-          })
-          .catch(() => {
+            setIsQualified(true);
+            const offeredAmount = breResponse.body.find(
+              (rule) => rule.Rule_Name === 'Amount_Offered',
+            );
+            if (offeredAmount.Rule_Value == 0) {
+              throw new Error('Loan amount is 0');
+            }
+            setAllowedLoanAmount(offeredAmount.Rule_Value);
+          } else {
             setIsQualified(false);
             setLoadingBRE_Status(false);
-          });
+          }
+          setLoadingBRE_Status(false);
+        } catch (error) {
+          setIsQualified(false);
+          setLoadingBRE_Status(false);
+        }
 
         await addToSalesForce(leadId).catch(() => {});
       });

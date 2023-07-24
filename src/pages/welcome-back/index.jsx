@@ -23,6 +23,7 @@ const WelcomeBack = () => {
     setActiveStepIndex,
     setProcessingBRE,
     setIsQualified,
+    setLoadingBRE_Status,
   } = useContext(AuthContext);
 
   let { id: leadId } = useParams();
@@ -99,7 +100,8 @@ const WelcomeBack = () => {
   const onResumeClick = useCallback(() => {
     if (values.is_submitted) {
       setProcessingBRE(true);
-      setIsQualified(!!values.bre_100_amount_offered);
+      setLoadingBRE_Status(false);
+      setIsQualified(values.bre_100_amount_offered != 0 ? true : false);
       navigate('/');
       return;
     }
@@ -117,6 +119,7 @@ const WelcomeBack = () => {
     values.extra_params.resume_journey_index,
     values.is_submitted,
     values.bre_100_amount_offered,
+    setLoadingBRE_Status,
   ]);
 
   return (

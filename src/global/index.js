@@ -90,10 +90,12 @@ async function verifyPan(id) {
     `${API_URL}/pan/${id}`,
     {},
     {
+      ...requestOptions,
+      timeout: 90000,
       'axios-retry': {
         retries: 3,
+        retryCondition: () => true,
       },
-      ...requestOptions,
     },
   );
   return res.data;
@@ -142,11 +144,12 @@ async function checkCibil(id) {
     `${API_URL}/cibil/${id}`,
     {},
     {
+      ...requestOptions,
+      timeout: 90000,
       'axios-retry': {
         retries: 3,
-        onRetry: () => {},
+        retryCondition: () => true,
       },
-      ...requestOptions,
     },
   );
   return res;
@@ -162,11 +165,12 @@ async function addToSalesForce(id) {
     `${API_URL}/salesforce/force-push/${id}`,
     {},
     {
+      ...requestOptions,
+      timeout: 90000,
       'axios-retry': {
         retries: 3,
-        onRetry: () => {},
+        retryCondition: () => true,
       },
-      ...requestOptions,
     },
   );
   return res;

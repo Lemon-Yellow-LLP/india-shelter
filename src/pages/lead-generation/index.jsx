@@ -93,7 +93,7 @@ const LeadGeneration = () => {
                 (rule) => rule.Rule_Name === 'Amount_Offered',
               );
               if (offeredAmount.Rule_Value == 0) {
-                throw new Error("Loan amount is 0")
+                throw new Error('Loan amount is 0');
               }
               setAllowedLoanAmount(offeredAmount.Rule_Value);
             } else {

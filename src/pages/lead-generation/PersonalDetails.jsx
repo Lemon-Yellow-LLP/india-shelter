@@ -62,6 +62,7 @@ const PersonalDetail = () => {
     updateFieldsFromServerData,
     showTerms,
     setShowTerms,
+    setLoadingBRE_Status,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
@@ -186,7 +187,8 @@ const PersonalDetail = () => {
         setCurrentLeadId(leadData.id);
         if (leadData.is_submitted) {
           setProcessingBRE(true);
-          setIsQualified(!!leadData.bre_100_amount_offered);
+          setLoadingBRE_Status(false);
+          setIsQualified(leadData.bre_100_amount_offered != 0 ? true : false);
         }
       });
     }
@@ -198,7 +200,7 @@ const PersonalDetail = () => {
     if (resumeJourneyIndex) {
       setActiveStepIndex(parseInt(resumeJourneyIndex));
     }
-  }, [setActiveStepIndex, values.extra_params.resume_journey_index, values.pan_number]);
+  }, [setActiveStepIndex, values.extra_params.resume_journey_index]);
 
   useEffect(() => {
     if (isLeadGenerated || leadExists) return;

@@ -143,17 +143,26 @@ const ProfessinalDetail = () => {
       return;
     }
     setFieldValue('date_of_birth', date);
-    //let returnDate = new Date(date.toString() + 'EDT');
 
     let returnDate = new Date(date.toString());
+    console.log('Initial', returnDate);
 
-    returnDate = returnDate.toISOString().split('T')[0];
+    const dayOfWeek = returnDate.getDay();
+    // Get the month (0-11, where 0 represents January)
+    let month = returnDate.getMonth() + 1;
+    month = month.toString().padStart(2, '0');
+    // Get the day of the month
+    const dayOfMonth = returnDate.getDate().toString().padStart(2, '0');
+    // Get the year from the Date object
+    const year = returnDate.getFullYear();
 
-    returnDate = returnDate + 'T23:00:00.000Z';
+    console.log(year, month, dayOfMonth);
 
-    console.log(returnDate);
+    const finalDate = `${year}-${month}-${dayOfMonth}T00:00:00.000Z`;
 
-    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', returnDate.toString());
+    console.log('finalDate', finalDate);
+
+    updateLeadDataOnBlur(currentLeadId, 'date_of_birth', finalDate);
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 
   const handleOnProfessionChange = useCallback(

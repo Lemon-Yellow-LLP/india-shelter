@@ -143,9 +143,12 @@ const ProfessinalDetail = () => {
       return;
     }
     setFieldValue('date_of_birth', date);
-    let returnDate = new Date(date.toString() + "EDT")
-    returnDate = returnDate.toISOString().split('T')[0]
-    returnDate = new Date(returnDate)
+    let returnDate = new Date(date.toString() + 'EDT');
+
+    returnDate = returnDate.toISOString().split('T')[0];
+
+    returnDate = returnDate + 'T00:00:00.000Z';
+
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', returnDate);
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 

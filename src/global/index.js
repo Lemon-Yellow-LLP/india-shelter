@@ -39,6 +39,7 @@ async function getLeadById(id) {
 
 async function editLeadById(id, leadData) {
   if (!id) return;
+
   const res = await axios.patch(`${API_LEAD_URL}/edit/${id}`, leadData, requestOptions);
   return res;
 }

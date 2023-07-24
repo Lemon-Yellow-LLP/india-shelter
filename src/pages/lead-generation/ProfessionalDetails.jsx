@@ -151,6 +151,8 @@ const ProfessinalDetail = () => {
 
     returnDate = returnDate + 'T23:00:00.000Z';
 
+    console.log(returnDate);
+
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', returnDate.toString());
   }, [currentLeadId, date, setFieldError, setFieldValue]);
 

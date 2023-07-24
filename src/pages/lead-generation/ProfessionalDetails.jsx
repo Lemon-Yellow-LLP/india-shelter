@@ -145,9 +145,6 @@ const ProfessinalDetail = () => {
     setFieldValue('date_of_birth', date);
 
     let returnDate = new Date(date.toString());
-    console.log('Initial', returnDate);
-
-    const dayOfWeek = returnDate.getDay();
     // Get the month (0-11, where 0 represents January)
     let month = returnDate.getMonth() + 1;
     month = month.toString().padStart(2, '0');
@@ -155,12 +152,7 @@ const ProfessinalDetail = () => {
     const dayOfMonth = returnDate.getDate().toString().padStart(2, '0');
     // Get the year from the Date object
     const year = returnDate.getFullYear();
-
-    console.log(year, month, dayOfMonth);
-
     const finalDate = `${year}-${month}-${dayOfMonth}T00:00:00.000Z`;
-
-    console.log('finalDate', finalDate);
 
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', finalDate);
   }, [currentLeadId, date, setFieldError, setFieldValue]);

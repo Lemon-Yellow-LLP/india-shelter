@@ -143,13 +143,15 @@ const ProfessinalDetail = () => {
       return;
     }
     setFieldValue('date_of_birth', date);
-    // let returnDate = new Date(date.toString() + 'EDT');
+    //let returnDate = new Date(date.toString() + 'EDT');
 
     let returnDate = new Date(date.toString());
 
     returnDate = returnDate.toISOString().split('T')[0];
 
-    returnDate = returnDate + 'T00:00:00.000Z';
+    returnDate = returnDate + 'T23:00:00.000Z';
+
+    console.log(returnDate);
 
     updateLeadDataOnBlur(currentLeadId, 'date_of_birth', returnDate.toString());
   }, [currentLeadId, date, setFieldError, setFieldValue]);

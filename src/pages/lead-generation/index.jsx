@@ -30,6 +30,10 @@ const LeadGeneration = () => {
 
   const onSubmit = useCallback(
     (leadId, values) => {
+      console.log(values);
+
+      delete values.date_of_birth;
+
       editLeadById(leadId, values).then(async () => {
         let interval = 10;
 

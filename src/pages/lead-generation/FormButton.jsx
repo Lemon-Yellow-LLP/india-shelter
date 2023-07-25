@@ -19,14 +19,6 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
 
   const handlePanAndBre99Call = useCallback(
     async (_e) => {
-      if (errors.pan_number) return;
-
-      const updatedPanCard = await editLeadById(currentLeadId, {
-        pan_number: values.pan_number,
-      });
-
-      if (updatedPanCard?.status !== 200) return;
-
       // call dedupe
       await checkDedupe(currentLeadId);
 
@@ -73,7 +65,10 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       });
     }
 
+    console.log(activeStepIndex);
+
     if (activeStepIndex === 1) {
+      console.log('called');
       handlePanAndBre99Call();
     }
 

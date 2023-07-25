@@ -3,17 +3,55 @@ import { Button } from '../../components';
 import { AuthContext, defaultValues } from '../../context/AuthContext';
 import { steps } from './utils';
 import PropTypes from 'prop-types';
-import { NaNorNull, editLeadById } from '../../global';
+import { checkBre99, checkDedupe, editLeadById, NaNorNull } from '../../global';
 
 const FormButton = ({ onButtonClickCB, onSubmit }) => {
   const {
+    errors,
     activeStepIndex,
     goToNextStep,
     goToPreviousStep,
     disableNextStep,
     currentLeadId,
     values,
+    setAllowCallPanAndCibil,
   } = useContext(AuthContext);
+
+  const handlePanAndBre99Call = useCallback(
+    async (_e) => {
+      if (errors.pan_number) return;
+
+      const updatedPanCard = await editLeadById(currentLeadId, {
+        pan_number: values.pan_number,
+      });
+
+      if (updatedPanCard?.status !== 200) return;
+
+      // call dedupe
+      await checkDedupe(currentLeadId);
+
+      //call bre99
+      try {
+        const bre99Res = await checkBre99(currentLeadId);
+
+        if (bre99Res.status !== 200) return;
+
+        const bre99Data = bre99Res.data.bre_99_response.body;
+        const allowCallPanRule = bre99Data.find((rule) => rule.Rule_Name === 'PAN');
+        const allowCallCibilRule = bre99Data.find((rule) => rule.Rule_Name === 'Bureau');
+
+        if (allowCallCibilRule.Rule_Value === 'YES') {
+          setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallCibilRule: true }));
+        }
+        if (allowCallPanRule.Rule_Value === 'YES') {
+          setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallPanRule: true }));
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [currentLeadId, errors.pan_number, setAllowCallPanAndCibil, values.pan_number],
+  );
 
   const onNextButtonClick = useCallback(() => {
     const filteredValue = {
@@ -34,6 +72,11 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         },
       });
     }
+
+    if (activeStepIndex === 1) {
+      handlePanAndBre99Call();
+    }
+
     goToNextStep();
     onButtonClickCB && onButtonClickCB();
   }, [

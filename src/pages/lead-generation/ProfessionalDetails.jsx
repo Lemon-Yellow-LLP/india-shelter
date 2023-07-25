@@ -6,13 +6,7 @@ import IconSelfEmployed from '../../assets/icons/self-employed';
 import { AuthContext } from '../../context/AuthContext';
 import DatePicker from '../../components/DatePicker';
 import { CurrencyInput, PanInput } from '../../components';
-import {
-  checkBre99,
-  checkDedupe,
-  editLeadById,
-  isEighteenOrAbove,
-  updateLeadDataOnBlur,
-} from '../../global';
+import { isEighteenOrAbove, updateLeadDataOnBlur } from '../../global';
 import { currencyToFloat } from '../../components/CurrencyInput';
 
 const loanTypeData = [
@@ -99,7 +93,6 @@ const ProfessinalDetail = () => {
     setFieldError,
     setDisableNextStep,
     currentLeadId,
-    setAllowCallPanAndCibil,
   } = useContext(AuthContext);
   const [date, setDate] = useState();
   const [selectedProfession, setSelectedProfession] = useState(null);
@@ -174,42 +167,6 @@ const ProfessinalDetail = () => {
     [currentLeadId, selectedProfession, setFieldValue],
   );
 
-  const handleOnPanBlur = useCallback(
-    async (_e) => {
-      if (errors.pan_number) return;
-
-      const updatedPanCard = await editLeadById(currentLeadId, {
-        pan_number: values.pan_number,
-      });
-
-      if (updatedPanCard?.status !== 200) return;
-
-      // call dedupe
-      await checkDedupe(currentLeadId);
-
-      //call bre99
-      try {
-        const bre99Res = await checkBre99(currentLeadId);
-
-        if (bre99Res.status !== 200) return;
-
-        const bre99Data = bre99Res.data.bre_99_response.body;
-        const allowCallPanRule = bre99Data.find((rule) => rule.Rule_Name === 'PAN');
-        const allowCallCibilRule = bre99Data.find((rule) => rule.Rule_Name === 'Bureau');
-
-        if (allowCallCibilRule.Rule_Value === 'YES') {
-          setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallCibilRule: true }));
-        }
-        if (allowCallPanRule.Rule_Value === 'YES') {
-          setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallPanRule: true }));
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [currentLeadId, errors.pan_number, setAllowCallPanAndCibil, values.pan_number],
-  );
-
   return (
     <div className='flex flex-col gap-2'>
       <PanInput
@@ -222,7 +179,6 @@ const ProfessinalDetail = () => {
         touched={touched.pan_number}
         onBlur={(e) => {
           handleBlur(e);
-          handleOnPanBlur(e);
         }}
         onChange={(value) => {
           setFieldValue('pan_number', value);

@@ -188,7 +188,9 @@ const PersonalDetail = () => {
         if (leadData.is_submitted) {
           setProcessingBRE(true);
           setLoadingBRE_Status(false);
-          setIsQualified(leadData.bre_100_amount_offered != 0 ? true : false);
+          setIsQualified(
+            leadData.bre_100_status && leadData.bre_100_amount_offered != 0 ? true : false,
+          );
         }
       });
     }

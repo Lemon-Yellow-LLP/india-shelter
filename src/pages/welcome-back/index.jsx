@@ -101,7 +101,7 @@ const WelcomeBack = () => {
     if (values.is_submitted) {
       setProcessingBRE(true);
       setLoadingBRE_Status(false);
-      setIsQualified(values.bre_100_amount_offered != 0 ? true : false);
+      setIsQualified(values.bre_100_status && values.bre_100_amount_offered != 0 ? true : false);
       navigate('/');
       return;
     }

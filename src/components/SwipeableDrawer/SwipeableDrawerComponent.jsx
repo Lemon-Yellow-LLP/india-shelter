@@ -68,6 +68,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }, props) {
           <DesktopStepper steps={steps} activeStep={activeStepIndex} />
 
           <div
+            id='formStyledBox'
             ref={formContainerRef}
             role='presentation'
             onClick={onClick}

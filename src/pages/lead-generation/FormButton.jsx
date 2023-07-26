@@ -65,10 +65,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       });
     }
 
-    console.log(activeStepIndex);
-
     if (activeStepIndex === 1) {
-      console.log('called');
       handlePanAndBre99Call();
     }
 

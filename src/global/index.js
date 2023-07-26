@@ -181,6 +181,31 @@ function NaNorNull(value, toReturn = null) {
   return isNaN(value) ? toReturn : value;
 }
 
+function getWebOTP() {
+  if ('OTPCredential' in window) {
+    console.info('Debug: OTP credential is supported');
+    alert('Debug: OTP credential is supported');
+    window.addEventListener('DOMContentLoaded', (_) => {
+      const ac = new AbortController();
+      navigator.credentials
+        .get({
+          otp: { transport: ['sms'] },
+          signal: ac.signal,
+        })
+        .then((otp) => {
+          return otp.code;
+        })
+        .catch((err) => {
+          console.error(err);
+          return null;
+        });
+    });
+  } else {
+    console.error('OTPCredential not supported!.');
+    return null;
+  }
+}
+
 const MAX_ALLOWED_YEAR = 18;
 
 function isEighteenOrAbove(date) {
@@ -225,6 +250,7 @@ export {
   checkCibil,
   checkDedupe,
   NaNorNull,
+  getWebOTP,
   isEighteenOrAbove,
   addToSalesForce,
 };

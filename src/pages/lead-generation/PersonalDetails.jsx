@@ -19,6 +19,7 @@ import {
   createLead,
   getLeadByPhoneNumber,
   getPincode,
+  getWebOTP,
   sendMobileOTP,
   verifyMobileOtp,
 } from '../../global';
@@ -88,32 +89,19 @@ const PersonalDetail = () => {
 
   const onOTPSendClick = useCallback(() => {
     setDisablePhoneNumber(true);
-    const continueJourney = searchParams.has('li') || leadExists;
+    const continueJourney = searchParams.has('li');
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
-        setFieldError('otp', res.data.message);
+        setFieldError('phone_number', res.data.message);
         return;
       }
-      if ('OTPCredential' in window) {
-        window.addEventListener('DOMContentLoaded', (_) => {
-          const ac = new AbortController();
-          navigator.credentials
-            .get({
-              otp: { transport: ['sms'] },
-              signal: ac.signal,
-            })
-            .then((otp) => {
-              console.log(otp.code);
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
-      } else {
-        console.error('WebOTP is not supported in this browser');
+      try {
+        alert(getWebOTP());
+      } catch (err) {
+        console.error(err);
       }
     });
-  }, [leadExists, phone_number, searchParams, setFieldError]);
+  }, [phone_number, searchParams, setFieldError]);
 
   const handleOnLoanPurposeChange = (e) => {
     // setSelectedLoanType(e.currentTarget.value);
@@ -202,7 +190,12 @@ const PersonalDetail = () => {
     if (resumeJourneyIndex) {
       setActiveStepIndex(parseInt(resumeJourneyIndex));
     }
-  }, [setActiveStepIndex, values.extra_params.resume_journey_index]);
+  }, [
+    setActiveStepIndex,
+    setValidPancard,
+    values.extra_params.resume_journey_index,
+    values.pan_number,
+  ]);
 
   useEffect(() => {
     if (isLeadGenerated || leadExists) return;
@@ -243,6 +236,7 @@ const PersonalDetail = () => {
     setCurrentLeadId,
     setFieldError,
     setIsLeadGenearted,
+    setProcessingBRE,
     setIsQualified,
     setLoading,
     setProcessingBRE,
@@ -517,7 +511,6 @@ const PersonalDetail = () => {
           defaultResendTime={30}
           disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
-          type='number'
         />
       )}
 

@@ -6,6 +6,7 @@ import { addToSalesForce, editLeadById, verifyPan, checkCibil, checkBre100 } fro
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
 import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
+import { ToastMessage } from '../../components';
 
 const LeadGeneration = () => {
   const formContainerRef = useRef(null);
@@ -18,6 +19,8 @@ const LeadGeneration = () => {
     setLoadingBRE_Status,
     setAllowedLoanAmount,
     setDrawerOpen,
+    toastMessage,
+    setToastMessage
   } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
@@ -146,16 +149,23 @@ const LeadGeneration = () => {
         className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen md:gap-[111px] overflow-y-hidden'
       >
         <AnimationBanner />
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          id='lead-form-container'
-          className='w-full md:max-w-[732px]'
-        >
-          <div className='overflow-auto'>
-            <SwipeableDrawerComponent formContainerRef={formContainerRef} />
-          </div>
-          <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
-        </form>
+        <div className='mt-[58px] lg:mt-0 relative overflow-hidden min-h-screen lg:min-h-fit lg:static'>
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            id='lead-form-container'
+            className='w-full md:max-w-[732px]'
+          >
+            <div className='overflow-auto'>
+              <SwipeableDrawerComponent formContainerRef={formContainerRef} />
+            </div>
+            <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
+          </form>
+
+          <ToastMessage 
+            message={toastMessage}
+            setMessage={setToastMessage}
+          />
+        </div>
       </motion.div>
     </AnimatePresence>
   );

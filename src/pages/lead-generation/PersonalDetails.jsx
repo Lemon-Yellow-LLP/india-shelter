@@ -63,10 +63,12 @@ const PersonalDetail = () => {
     showTerms,
     setShowTerms,
     setLoadingBRE_Status,
+    setToastMessage,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
 
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
+  const [hasSentOTPOnce, setHasSentOTPOnce] = useState(false);
   const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
 
   useEffect(() => {
@@ -87,7 +89,9 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
+    setHasSentOTPOnce(true);
     setDisablePhoneNumber(true);
+    setToastMessage("OTP has been sent to your mobile number")
     const continueJourney = searchParams.has('li') || leadExists;
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
@@ -493,9 +497,21 @@ const PersonalDetail = () => {
           `
             : null
         }
+        displayError={disablePhoneNumber}
       />
+    
+      {!disablePhoneNumber && (
+        
+        <button 
+          className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
+          disabled={!((isLeadGenerated && !phoneNumberVerified) || leadExists)}
+          onClick={onOTPSendClick}
+        >
+          Send OTP
+        </button>
+      )}
 
-      {!errors.phone_number && leadExists && !phoneNumberVerified && (
+      {!errors.phone_number && leadExists && !phoneNumberVerified && !hasSentOTPOnce && (
         <span className='text-xs text-primary-red -mt-4'>
           Lead with that phone number already exists. <br /> Verify OTP to resume journey
         </span>
@@ -518,6 +534,7 @@ const PersonalDetail = () => {
           disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
           type='number'
+          hasSentOTPOnce={hasSentOTPOnce}
         />
       )}
 

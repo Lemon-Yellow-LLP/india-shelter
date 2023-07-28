@@ -37,7 +37,6 @@ const LoanTransferFields = () => {
   );
 
   useEffect(() => {
-    if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
     let disableSubmit = fieldsRequiredForSubmitting.reduce((acc, field) => {
       const keys = Object.keys(errors);
       if (!keys.length) return acc && false;
@@ -45,6 +44,16 @@ const LoanTransferFields = () => {
     }, true);
     setDisableNextStep(!disableSubmit);
   }, [emailOTPVerified, errors, setDisableNextStep, showOTPInput]);
+
+  useEffect(() => {
+    if (showOTPInput) {
+      if (emailOTPVerified) 
+        setDisableNextStep(false)
+      else 
+        setDisableNextStep(true)
+    }
+  }, [showOTPInput, emailOTPVerified, setDisableNextStep])
+
 
   return (
     <div className='flex flex-col gap-2'>

@@ -15,13 +15,13 @@ const OtpInput = ({
   disableSendOTP,
   verifyOTPCB,
   defaultResendTime,
+  hasSentOTPOnce,
 }) => {
   const [otp, setOtp] = useState(new Array(5).fill(''));
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(true);
-  const [timer, setTimer] = useState(false);
+  const [timer, setTimer] = useState(hasSentOTPOnce);
   const [resendTime, setResendTime] = useState(defaultResendTime || 10);
-  const [sentOnce, setSentOnce] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -56,6 +56,13 @@ const OtpInput = ({
   }, [onSendOTPClick]);
 
   useEffect(() => {
+    if (!hasSentOTPOnce) return
+    setActiveOtpIndex(0);
+    setInputDisabled(false);
+    setTimer(true);
+  }, [hasSentOTPOnce])
+
+  useEffect(() => {
     let interval = null;
     if (timer) {
       setOTPVerified(null);
@@ -77,7 +84,7 @@ const OtpInput = ({
     return () => {
       clearInterval(interval);
     };
-  }, [verified, timer, setOTPVerified, defaultResendTime]);
+  }, [verified, timer, setOTPVerified, defaultResendTime ]);
 
   useEffect(() => {
     inputRef.current?.focus({ preventScroll: true });
@@ -90,12 +97,12 @@ const OtpInput = ({
   }, []);
 
   const inputClasses = useMemo(() => {
-    if (!sentOnce) return 'border-stroke';
-    if (sentOnce && verified === null)
+    if (!hasSentOTPOnce) return 'border-stroke';
+    if (hasSentOTPOnce && verified === null)
       return 'border-secondary-blue shadow-secondary-blue shadow-primary';
     if (!verified) return 'border-primary-red shadow-primary shadow-primary-red';
     if (verified) return 'border-dark-grey';
-  }, [verified, sentOnce]);
+  }, [verified, hasSentOTPOnce]);
 
   return (
     <div className='otp-container'>
@@ -160,21 +167,7 @@ const OtpInput = ({
             </span>
           )}
         </div>
-        {!sentOnce && disableSendOTP && !timer ? (
-          <button
-            type='button'
-            className='text-primary-red cursor-pointer font-semibold'
-            onClick={() => {
-              setSentOnce(true);
-              handleOnOTPSend();
-            }}
-          >
-            <span>Send OTP</span>
-          </button>
-        ) : (
-          ''
-        )}
-        {sentOnce && disableSendOTP && !timer && verified !== true ? (
+        {hasSentOTPOnce && disableSendOTP && !timer && verified !== true ? (
           <button
             type='button'
             className='text-primary-red cursor-pointer font-semibold'

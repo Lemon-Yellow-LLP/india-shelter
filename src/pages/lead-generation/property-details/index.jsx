@@ -1,20 +1,9 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { DropDown, OtpInput, TextInput } from "../../../components";
-import { AuthContext } from "../../../context/AuthContext";
-import { propertyDetailsMap, propertyIdentificationOptions } from "../utils";
-import {
-  editLeadById,
-  getEmailOtp,
-  updateLeadDataOnBlur,
-  verifyEmailOtp,
-} from "../../../global";
-import otpVerified from "../../../assets/icons/otp-verified.svg";
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { DropDown, OtpInput, TextInput } from '../../../components';
+import { AuthContext } from '../../../context/AuthContext';
+import { propertyDetailsMap, propertyIdentificationOptions } from '../utils';
+import { editLeadById, getEmailOtp, updateLeadDataOnBlur, verifyEmailOtp } from '../../../global';
+import otpVerified from '../../../assets/icons/otp-verified.svg';
 
 export const PropertyDetailContext = createContext(null);
 
@@ -38,14 +27,10 @@ const PropertyDetail = () => {
     setToastMessage,
   } = useContext(AuthContext);
 
-  const [propertyIdentified, setPropertyIdentified] = useState(
-    values.property_identification,
-  );
+  const [propertyIdentified, setPropertyIdentified] = useState(values.property_identification);
   const [loanPurpose, setLoanPurpose] = useState(values.purpose_of_loan);
   const [propertyType, setPropertyType] = useState(values.purpose_of_loan);
-  const [propertyCategory, setPropertyCategory] = useState(
-    values.property_category,
-  );
+  const [propertyCategory, setPropertyCategory] = useState(values.property_category);
   const [hasSentOTPOnce, setHasSentOTPOnce] = useState(false);
 
   useEffect(() => {
@@ -67,16 +52,16 @@ const PropertyDetail = () => {
   const handleLoanPursposeChange = useCallback(
     (value) => {
       setLoanPurpose(value);
-      setFieldValue("purpose_of_loan", value);
-      updateLeadDataOnBlur(currentLeadId, "purpose_of_loan", value);
+      setFieldValue('purpose_of_loan', value);
+      updateLeadDataOnBlur(currentLeadId, 'purpose_of_loan', value);
     },
     [currentLeadId, setFieldValue],
   );
 
   const handlePropertyType = useCallback(
     (value) => {
-      setFieldValue("property_type", value);
-      updateLeadDataOnBlur(currentLeadId, "property_type", value);
+      setFieldValue('property_type', value);
+      updateLeadDataOnBlur(currentLeadId, 'property_type', value);
     },
     [currentLeadId, setFieldValue],
   );
@@ -93,7 +78,7 @@ const PropertyDetail = () => {
   const { email } = values;
 
   useEffect(() => {
-    if (selectedLoanType !== "LAP") setFieldValue("purpose_type", "");
+    if (selectedLoanType !== 'LAP') setFieldValue('purpose_type', '');
   }, [selectedLoanType, setFieldValue]);
 
   const handleOnEmailBlur = useCallback(
@@ -108,12 +93,12 @@ const PropertyDetail = () => {
     setEmailOTPVerified(false);
     setHasSentOTPOnce(true);
     setDisableEmailInput(true);
-    setToastMessage("OTP has been sent to your mail id");
+    setToastMessage('OTP has been sent to your mail id');
     const res = await getEmailOtp(email);
     if (res.status !== 200) {
-      setFieldError("otp", res.data.message);
+      setFieldError('otp', res.data.message);
     }
-  }, [email, setFieldError]);
+  }, [email, setFieldError, setToastMessage]);
 
   const verifyLeadEmailOTP = useCallback(
     async (otp) => {
@@ -145,76 +130,64 @@ const PropertyDetail = () => {
 
   return (
     <PropertyDetailContext.Provider value={value}>
-      <div className="flex flex-col gap-2">
-        {propertyDetailsMap[selectedLoanType || "Home Loan"].fields}
+      <div className='flex flex-col gap-2'>
+        {propertyDetailsMap[selectedLoanType || 'Home Loan'].fields}
 
-        <span className="text-xl font-semibold text-primary-black">
-          Last thing, promise!
-        </span>
+        <span className='text-xl font-semibold text-primary-black'>Last thing, promise!</span>
 
         <DropDown
-          label="Purpose of Loan"
+          label='Purpose of Loan'
           required
-          placeholder="Eg: Purchase"
-          options={propertyDetailsMap[selectedLoanType || "Home Loan"][
-            "loanPurposeOptions"
-          ]}
+          placeholder='Eg: Purchase'
+          options={propertyDetailsMap[selectedLoanType || 'Home Loan']['loanPurposeOptions']}
           onChange={handleLoanPursposeChange}
           defaultSelected={loanPurpose}
         />
 
         {propertyIdentificationOptions[0].value === propertyIdentified ||
-            selectedLoanType === "Loan Transfer"
-          ? (
-            <DropDown
-              label="Property Type"
-              required
-              placeholder="Eg: Residential"
-              options={propertyDetailsMap[selectedLoanType || "Home Loan"][
-                "propertyTypeOptions"
-              ][
+        selectedLoanType === 'Loan Transfer' ? (
+          <DropDown
+            label='Property Type'
+            required
+            placeholder='Eg: Residential'
+            options={
+              propertyDetailsMap[selectedLoanType || 'Home Loan']['propertyTypeOptions'][
                 loanPurpose
-              ] || []}
-              onChange={handlePropertyType}
-              defaultSelected={propertyType}
-              disabled={!loanPurpose}
-            />
-          )
-          : null}
+              ] || []
+            }
+            onChange={handlePropertyType}
+            defaultSelected={propertyType}
+            disabled={!loanPurpose}
+          />
+        ) : null}
 
-        {hidePromoCode
-          ? (
-            ""
-          )
-          : (
-            <TextInput
-              label="Promo Code"
-              hint="To avail advantages or perks associated with a loan"
-              placeholder="Eg: AH34bg"
-              name="promo_code"
-              value={values.promo_code}
-              error={errors.promo_code}
-              touched={touched.promo_code}
-              onBlur={(e) => {
-                const target = e.currentTarget;
-                handleBlur(e);
-                updateLeadDataOnBlur(
-                  currentLeadId,
-                  target.getAttribute("name"),
-                  target.value,
-                );
-              }}
-              onChange={handleChange}
-            />
-          )}
+        {hidePromoCode ? (
+          ''
+        ) : (
+          <TextInput
+            label='Promo Code'
+            hint='To avail advantages or perks associated with a loan'
+            placeholder='Eg: AH34bg'
+            name='promo_code'
+            value={values.promo_code}
+            error={errors.promo_code}
+            touched={touched.promo_code}
+            onBlur={(e) => {
+              const target = e.currentTarget;
+              handleBlur(e);
+              updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+            }}
+            onChange={handleChange}
+          />
+        )}
 
         <TextInput
-          label="Enter your Email ID"
-          type="email"
+          label='Enter your Email ID'
+          type='email'
           value={email}
-          placeholder="Please enter your Email ID"
-          name="email"
-          autoComplete="off"
+          placeholder='Please enter your Email ID'
+          name='email'
+          autoComplete='off'
           error={errors.email}
           touched={touched.email}
           onBlur={(e) => {
@@ -222,11 +195,7 @@ const PropertyDetail = () => {
             handleOnEmailBlur(target.value);
             handleBlur(e);
             checkEmailValid(e);
-            updateLeadDataOnBlur(
-              currentLeadId,
-              target.getAttribute("name"),
-              target.value,
-            );
+            updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
           }}
           disabled={disableEmailInput}
           onInput={checkEmailValid}
@@ -234,17 +203,19 @@ const PropertyDetail = () => {
             checkEmailValid(e);
             handleChange(e);
           }}
-          message={emailOTPVerified
-            ? `OTP Verfied
+          message={
+            emailOTPVerified
+              ? `OTP Verfied
           <img src="${otpVerified}" alt='Otp Verified' role='presentation' />
           `
-            : null}
+              : null
+          }
           displayError={hasSentOTPOnce}
         />
 
         {!disableEmailInput && (
           <button
-            className="self-end disabled:text-light-grey text-primary-red my-2 font-semibold"
+            className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
             disabled={!!errors.email}
             onClick={sendEmailOTP}
           >
@@ -252,20 +223,19 @@ const PropertyDetail = () => {
           </button>
         )}
 
-        {showOTPInput &&
-          (
-            <OtpInput
-              label="Enter OTP"
-              required
-              verified={emailOTPVerified}
-              defaultResendTime={30}
-              setOTPVerified={setEmailOTPVerified}
-              disableSendOTP={true}
-              onSendOTPClick={sendEmailOTP}
-              verifyOTPCB={verifyLeadEmailOTP}
-              hasSentOTPOnce={hasSentOTPOnce}
-            />
-          )}
+        {showOTPInput && (
+          <OtpInput
+            label='Enter OTP'
+            required
+            verified={emailOTPVerified}
+            defaultResendTime={30}
+            setOTPVerified={setEmailOTPVerified}
+            disableSendOTP={true}
+            onSendOTPClick={sendEmailOTP}
+            verifyOTPCB={verifyLeadEmailOTP}
+            hasSentOTPOnce={hasSentOTPOnce}
+          />
+        )}
       </div>
     </PropertyDetailContext.Provider>
   );

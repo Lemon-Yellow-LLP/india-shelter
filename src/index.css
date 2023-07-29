@@ -237,3 +237,13 @@ body {
     width: 10px;
   }
 }
+
+.toast-message {
+  box-shadow: 0px 4px 16px 0px #100B2714;
+}
+
+@screen lg {
+  .toast-message {
+    box-shadow: 2px 7px 20px 0px #100B2736;
+  }
+}

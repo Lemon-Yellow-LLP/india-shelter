@@ -91,7 +91,7 @@ const PersonalDetail = () => {
   const onOTPSendClick = useCallback(() => {
     setHasSentOTPOnce(true);
     setDisablePhoneNumber(true);
-    setToastMessage("OTP has been sent to your mobile number")
+    setToastMessage('OTP has been sent to your mobile number');
     const continueJourney = searchParams.has('li') || leadExists;
     sendMobileOTP(phone_number, continueJourney).then((res) => {
       if (res.status === 500) {
@@ -117,7 +117,7 @@ const PersonalDetail = () => {
         console.error('WebOTP is not supported in this browser');
       }
     });
-  }, [leadExists, phone_number, searchParams, setFieldError]);
+  }, [leadExists, phone_number, searchParams, setFieldError, setToastMessage]);
 
   const handleOnLoanPurposeChange = (e) => {
     // setSelectedLoanType(e.currentTarget.value);
@@ -499,10 +499,9 @@ const PersonalDetail = () => {
         }
         displayError={disablePhoneNumber}
       />
-    
+
       {!disablePhoneNumber && (
-        
-        <button 
+        <button
           className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
           disabled={!((isLeadGenerated && !phoneNumberVerified) || leadExists)}
           onClick={onOTPSendClick}

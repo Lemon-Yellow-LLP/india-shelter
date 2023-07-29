@@ -20,7 +20,7 @@ const LeadGeneration = () => {
     setAllowedLoanAmount,
     setDrawerOpen,
     toastMessage,
-    setToastMessage
+    setToastMessage,
   } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
@@ -149,22 +149,18 @@ const LeadGeneration = () => {
         className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen md:gap-[111px] overflow-y-hidden'
       >
         <AnimationBanner />
-        <div className='mt-[58px] lg:mt-0 relative overflow-hidden min-h-screen lg:min-h-fit lg:static'>
+        <div className='mt-[58px] lg:mt-0 relative overflow-hidden lg:overflow-visible min-h-screen lg:min-h-fit lg:static max-w-[732px]'>
           <form
             onSubmit={(e) => e.preventDefault()}
             id='lead-form-container'
-            className='w-full md:max-w-[732px]'
+            className='w-full md:max-w-[732px] relative'
           >
             <div className='overflow-auto'>
               <SwipeableDrawerComponent formContainerRef={formContainerRef} />
             </div>
             <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
+            <ToastMessage message={toastMessage} setMessage={setToastMessage} />
           </form>
-
-          <ToastMessage 
-            message={toastMessage}
-            setMessage={setToastMessage}
-          />
         </div>
       </motion.div>
     </AnimatePresence>

@@ -29,17 +29,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? '#fff' : grey[800],
 }));
 
-const Puller = styled(Box)(({ theme }) => ({
-  width: 30,
-  height: 6,
-  backgroundColor: theme.palette.mode === 'light' ? grey[300] : grey[900],
-  borderRadius: 3,
-  position: 'absolute',
-  top: 8,
-  left: 'calc(50% - 15px)',
-}));
-
-export default function SwipeableDrawerComponent({ formContainerRef }, props) {
+export default function SwipeableDrawerComponent({ formContainerRef }) {
   const { drawerOpen, setDrawerOpen } = useContext(AuthContext);
   // const { window2 } = props;
   // const [open, setOpen] = useState(false);

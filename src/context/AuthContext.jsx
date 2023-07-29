@@ -199,7 +199,7 @@ const AuthContextProvider = ({ children }) => {
         drawerOpen,
         setDrawerOpen,
         setToastMessage,
-        toastMessage
+        toastMessage,
       }}
     >
       {children}

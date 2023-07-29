@@ -89,12 +89,10 @@ const LoanAgainstPropertyFields = () => {
 
   useEffect(() => {
     if (showOTPInput) {
-      if (emailOTPVerified) 
-        setDisableNextStep(false)
-      else 
-        setDisableNextStep(true)
+      if (emailOTPVerified) setDisableNextStep(false);
+      else setDisableNextStep(true);
     }
-  }, [showOTPInput, emailOTPVerified, setDisableNextStep])
+  }, [showOTPInput, emailOTPVerified, setDisableNextStep]);
 
   return (
     <>

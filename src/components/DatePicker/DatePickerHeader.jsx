@@ -13,11 +13,7 @@ function getYearFromDate(date) {
   return years.indexOf(getYear(date || new Date()));
 }
 
-const DatePickerHeader = ({
-  date,
-  changeYear,
-  changeMonth,
-}) => {
+const DatePickerHeader = ({ date, changeYear, changeMonth }) => {
   const [selectedMonthIndex, setSelectedMonthIndex] = useState(() => getMonthFromDate(date));
   const [selectedYearIndex, setSelectedYearIndex] = useState(() => getYearFromDate(date));
 

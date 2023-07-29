@@ -1,11 +1,14 @@
 import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
-import { useCallback, useContext, useRef } from 'react';
+import { Suspense, lazy, useCallback, useContext, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
 import { addToSalesForce, editLeadById, verifyPan, checkCibil, checkBre100 } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
-import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
+const SwipeableDrawerComponent = lazy(() =>
+  import('../../components/SwipeableDrawer/SwipeableDrawerComponent'),
+);
+import Loader from '../../components/Loader';
 
 const LeadGeneration = () => {
   const formContainerRef = useRef(null);
@@ -152,7 +155,9 @@ const LeadGeneration = () => {
           className='w-full md:max-w-[732px]'
         >
           <div className='overflow-auto'>
-            <SwipeableDrawerComponent formContainerRef={formContainerRef} />
+            <Suspense fallback={<Loader />}>
+              <SwipeableDrawerComponent formContainerRef={formContainerRef} />
+            </Suspense>
           </div>
           <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
         </form>

@@ -1,10 +1,12 @@
+/* eslint-disable react/display-name */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable react/jsx-no-comment-textnodes */
 import PropTypes from 'prop-types';
+import { memo } from 'react';
 
-const CardRadio = ({ label, current, children, value, onChange }) => {
+const CardRadio = memo(({ label, current, children, value, onChange }) => {
   return (
-    <div
-      className={`flex flex-col gap-2 w-full cursor-pointer`}
-    >
+    <div className={`flex flex-col gap-2 w-full cursor-pointer`}>
       <div
         className={`w-full border rounded-lg py-4 flex items-center justify-center cursor-pointer
         ${
@@ -36,7 +38,7 @@ const CardRadio = ({ label, current, children, value, onChange }) => {
       )}
     </div>
   );
-};
+});
 
 CardRadio.propTypes = {
   label: PropTypes.string,

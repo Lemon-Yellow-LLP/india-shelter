@@ -233,6 +233,7 @@ const PersonalDetail = () => {
     if (canCreateLead) {
       createLead({
         first_name,
+        otp_send_on: null,
         pincode: parseInt(pincode),
         phone_number: phone_number.toString(),
       })

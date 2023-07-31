@@ -65,6 +65,13 @@ const HomeLoanFields = () => {
     setDisableNextStep(!disableSubmitting);
   }, [propertyIdentified, errors, setDisableNextStep, showOTPInput, emailOTPVerified]);
 
+  useEffect(() => {
+    if (showOTPInput) {
+      if (emailOTPVerified) setDisableNextStep(false);
+      else setDisableNextStep(true);
+    }
+  }, [showOTPInput, emailOTPVerified, setDisableNextStep]);
+
   return (
     <>
       <div className='flex flex-col gap-2'>

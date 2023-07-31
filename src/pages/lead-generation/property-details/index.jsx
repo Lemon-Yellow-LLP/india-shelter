@@ -1,7 +1,7 @@
-import { useCallback, useState, useContext, createContext, useEffect } from 'react';
-import { DropDown, TextInput, OtpInput } from '../../../components';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { DropDown, OtpInput, TextInput } from '../../../components';
 import { AuthContext } from '../../../context/AuthContext';
-import { propertyIdentificationOptions, propertyDetailsMap } from '../utils';
+import { propertyDetailsMap, propertyIdentificationOptions } from '../utils';
 import { editLeadById, getEmailOtp, updateLeadDataOnBlur, verifyEmailOtp } from '../../../global';
 import otpVerified from '../../../assets/icons/otp-verified.svg';
 
@@ -24,12 +24,14 @@ const PropertyDetail = () => {
     hidePromoCode,
     currentLeadId,
     setDisableNextStep,
+    setToastMessage,
   } = useContext(AuthContext);
 
   const [propertyIdentified, setPropertyIdentified] = useState(values.property_identification);
   const [loanPurpose, setLoanPurpose] = useState(values.purpose_of_loan);
   const [propertyType, setPropertyType] = useState(values.purpose_of_loan);
   const [propertyCategory, setPropertyCategory] = useState(values.property_category);
+  const [hasSentOTPOnce, setHasSentOTPOnce] = useState(false);
 
   useEffect(() => {
     setPropertyIdentified(values.property_identification);
@@ -87,12 +89,16 @@ const PropertyDetail = () => {
   );
 
   const sendEmailOTP = useCallback(async () => {
+    setShowOTPInput(true);
+    setEmailOTPVerified(false);
+    setHasSentOTPOnce(true);
     setDisableEmailInput(true);
+    setToastMessage('OTP has been sent to your mail id');
     const res = await getEmailOtp(email);
     if (res.status !== 200) {
       setFieldError('otp', res.data.message);
     }
-  }, [email, setFieldError]);
+  }, [email, setFieldError, setToastMessage]);
 
   const verifyLeadEmailOTP = useCallback(
     async (otp) => {
@@ -117,9 +123,6 @@ const PropertyDetail = () => {
     (e) => {
       if (e.currentTarget.value && !errors.email) {
         setDisableNextStep(true);
-        setShowOTPInput(true);
-      } else {
-        setShowOTPInput(false);
       }
     },
     [errors.email, setDisableNextStep],
@@ -207,9 +210,20 @@ const PropertyDetail = () => {
           `
               : null
           }
+          displayError={hasSentOTPOnce}
         />
 
-        {showOTPInput ? (
+        {!disableEmailInput && (
+          <button
+            className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
+            disabled={!!errors.email}
+            onClick={sendEmailOTP}
+          >
+            Send OTP
+          </button>
+        )}
+
+        {showOTPInput && (
           <OtpInput
             label='Enter OTP'
             required
@@ -219,8 +233,9 @@ const PropertyDetail = () => {
             disableSendOTP={true}
             onSendOTPClick={sendEmailOTP}
             verifyOTPCB={verifyLeadEmailOTP}
+            hasSentOTPOnce={hasSentOTPOnce}
           />
-        ) : null}
+        )}
       </div>
     </PropertyDetailContext.Provider>
   );

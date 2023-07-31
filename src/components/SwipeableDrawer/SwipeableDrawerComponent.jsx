@@ -29,7 +29,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'light' ? '#fff' : grey[800],
 }));
 
-export default function SwipeableDrawerComponent({ formContainerRef }, props) {
+export default function SwipeableDrawerComponent({ formContainerRef }) {
   const { drawerOpen, setDrawerOpen } = useContext(AuthContext);
   const { activeStepIndex } = useContext(AuthContext);
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);

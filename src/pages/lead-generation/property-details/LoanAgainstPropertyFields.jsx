@@ -75,7 +75,6 @@ const LoanAgainstPropertyFields = () => {
 
   useEffect(() => {
     if (!propertyIdentified) return;
-    if (showOTPInput && emailOTPVerified) setDisableNextStep(false);
 
     let disableSubmitting = disableSubmitMap[propertyIdentified].reduce((acc, field) => {
       const keys = Object.keys(errors);
@@ -87,6 +86,13 @@ const LoanAgainstPropertyFields = () => {
 
     setDisableNextStep(!disableSubmitting);
   }, [propertyIdentified, errors, setDisableNextStep, showOTPInput, emailOTPVerified]);
+
+  useEffect(() => {
+    if (showOTPInput) {
+      if (emailOTPVerified) setDisableNextStep(false);
+      else setDisableNextStep(true);
+    }
+  }, [showOTPInput, emailOTPVerified, setDisableNextStep]);
 
   return (
     <>

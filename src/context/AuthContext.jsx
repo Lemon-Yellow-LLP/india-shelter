@@ -61,6 +61,7 @@ const AuthContextProvider = ({ children }) => {
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const navigate = useNavigate();
+  const [toastMessage, setToastMessage] = useState(null);
 
   const formik = useFormik({
     initialValues: { ...defaultValues, promo_code: searchParams.get('promo_code') || '' },
@@ -197,6 +198,8 @@ const AuthContextProvider = ({ children }) => {
         setAllowedLoanAmount,
         drawerOpen,
         setDrawerOpen,
+        setToastMessage,
+        toastMessage,
       }}
     >
       {children}

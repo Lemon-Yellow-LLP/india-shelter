@@ -31,10 +31,7 @@ const StyledBox = styled(Box)(({ theme }) => ({
 
 export default function SwipeableDrawerComponent({ formContainerRef }) {
   const { drawerOpen, setDrawerOpen } = useContext(AuthContext);
-  // const { window2 } = props;
-  // const [open, setOpen] = useState(false);
   const { activeStepIndex } = useContext(AuthContext);
-
   const [innerWidth, setInnerWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -43,7 +40,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }) {
     }
     window.addEventListener('resize', handleWindowResize);
     return () => window.removeEventListener('resize', handleWindowResize);
-  });
+  }, []);
 
   const onClick = useCallback(() => {
     setDrawerOpen(true);
@@ -79,8 +76,6 @@ export default function SwipeableDrawerComponent({ formContainerRef }) {
     setDrawerOpen(newOpen);
   };
 
-  // const container = window2 !== undefined ? () => window2().document.body : undefined;
-
   if (innerWidth < 768) {
     return (
       <Root>
@@ -95,7 +90,6 @@ export default function SwipeableDrawerComponent({ formContainerRef }) {
         />
 
         <SwipeableDrawer
-          // container={container}
           anchor='bottom'
           open={drawerOpen}
           onClose={toggleDrawer(false)}

@@ -22,7 +22,7 @@ const LeadGenerationForm = ({ formContainerRef, modalRef }) => {
     }
     window.addEventListener('resize', handleWindowResize);
     return () => window.removeEventListener('resize', handleWindowResize);
-  });
+  }, []);
 
   const onClick = useCallback(() => {
     modalRef.current?.snapTo(0);

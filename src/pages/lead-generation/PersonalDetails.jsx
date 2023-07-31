@@ -119,19 +119,14 @@ const PersonalDetail = () => {
     });
   }, [leadExists, phone_number, searchParams, setFieldError, setToastMessage]);
 
-  const handleOnLoanPurposeChange = (e) => {
-    // setSelectedLoanType(e.currentTarget.value);
-    // setFieldValue('loan_type', e.currentTarget.value);
+  const handleOnLoanPurposeChange = useCallback((e) => {
     setSelectedLoanType(e);
     setFieldValue('loan_type', e);
-  };
+  }, []);
 
-  const handleLoanAmountChange = useCallback(
-    (e) => {
-      setFieldValue('loan_request_amount', e.currentTarget.value);
-    },
-    [setFieldValue],
-  );
+  const handleLoanAmountChange = useCallback((e) => {
+    setFieldValue('loan_request_amount', e.currentTarget.value);
+  }, []);
 
   const verifyLeadOTP = useCallback(
     async (otp) => {
@@ -170,6 +165,18 @@ const PersonalDetail = () => {
 
   const handleOnPhoneNumberChange = useCallback(async (e) => {
     const phoneNumber = e.currentTarget.value;
+    if (phoneNumber < 0) {
+      e.preventDefault();
+      return;
+    }
+    if (values.length >= 10) {
+      return;
+    }
+    if (phoneNumber.charAt(0) === '0') {
+      e.preventDefault();
+      return;
+    }
+    setFieldValue('phone_number', phoneNumber);
     if (phoneNumber?.length < 10) {
       setLeadExists(false);
       setShowOTPInput(false);
@@ -179,6 +186,14 @@ const PersonalDetail = () => {
     if (data.length) {
       setLeadExists(true);
       setShowOTPInput(true);
+    }
+  }, []);
+
+  const handleTextInputChange = useCallback((e) => {
+    const value = e.currentTarget.value;
+    const pattern = /^[A-Za-z]+$/;
+    if (pattern.exec(value[value.length - 1])) {
+      setFieldValue(e.currentTarget.name, value.charAt(0).toUpperCase() + value.slice(1));
     }
   }, []);
 
@@ -323,13 +338,7 @@ const PersonalDetail = () => {
         touched={touched.first_name}
         onBlur={handleBlur}
         disabled={inputDisabled}
-        onChange={(e) => {
-          const value = e.currentTarget.value;
-          const pattern = /^[A-Za-z]+$/;
-          if (pattern.exec(value[value.length - 1])) {
-            setFieldValue('first_name', value.charAt(0).toUpperCase() + value.slice(1));
-          }
-        }}
+        onChange={handleTextInputChange}
         inputClasses='capitalize'
       />
       <div className='flex flex-col md:flex-row gap-2 md:gap-6'>
@@ -341,13 +350,7 @@ const PersonalDetail = () => {
             name='middle_name'
             disabled={inputDisabled}
             onBlur={handleBlur}
-            onChange={(e) => {
-              const value = e.currentTarget.value;
-              const pattern = /^[A-Za-z]+$/;
-              if (pattern.exec(value[value.length - 1])) {
-                setFieldValue('middle_name', value.charAt(0).toUpperCase() + value.slice(1));
-              }
-            }}
+            onChange={handleTextInputChange}
             inputClasses='capitalize'
           />
         </div>
@@ -359,13 +362,7 @@ const PersonalDetail = () => {
             placeholder='Eg: Swami, Singh'
             disabled={inputDisabled}
             name='last_name'
-            onChange={(e) => {
-              const value = e.currentTarget.value;
-              const pattern = /^[A-Za-z]+$/;
-              if (pattern.exec(value[value.length - 1])) {
-                setFieldValue('last_name', value.charAt(0).toUpperCase() + value.slice(1));
-              }
-            }}
+            onChange={handleTextInputChange}
             inputClasses='capitalize'
           />
         </div>
@@ -452,22 +449,7 @@ const PersonalDetail = () => {
         onInput={(e) => {
           if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
         }}
-        onChange={(e) => {
-          if (e.currentTarget.value < 0) {
-            e.preventDefault();
-            return;
-          }
-          if (values.phone_number.length >= 10) {
-            return;
-          }
-          const value = e.currentTarget.value;
-          if (value.charAt(0) === '0') {
-            e.preventDefault();
-            return;
-          }
-          setFieldValue('phone_number', value);
-          handleOnPhoneNumberChange(e);
-        }}
+        onChange={handleOnPhoneNumberChange}
         onPaste={(e) => {
           e.preventDefault();
           const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');

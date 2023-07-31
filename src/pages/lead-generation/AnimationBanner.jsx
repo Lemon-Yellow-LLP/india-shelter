@@ -30,7 +30,7 @@ const AnimationBanner = () => {
     }
     window.addEventListener('resize', handleWindowResize);
     return () => window.removeEventListener('resize', handleWindowResize);
-  });
+  }, []);
 
   useEffect(() => {
     if (lottiePlayerRef.current && selectedLoanType !== 'LAP')
@@ -75,7 +75,7 @@ const AnimationBanner = () => {
         </button>
         <div className='flex flex-col gap-7 items-center flex-1'>
           <img
-            style={{ maxWidth: 175 }}
+            style={{ width: '174px', height: '43px' }}
             className='hidden md:inline'
             src={logo}
             alt='India Shelter'

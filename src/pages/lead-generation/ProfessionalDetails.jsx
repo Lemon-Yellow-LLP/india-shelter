@@ -179,6 +179,7 @@ const ProfessinalDetail = () => {
         touched={touched.pan_number}
         onBlur={(e) => {
           handleBlur(e);
+          updateLeadDataOnBlur(currentLeadId, 'pan_number', values.pan_number.toUpperCase());
         }}
         onChange={(value) => {
           setFieldValue('pan_number', value);

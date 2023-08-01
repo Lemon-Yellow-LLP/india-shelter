@@ -21,12 +21,34 @@ import {
   getPincode,
   sendMobileOTP,
   verifyMobileOtp,
+  updateLeadDataOnBlur,
 } from '../../global';
 import { useSearchParams } from 'react-router-dom';
+import IconMale from '../../assets/icons/male';
+import IconFemale from '../../assets/icons/female';
+import IconTransGender from '../../assets/icons/transgender';
 
 const fieldsRequiredForLeadGeneration = ['first_name', 'phone_number', 'pincode'];
 const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
 const disableNextFields = ['loan_request_amount', 'first_name', 'pincode', 'phone_number'];
+
+const genderData = [
+  {
+    label: 'Male',
+    value: 'male',
+    icon: <IconMale />,
+  },
+  {
+    label: 'Female',
+    value: 'female',
+    icon: <IconFemale />,
+  },
+  {
+    label: 'Transgender',
+    value: 'transgender',
+    icon: <IconTransGender />,
+  },
+];
 
 const PersonalDetail = () => {
   const [searchParams] = useSearchParams();
@@ -63,6 +85,7 @@ const PersonalDetail = () => {
     showTerms,
     setShowTerms,
     setLoadingBRE_Status,
+    currentLeadId,
     setToastMessage,
   } = useContext(AuthContext);
   const { loan_request_amount, first_name, pincode, phone_number } = values;
@@ -70,6 +93,7 @@ const PersonalDetail = () => {
   const [disablePhoneNumber, setDisablePhoneNumber] = useState(phoneNumberVerified);
   const [hasSentOTPOnce, setHasSentOTPOnce] = useState(false);
   const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
+  const [selectedGender, setSelectedGender] = useState(null);
 
   useEffect(() => {
     let disableNext = disableNextFields.reduce((acc, field) => {
@@ -78,13 +102,18 @@ const PersonalDetail = () => {
       return acc && !keys.includes(field);
     }, !errors[disableNextFields[0]]);
     disableNext =
-      disableNext && acceptedTermsAndCondition && phoneNumberVerified && selectedLoanType;
+      disableNext &&
+      acceptedTermsAndCondition &&
+      phoneNumberVerified &&
+      selectedLoanType &&
+      selectedGender;
     setDisableNextStep(!disableNext);
   }, [
     acceptedTermsAndCondition,
     errors,
     phoneNumberVerified,
     selectedLoanType,
+    selectedGender,
     setDisableNextStep,
   ]);
 
@@ -270,6 +299,20 @@ const PersonalDetail = () => {
     values,
   ]);
 
+  useEffect(() => {
+    setSelectedGender(values.gender);
+  }, [values.gender]);
+
+  const onGenderChange = useCallback(
+    (e) => {
+      const value = e;
+      setSelectedGender(value);
+      setFieldValue('gender', value);
+      updateLeadDataOnBlur(currentLeadId, 'gender', value);
+    },
+    [currentLeadId, setFieldValue],
+  );
+
   return (
     <div className='flex flex-col gap-2'>
       <div className='flex flex-col gap-2'>
@@ -368,6 +411,31 @@ const PersonalDetail = () => {
           />
         </div>
       </div>
+
+      <div className='flex flex-col gap-2'>
+        <label htmlFor='loan-purpose' className='flex gap-0.5 font-medium text-primary-black'>
+          Gender <span className='text-primary-red text-xs'>*</span>
+        </label>
+        <div
+          className={`flex gap-4 w-full ${
+            inputDisabled ? 'pointer-events-none cursor-not-allowed' : 'pointer-events-auto'
+          }`}
+        >
+          {genderData.map((gender, index) => (
+            <CardRadio
+              key={index}
+              label={gender.label}
+              name='gender'
+              value={gender.value}
+              current={selectedGender}
+              onChange={onGenderChange}
+            >
+              {gender.icon}
+            </CardRadio>
+          ))}
+        </div>
+      </div>
+
       <TextInput
         label='Current Pincode'
         placeholder='Eg: 123456'

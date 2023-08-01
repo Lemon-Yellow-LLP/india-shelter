@@ -11,6 +11,7 @@ export const defaultValues = {
   first_name: '',
   middle_name: '',
   last_name: '',
+  gender: '',
   pan_number: '',
   date_of_birth: '',
   profession: '',

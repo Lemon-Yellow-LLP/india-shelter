@@ -51,6 +51,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       loan_request_amount: parseFloat(values.loan_request_amount),
       middle_name: values.middle_name,
       last_name: values.last_name,
+      gender: values.gender,
       extra_params: {
         resume_journey_index: activeStepIndex + 1,
       },

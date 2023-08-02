@@ -147,5 +147,4 @@ export default function SwipeableDrawerComponent({ formContainerRef }) {
 
 SwipeableDrawerComponent.propTypes = {
   formContainerRef: propTypes.object,
-  window2: propTypes.object,
 };

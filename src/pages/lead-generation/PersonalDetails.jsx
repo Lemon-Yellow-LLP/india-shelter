@@ -35,17 +35,17 @@ const disableNextFields = ['loan_request_amount', 'first_name', 'pincode', 'phon
 const genderData = [
   {
     label: 'Male',
-    value: 'male',
+    value: 'Male',
     icon: <IconMale />,
   },
   {
     label: 'Female',
-    value: 'female',
+    value: 'Female',
     icon: <IconFemale />,
   },
   {
     label: 'Transgender',
-    value: 'transgender',
+    value: 'Transgender',
     icon: <IconTransGender />,
   },
 ];

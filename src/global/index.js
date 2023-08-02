@@ -1,7 +1,7 @@
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://agile.indiashelter.in/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://scotttiger.in/api';
 const API_LEAD_URL = `${API_URL}/lead`;
 
 const requestOptions = {};

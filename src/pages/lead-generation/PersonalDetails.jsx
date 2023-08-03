@@ -169,7 +169,7 @@ const PersonalDetail = () => {
       e.preventDefault();
       return;
     }
-    if (values.length >= 10) {
+    if (phoneNumber.length > 10) {
       return;
     }
     if (phoneNumber.charAt(0) === '0') {

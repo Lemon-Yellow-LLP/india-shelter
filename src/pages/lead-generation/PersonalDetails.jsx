@@ -344,7 +344,7 @@ const PersonalDetail = () => {
 
       <CurrencyInput
         label='I want a loan of'
-        placeholder='1,00,000'
+        placeholder='5,00,000'
         required
         name='loan_request_amount'
         value={loan_request_amount}

@@ -118,9 +118,6 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
-    if (disablePhoneNumber) {
-      return;
-    }
     setHasSentOTPOnce(true);
     setDisablePhoneNumber(true);
     setToastMessage('OTP has been sent to your mobile number');

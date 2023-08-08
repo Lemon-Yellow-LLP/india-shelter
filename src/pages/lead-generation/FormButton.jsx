@@ -46,13 +46,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
           setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallPanRule: true }));
         }
 
-        await Promise.all([verifyPan(currentLeadId), checkCibil(currentLeadId)])
-          .then((res) => {
-            console.log('pan and cibil', res);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        await Promise.all([verifyPan(currentLeadId), checkCibil(currentLeadId)]);
       } catch (err) {
         console.log(err);
       }

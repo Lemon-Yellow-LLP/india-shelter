@@ -106,7 +106,7 @@ const WelcomeBack = () => {
       setLoadingBRE_Status(false);
       setIsQualified(
         values.bre_100_status &&
-          leadData.bre_100_amount_offered &&
+          values.bre_100_amount_offered &&
           values.bre_100_amount_offered != 0
           ? true
           : false,

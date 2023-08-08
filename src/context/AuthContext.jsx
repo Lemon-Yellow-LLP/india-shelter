@@ -7,7 +7,7 @@ import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 export const defaultValues = {
   phone_number: '',
   loan_type: '',
-  loan_request_amount: '100000',
+  loan_request_amount: '500000',
   first_name: '',
   middle_name: '',
   last_name: '',

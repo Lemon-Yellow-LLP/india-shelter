@@ -1,8 +1,8 @@
 /* eslint-disable react/display-name */
 import PropTypes from 'prop-types';
-import { memo, useMemo } from 'react';
+import { useMemo } from 'react';
 
-const RangeSlider = memo(({ initialValue, onChange, minValueLabel, maxValueLabel, ...props }) => {
+const RangeSlider = ({ initialValue, onChange, minValueLabel, maxValueLabel, ...props }) => {
   const inputBackground = useMemo(() => {
     if (isNaN(parseInt(initialValue)))
       return `linear-gradient(to right, #E33439 ${0}%, #f7c3c4 ${0}%)`;
@@ -28,7 +28,7 @@ const RangeSlider = memo(({ initialValue, onChange, minValueLabel, maxValueLabel
       </div>
     </div>
   );
-});
+};
 
 export default RangeSlider;
 

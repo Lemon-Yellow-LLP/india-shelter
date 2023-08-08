@@ -56,11 +56,11 @@ const OtpInput = ({
   }, [onSendOTPClick]);
 
   useEffect(() => {
-    if (!hasSentOTPOnce) return
+    if (!hasSentOTPOnce) return;
     setActiveOtpIndex(0);
     setInputDisabled(false);
     setTimer(true);
-  }, [hasSentOTPOnce])
+  }, [hasSentOTPOnce]);
 
   useEffect(() => {
     let interval = null;
@@ -84,7 +84,7 @@ const OtpInput = ({
     return () => {
       clearInterval(interval);
     };
-  }, [verified, timer, setOTPVerified, defaultResendTime ]);
+  }, [verified, timer, setOTPVerified, defaultResendTime]);
 
   useEffect(() => {
     inputRef.current?.focus({ preventScroll: true });

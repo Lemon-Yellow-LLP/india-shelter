@@ -2,7 +2,7 @@ import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
 import { useCallback, useContext, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
-import { addToSalesForce, editLeadById, verifyPan, checkCibil, checkBre100 } from '../../global';
+import { addToSalesForce, editLeadById, checkBre100 } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
 import { AnimatePresence, motion } from 'framer-motion';
 import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
@@ -52,31 +52,6 @@ const LeadGeneration = () => {
             }, 1000);
           });
         }, 2000);
-
-        if (allowCallPanAndCibil.allowCallPanRule) {
-          try {
-            await verifyPan(leadId);
-          } catch (err) {
-            console.error(err);
-          }
-        }
-
-        if (allowCallPanAndCibil.allowCallCibilRule) {
-          try {
-            interval = setInterval(() => {
-              setProgress((prev) => {
-                if (prev >= 80) {
-                  clearInterval(interval);
-                  return 80;
-                }
-                return prev + 1;
-              }, 1000);
-            });
-            await checkCibil(leadId);
-          } catch (err) {
-            console.error(err);
-          }
-        }
 
         interval = setInterval(() => {
           setProgress((prev) => {

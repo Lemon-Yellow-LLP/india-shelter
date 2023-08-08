@@ -239,11 +239,11 @@ body {
 }
 
 .toast-message {
-  box-shadow: 0px 4px 16px 0px #100B2714;
+  box-shadow: 0px 4px 16px 0px #100b2714;
 }
 
 @screen lg {
   .toast-message {
-    box-shadow: 2px 7px 20px 0px #100B2736;
+    box-shadow: 2px 7px 20px 0px #100b2736;
   }
 }

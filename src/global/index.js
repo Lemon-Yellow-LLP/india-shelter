@@ -94,7 +94,7 @@ async function verifyPan(id) {
       ...requestOptions,
       timeout: 90000,
       'axios-retry': {
-        retries: 3,
+        retries: 2,
         retryCondition: () => true,
       },
     },
@@ -136,7 +136,19 @@ async function checkBre99(id) {
 }
 
 async function checkBre100(id, options = {}) {
-  const res = await axios.post(`${API_URL}/bre-100/${id}`, {}, { ...requestOptions, ...options });
+  const res = await axios.post(
+    `${API_URL}/bre-100/${id}`,
+    {},
+    {
+      ...requestOptions,
+      ...options,
+      timeout: 90000,
+      'axios-retry': {
+        retries: 2,
+        retryCondition: () => true,
+      },
+    },
+  );
   return res;
 }
 
@@ -148,7 +160,7 @@ async function checkCibil(id) {
       ...requestOptions,
       timeout: 90000,
       'axios-retry': {
-        retries: 3,
+        retries: 2,
         retryCondition: () => true,
       },
     },

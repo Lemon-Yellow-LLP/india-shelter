@@ -104,7 +104,13 @@ const WelcomeBack = () => {
     if (values.is_submitted) {
       setProcessingBRE(true);
       setLoadingBRE_Status(false);
-      setIsQualified(values.bre_100_status && values.bre_100_amount_offered != 0 ? true : false);
+      setIsQualified(
+        values.bre_100_status &&
+          leadData.bre_100_amount_offered &&
+          values.bre_100_amount_offered != 0
+          ? true
+          : false,
+      );
       navigate('/');
       return;
     }
@@ -167,14 +173,6 @@ const WelcomeBack = () => {
         }}
         className='mt-4 md:mt-8 flex flex-col gap-2 md:gap-4 px-4 md:self-center w-full '
       >
-        {/* <div className='flex flex-col'>
-          {!hasSentOTPOnce && (
-            <button className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'>
-              Send OTP
-            </button>
-          )}
-        </div> */}
-
         <div>
           <div className='flex justify-between gap-2'>
             <div className='w-full'>

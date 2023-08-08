@@ -3,7 +3,14 @@ import { Button } from '../../components';
 import { AuthContext, defaultValues } from '../../context/AuthContext';
 import { steps } from './utils';
 import PropTypes from 'prop-types';
-import { checkBre99, checkDedupe, editLeadById, NaNorNull } from '../../global';
+import {
+  checkBre99,
+  checkDedupe,
+  editLeadById,
+  verifyPan,
+  checkCibil,
+  NaNorNull,
+} from '../../global';
 
 const FormButton = ({ onButtonClickCB, onSubmit }) => {
   const {
@@ -38,6 +45,8 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         if (allowCallPanRule.Rule_Value === 'YES') {
           setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallPanRule: true }));
         }
+
+        await Promise.all([verifyPan(currentLeadId), checkCibil(currentLeadId)]);
       } catch (err) {
         console.log(err);
       }

@@ -181,47 +181,56 @@ const PropertyDetail = () => {
           />
         )}
 
-        <TextInput
-          label='Enter your Email ID'
-          type='email'
-          value={email}
-          placeholder='Please enter your Email ID'
-          name='email'
-          autoComplete='off'
-          error={errors.email}
-          touched={touched.email}
-          onBlur={(e) => {
-            const target = e.currentTarget;
-            handleOnEmailBlur(target.value);
-            handleBlur(e);
-            checkEmailValid(e);
-            updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
-          }}
-          disabled={disableEmailInput}
-          onInput={checkEmailValid}
-          onChange={(e) => {
-            checkEmailValid(e);
-            handleChange(e);
-          }}
-          message={
-            emailOTPVerified
-              ? `OTP Verfied
+        <div>
+          <div className='flex justify-between gap-2'>
+            <div className='w-full'>
+              <TextInput
+                label='Enter your Email ID'
+                type='email'
+                value={email}
+                placeholder='Ex: xyz@gmail.com'
+                name='email'
+                autoComplete='off'
+                error={errors.email}
+                touched={touched.email}
+                onBlur={(e) => {
+                  const target = e.currentTarget;
+                  handleOnEmailBlur(target.value);
+                  handleBlur(e);
+                  checkEmailValid(e);
+                  updateLeadDataOnBlur(currentLeadId, target.getAttribute('name'), target.value);
+                }}
+                disabled={disableEmailInput}
+                onInput={checkEmailValid}
+                onChange={(e) => {
+                  checkEmailValid(e);
+                  handleChange(e);
+                }}
+                message={
+                  emailOTPVerified
+                    ? `OTP Verfied
           <img src="${otpVerified}" alt='Otp Verified' role='presentation' />
           `
-              : null
-          }
-          displayError={hasSentOTPOnce}
-        />
+                    : null
+                }
+                displayError={hasSentOTPOnce}
+              />
+            </div>
 
-        {!disableEmailInput && (
-          <button
-            className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
-            disabled={!!errors.email}
-            onClick={sendEmailOTP}
-          >
-            Send OTP
-          </button>
-        )}
+            <button
+              className={`min-w-[93px] self-end font-normal py-3 px-2 rounded disabled:text-dark-grey disabled:bg-stroke ${
+                disableEmailInput
+                  ? 'text-dark-grey bg-stroke mb-[22px] pointer-events-none'
+                  : 'bg-primary-red text-white'
+              }`}
+              disabled={!!errors.email}
+              onClick={sendEmailOTP}
+            >
+              Send OTP
+            </button>
+          </div>
+          {!disableEmailInput && <div className='h-4'></div>}
+        </div>
 
         {showOTPInput && (
           <OtpInput

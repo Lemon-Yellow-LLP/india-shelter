@@ -11,8 +11,8 @@ function parseDateString(_, originalValue) {
 
 export const signUpSchema = Yup.object({
   first_name: Yup.string()
-    .min(2, 'First Name must be at least 2 characters')
-    .max(10, 'First Name must be at most 10 characters')
+    .min(2, 'First name must be at least 2 characters')
+    .max(10, 'First name must be at most 10 characters')
     .required('Please enter your First name'),
   middle_name: Yup.string().min(2).max(10),
   last_name: Yup.string().min(2).max(10),

@@ -37,7 +37,6 @@ const LeadGeneration = () => {
 
       editLeadById(leadId, values).then(async () => {
         let interval = 10;
-
         setProcessingBRE(true);
         setLoadingBRE_Status(true);
 
@@ -51,21 +50,24 @@ const LeadGeneration = () => {
               return prev + 1;
             }, 1000);
           });
-        }, 2000);
-
-        interval = setInterval(() => {
-          setProgress((prev) => {
-            if (prev >= 99) {
-              clearInterval(interval);
-              return 99;
-            }
-            return prev + 1;
-          }, 2000);
-        });
+        }, 1000);
 
         try {
           const res = await checkBre100(leadId);
           const breResponse = res.data.bre_100_response;
+
+          interval = setInterval(() => {
+            setProgress((prev) => {
+              if (prev >= 99) {
+                clearInterval(interval);
+                return 99;
+              }
+              return prev + 1;
+            }, 2000);
+          });
+
+          await addToSalesForce(leadId);
+
           if (breResponse.statusCode === 200) {
             setLoadingBRE_Status(false);
             setIsQualified(true);
@@ -85,8 +87,6 @@ const LeadGeneration = () => {
           setIsQualified(false);
           setLoadingBRE_Status(false);
         }
-
-        await addToSalesForce(leadId).catch(() => {});
       });
     },
     [

@@ -118,6 +118,9 @@ const PersonalDetail = () => {
   ]);
 
   const onOTPSendClick = useCallback(() => {
+    if (disablePhoneNumber) {
+      return;
+    }
     setHasSentOTPOnce(true);
     setDisablePhoneNumber(true);
     setToastMessage('OTP has been sent to your mobile number');
@@ -146,7 +149,7 @@ const PersonalDetail = () => {
         console.error('WebOTP is not supported in this browser');
       }
     });
-  }, [leadExists, phone_number, searchParams, setFieldError, setToastMessage]);
+  }, [leadExists, phone_number, searchParams, setFieldError, setToastMessage, disablePhoneNumber]);
 
   const handleOnLoanPurposeChange = useCallback((e) => {
     setSelectedLoanType(e);
@@ -498,72 +501,82 @@ const PersonalDetail = () => {
         inputClasses='hidearrow'
       />
 
-      <TextInput
-        label='Mobile number'
-        placeholder='Please enter 10 digit mobile no'
-        required
-        name='phone_number'
-        type='tel'
-        value={values.phone_number}
-        error={errors.phone_number}
-        touched={touched.phone_number}
-        onBlur={handleBlur}
-        pattern='\d*'
-        onFocus={(e) =>
-          e.target.addEventListener(
-            'wheel',
-            function (e) {
-              e.preventDefault();
-            },
-            { passive: false },
-          )
-        }
-        min='0'
-        onInput={(e) => {
-          if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
-        }}
-        onChange={handleOnPhoneNumberChange}
-        onPaste={(e) => {
-          e.preventDefault();
-          const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
-          e.target.value = text;
-          handleChange(e);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === 'Backspace') {
-            setFieldValue(
-              'phone_number',
-              values.phone_number.slice(0, values.phone_number.length - 1),
-            );
-            e.preventDefault();
-            return;
-          }
-          if (DISALLOW_CHAR.includes(e.key)) {
-            e.preventDefault();
-            return;
-          }
-        }}
-        disabled={inputDisabled || disablePhoneNumber}
-        inputClasses='hidearrow'
-        message={
-          phoneNumberVerified
-            ? `OTP Verfied
+      <div>
+        <div className='flex justify-between gap-2'>
+          <div className='w-full'>
+            <TextInput
+              label='Mobile number'
+              placeholder='Eg: 1234567890'
+              required
+              name='phone_number'
+              type='tel'
+              value={values.phone_number}
+              error={errors.phone_number}
+              touched={touched.phone_number}
+              onBlur={handleBlur}
+              pattern='\d*'
+              onFocus={(e) =>
+                e.target.addEventListener(
+                  'wheel',
+                  function (e) {
+                    e.preventDefault();
+                  },
+                  { passive: false },
+                )
+              }
+              min='0'
+              onInput={(e) => {
+                if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+              }}
+              onChange={handleOnPhoneNumberChange}
+              onPaste={(e) => {
+                e.preventDefault();
+                const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
+                e.target.value = text;
+                handleChange(e);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Backspace') {
+                  setFieldValue(
+                    'phone_number',
+                    values.phone_number.slice(0, values.phone_number.length - 1),
+                  );
+                  e.preventDefault();
+                  return;
+                }
+                if (DISALLOW_CHAR.includes(e.key)) {
+                  e.preventDefault();
+                  return;
+                }
+              }}
+              disabled={inputDisabled || disablePhoneNumber}
+              inputClasses='hidearrow'
+              message={
+                phoneNumberVerified
+                  ? `OTP Verfied
           <img src="${otpVerified}" alt='Otp Verified' role='presentation' />
           `
-            : null
-        }
-        displayError={disablePhoneNumber}
-      />
-
-      {!disablePhoneNumber && (
-        <button
-          className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
-          disabled={!((isLeadGenerated && !phoneNumberVerified) || leadExists)}
-          onClick={onOTPSendClick}
-        >
-          Send OTP
-        </button>
-      )}
+                  : null
+              }
+              displayError={disablePhoneNumber}
+            />
+          </div>
+          <button
+            className={`min-w-[93px] self-end font-normal py-3 px-2 rounded disabled:text-dark-grey disabled:bg-stroke ${
+              disablePhoneNumber
+                ? 'text-dark-grey bg-stroke mb-[22px] pointer-events-none'
+                : 'bg-primary-red text-white'
+            }`}
+            disabled={
+              !((isLeadGenerated && !phoneNumberVerified && !disablePhoneNumber) || leadExists)
+            }
+            onClick={onOTPSendClick}
+          >
+            Send OTP
+          </button>
+        </div>
+        {!disablePhoneNumber && <div className='h-4'></div>}
+      </div>
 
       {!errors.phone_number && leadExists && !phoneNumberVerified && !hasSentOTPOnce && (
         <span className='text-xs text-primary-red -mt-4'>

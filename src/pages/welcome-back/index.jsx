@@ -173,82 +173,90 @@ const WelcomeBack = () => {
         }}
         className='mt-4 md:mt-8 flex flex-col gap-2 md:gap-4 px-4 md:self-center w-full '
       >
-        <div className='flex flex-col'>
-          <TextInput
-            label='Mobile number'
-            placeholder='Please enter 10 digit mobile no'
-            required
-            name='phone_number'
-            type='tel'
-            value={values.phone_number}
-            onBlur={handleBlur}
-            pattern='\d*'
-            onFocus={(e) =>
-              e.target.addEventListener(
-                'wheel',
-                function (e) {
+        <div>
+          <div className='flex justify-between gap-2'>
+            <div className='w-full'>
+              <TextInput
+                label='Mobile number'
+                placeholder='Please enter 10 digit mobile no'
+                required
+                name='phone_number'
+                type='tel'
+                value={values.phone_number}
+                onBlur={handleBlur}
+                pattern='\d*'
+                onFocus={(e) =>
+                  e.target.addEventListener(
+                    'wheel',
+                    function (e) {
+                      e.preventDefault();
+                    },
+                    { passive: false },
+                  )
+                }
+                min='0'
+                onInput={(e) => {
+                  if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+                }}
+                onChange={(e) => {
+                  if (e.currentTarget.value < 0) {
+                    e.preventDefault();
+                    return;
+                  }
+                  if (values.phone_number.length >= 10) {
+                    return;
+                  }
+                  const value = e.currentTarget.value;
+                  if (value.charAt(0) === '0') {
+                    e.preventDefault();
+                    return;
+                  }
+                  setFieldValue('phone_number', value);
+                  //   handleOnPhoneNumberChange(e);
+                }}
+                onPaste={(e) => {
                   e.preventDefault();
-                },
-                { passive: false },
-              )
-            }
-            min='0'
-            onInput={(e) => {
-              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
-            }}
-            onChange={(e) => {
-              if (e.currentTarget.value < 0) {
-                e.preventDefault();
-                return;
-              }
-              if (values.phone_number.length >= 10) {
-                return;
-              }
-              const value = e.currentTarget.value;
-              if (value.charAt(0) === '0') {
-                e.preventDefault();
-                return;
-              }
-              setFieldValue('phone_number', value);
-              //   handleOnPhoneNumberChange(e);
-            }}
-            onPaste={(e) => {
-              e.preventDefault();
-              const text = (e.originalEvent || e).clipboardData.getData('text/plain').replace('');
-              e.target.value = text;
-              handleChange(e);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Backspace') {
-                setFieldValue(
-                  'phone_number',
-                  values.phone_number.slice(0, values.phone_number.length - 1),
-                );
-                e.preventDefault();
-                return;
-              }
-            }}
-            disabled={inputDisabled}
-            inputClasses='hidearrow'
-            message={
-              phoneNumberVerified
-                ? `OTP Verfied
+                  const text = (e.originalEvent || e).clipboardData
+                    .getData('text/plain')
+                    .replace('');
+                  e.target.value = text;
+                  handleChange(e);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Backspace') {
+                    setFieldValue(
+                      'phone_number',
+                      values.phone_number.slice(0, values.phone_number.length - 1),
+                    );
+                    e.preventDefault();
+                    return;
+                  }
+                }}
+                disabled={inputDisabled}
+                inputClasses='hidearrow'
+                message={
+                  phoneNumberVerified
+                    ? `OTP Verfied
             <img src="${otpVerifiedIcon}" alt='Otp Verified' role='presentation' />
             `
-                : null
-            }
-            displayError={hasSentOTPOnce}
-          />
-
-          {!hasSentOTPOnce && (
+                    : null
+                }
+                displayError={hasSentOTPOnce}
+              />
+            </div>
             <button
-              className='self-end disabled:text-light-grey text-primary-red my-2 font-semibold'
+              className={`min-w-[93px] self-end font-normal py-3 px-2 rounded disabled:text-dark-grey disabled:bg-stroke ${
+                hasSentOTPOnce
+                  ? 'text-dark-grey bg-stroke mb-[22px] pointer-events-none'
+                  : 'bg-primary-red text-white'
+              }`}
               disabled={!!errors.phone_number}
               onClick={onOTPSendClick}
             >
               Send OTP
             </button>
-          )}
+          </div>
+          {!hasSentOTPOnce && <div className='h-4'></div>}
         </div>
 
         {showOTPInput && (

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import otpVerified from '../../assets/icons/otp-verified.svg';
 import otpNotVerified from '../../assets/icons/otp-not-verified.svg';
 
-let currentOtpIndex = 0;
 const DISALLOW_CHAR = ['-', '_', '.', '+', 'ArrowUp', 'ArrowDown', 'Unidentified', 'e', 'E'];
 
 const OtpInput = ({
@@ -17,29 +16,20 @@ const OtpInput = ({
   defaultResendTime,
   hasSentOTPOnce,
 }) => {
-  const [otp, setOtp] = useState(new Array(5).fill(''));
+  const [otp, setOtp] = useState('');
   const [activeOtpIndex, setActiveOtpIndex] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(true);
   const [timer, setTimer] = useState(hasSentOTPOnce);
   const [resendTime, setResendTime] = useState(defaultResendTime || 10);
-
   const inputRef = useRef(null);
 
   const handleOnChange = useCallback(
     (e) => {
       const { value } = e.target;
-      const newOTP = [...otp];
-      newOTP[currentOtpIndex] = value.substring(value.length - 1);
-
-      if (!value) setActiveOtpIndex(currentOtpIndex - 1);
-      else setActiveOtpIndex(currentOtpIndex + 1);
-
-      setOtp(newOTP);
-      const otpAsString = newOTP.join('');
-      if (otpAsString.length >= 5) {
+      setOtp(value);
+      if (value.length >= 5) {
         setInputDisabled(true);
-        setActiveOtpIndex(null);
-        verifyOTPCB(otpAsString).then((isVerifed) => {
+        verifyOTPCB(value).then((isVerifed) => {
           setInputDisabled(isVerifed);
         });
         setTimer(false);
@@ -49,7 +39,6 @@ const OtpInput = ({
   );
 
   const handleOnOTPSend = useCallback(() => {
-    setActiveOtpIndex(0);
     setInputDisabled(false);
     onSendOTPClick();
     setTimer(true);
@@ -80,7 +69,6 @@ const OtpInput = ({
       clearInterval(interval);
       setTimer(false);
     }
-
     return () => {
       clearInterval(interval);
     };
@@ -89,12 +77,6 @@ const OtpInput = ({
   useEffect(() => {
     inputRef.current?.focus({ preventScroll: true });
   }, [activeOtpIndex]);
-
-  const handleKeyDown = useCallback((e, index) => {
-    currentOtpIndex = index;
-    if (e.key === 'Backspace') setActiveOtpIndex(currentOtpIndex - 1);
-    if (e.key === 'Enter') setActiveOtpIndex(currentOtpIndex + 1);
-  }, []);
 
   const inputClasses = useMemo(() => {
     if (!hasSentOTPOnce) return 'border-stroke';
@@ -111,43 +93,38 @@ const OtpInput = ({
         {required && <span className='text-primary-red text-sm'>*</span>}
       </h3>
       <div className='flex gap-2 mt-1'>
-        {otp.map((_, index) => (
-          <input
-            autoComplete='one-time-code'
-            disabled={inputDisabled}
-            ref={index === activeOtpIndex ? inputRef : null}
-            key={index}
-            className={`
-              w-full h-12 border bg-transparent outline-none text-center text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow
+        <input
+          type='number'
+          autoComplete='one-time-code'
+          disabled={inputDisabled}
+          ref={inputRef}
+          className={`
+              w-full h-12 border bg-transparent outline-none px-4 text-base font-normal text-primary-black transition spin-button-none rounded-lg hidearrow
               ${inputClasses}
             `}
-            onChange={handleOnChange}
-            onKeyDown={(e) => {
-              if (DISALLOW_CHAR.includes(e.key)) {
-                e.preventDefault();
-                return;
-              }
-              handleKeyDown(e, index);
-            }}
-            value={otp[index]}
-            pattern='\d*'
-            min='0'
-            onInput={(e) => {
-              if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
-            }}
-            onPaste={(e) => {
+          onChange={handleOnChange}
+          onKeyDown={(e) => {
+            if (DISALLOW_CHAR.includes(e.key)) {
               e.preventDefault();
-              const text = (e.originalEvent || e).clipboardData.getData('text/plain').split('');
-              const copiedOTP = new Array(5).fill('').map((_, i) => text[i] || '');
-              setOtp(copiedOTP);
-              if (text.length === otp.length) {
-                setActiveOtpIndex(null);
-                verifyOTPCB(text.join(''));
-              }
-            }}
-            type='number'
-          />
-        ))}
+              return;
+            }
+          }}
+          value={otp}
+          pattern='\d*'
+          min='0'
+          onInput={(e) => {
+            if (!e.currentTarget.validity.valid) e.currentTarget.value = '';
+          }}
+          onPaste={(e) => {
+            e.preventDefault();
+            const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+            console.log(text);
+            setOtp(text);
+            if (text.length >= 5) {
+              verifyOTPCB(text);
+            }
+          }}
+        />
       </div>
       <div className='mt-3 flex justify-between items-center'>
         <div className='flex gap-0.5'>
@@ -172,7 +149,7 @@ const OtpInput = ({
             type='button'
             className='text-primary-red cursor-pointer font-semibold'
             onClick={() => {
-              setOtp(new Array(5).fill(''));
+              setOtp('');
               handleOnOTPSend();
             }}
           >

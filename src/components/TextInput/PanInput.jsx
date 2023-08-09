@@ -10,15 +10,30 @@ const PanInput = memo(
     const [inputValue, setInputValue] = useState(props.value);
 
     useEffect(() => {
-      if (tempInputRef) tempInputRef.current.value = '';
-      onChange(inputValue);
       if (inputValue.length >= 5 && inputValue.length < 9) {
         setInputType('number');
       } else {
         setInputType('text');
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inputValue]);
+
+    const handleInput = (e) => {
+      const value = e.currentTarget.value.toUpperCase();
+
+      let pattern = /^[A-Za-z]/;
+      if (inputType === 'number') {
+        pattern = /^[0-9]+$/;
+      }
+      if (value.length < inputValue.length) {
+        setInputValue(value);
+        onChange(value);
+      } else if (pattern.exec(value[value.length - 1])) {
+        if (value.length <= 10) {
+          setInputValue(value);
+          onChange(value);
+        }
+      }
+    };
 
     return (
       <div className='flex flex-col gap-1'>
@@ -31,7 +46,7 @@ const PanInput = memo(
           {label}
           {props.required && <span className='text-primary-red text-sm'>*</span>}
         </label>
-        <input type='hidden' value={props.value} />
+
         {hint && (
           <span
             className='mb-1.5 text-light-grey text-sm font-normal'
@@ -40,60 +55,24 @@ const PanInput = memo(
             }}
           />
         )}
-        <div
-          tabIndex={-1}
-          role='button'
-          onClick={() => tempInputRef.current.focus()}
-          onKeyDown={() => tempInputRef.current.focus()}
+
+        <input
+          type='text'
+          inputMode={inputType === 'number' ? 'numeric' : 'text'}
+          placeholder={props.placeholder}
+          value={inputValue}
+          onChange={(e) => handleInput(e)}
           className={`input-container px-4 py-3 border rounded-lg
-					inline-flex relative
-					transition-all ease-out duration-150
-					focus-within:border-secondary-blue focus-within:shadow-secondary-blue focus-within:shadow-primary
+					inline-flex relative transition-all ease-out duration-150
+					focus-within:border-secondary-blue focus-within:shadow-secondary-blue focus-within:shadow-primary hidearrow
 					${error && touched ? 'border-primary-red shadow-primary shadow-primary-red' : 'border-light-grey'}
 					${!props.value && !error && !touched && 'border-stroke'}
 					${props.disabled ? 'bg-[#fafafa] pointer-events-none cursor-not-allowed' : ''}
 					`}
-        >
-          <span
-            ref={inputRef}
-            type='text'
-            className={`text-base m-0 p-0 ${
-              inputValue ? 'text-black' : 'text-light-grey absolute'
-            }`}
-          >
-            {inputValue || props.placeholder}
-          </span>
-
-          <input
-            type={inputType}
-            inputMode={inputType === 'number' ? 'numeric' : 'text'}
-            ref={tempInputRef}
-            name={name}
-            className='w-2 hidearrow text-transparent placeholder:text-transparent'
-            onInput={(e) => {
-              const value = e.currentTarget.value;
-              if (!value) return;
-              let pattern = /^[A-Za-z]/;
-              if (inputType === 'number') {
-                pattern = /^[0-9]+$/;
-              }
-              if (pattern.exec(value[value.length - 1])) {
-                setInputValue((prev) => {
-                  if (prev.length >= 10) return prev;
-                  return prev + value[value.length - 1].toUpperCase();
-                });
-              }
-              tempInputRef.current.value = '';
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Backspace') {
-                setInputValue((prev) => prev.slice(0, prev.length - 1));
-                return;
-              }
-            }}
-            onBlur={props.onBlur}
-          />
-        </div>
+          onBlur={props.onBlur}
+          name='pan_number'
+          ref={inputRef}
+        />
 
         {displayError ? (
           <span

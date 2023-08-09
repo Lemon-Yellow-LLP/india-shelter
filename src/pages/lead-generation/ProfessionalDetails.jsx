@@ -173,7 +173,7 @@ const ProfessinalDetail = () => {
         label='PAN number'
         required
         name='pan_number'
-        placeholder='ABCDE1234A'
+        placeholder='ABCDE1234F'
         value={values.pan_number.toUpperCase()}
         error={errors.pan_number}
         touched={touched.pan_number}

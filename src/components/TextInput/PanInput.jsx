@@ -59,6 +59,7 @@ const PanInput = memo(
         <input
           type='text'
           inputMode={inputType === 'number' ? 'numeric' : 'text'}
+          placeholder={props.placeholder}
           value={inputValue}
           onChange={(e) => handleInput(e)}
           className={`input-container px-4 py-3 border rounded-lg

@@ -269,6 +269,11 @@ const PersonalDetail = () => {
         otp_send_on: null,
         pincode: parseInt(pincode),
         phone_number: phone_number.toString(),
+        middle_name: values.middle_name,
+        last_name: values.last_name,
+        loan_request_amount: parseFloat(values.loan_request_amount),
+        loan_type: values.loan_type,
+        gender: values.gender,
       })
         .then((res) => {
           if (res.status === 200) {

@@ -61,7 +61,7 @@ export default function SwipeableDrawerComponent({ formContainerRef }) {
             onClick={onClick}
             onKeyDown={onClick}
             onTouchStart={onClick}
-            className={`mt-2 md:mr-3 pb-24 md:pb-[260px] md:pr-[156px] px-1 no-scrollbar
+            className={`mt-2 pb-24 px-1 no-scrollbar
               ${innerWidth < 768 ? '' : 'h-screen overflow-auto no-scrollbar'}`}
           >
             <ActiveStepComponent />

@@ -113,17 +113,14 @@ const LeadGeneration = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transitionDuration: 2 }}
         exit={{ opacity: 0 }}
-        className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen overflow-y-hidden  md:gap-[111px]'
+        className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen md:gap-[111px] overflow-y-hidden'
       >
         <AnimationBanner />
-        <div
-          style={{ flex: '1 1 10%' }}
-          className='mt-[58px] lg:mt-0 relative overflow-hidden lg:overflow-visible min-h-screen lg:min-h-fit lg:static '
-        >
+        <div className='mt-[58px] lg:mt-0 relative overflow-hidden lg:overflow-visible min-h-screen lg:min-h-fit lg:static max-w-[732px] min-w-[732px]'>
           <form
             onSubmit={(e) => e.preventDefault()}
             id='lead-form-container'
-            className='w-full relative'
+            className='w-full md:max-w-[732px] relative'
           >
             <div className='overflow-auto'>
               <SwipeableDrawerComponent formContainerRef={formContainerRef} />

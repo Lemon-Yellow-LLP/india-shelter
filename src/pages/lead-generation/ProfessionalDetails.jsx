@@ -168,7 +168,7 @@ const ProfessinalDetail = () => {
   );
 
   return (
-    <div className='flex flex-col gap-2'>
+    <div className='flex flex-col gap-2 h-[85%]  max-[480px]:h-[72vh] overflow-auto max-[480px]:no-scrollbar md:pl-[5px] md:pb-[160px] min-[320px]:pl-[5px] min-[320px]:pr-[5px] md:pr-[145px]'>
       <PanInput
         label='PAN number'
         required

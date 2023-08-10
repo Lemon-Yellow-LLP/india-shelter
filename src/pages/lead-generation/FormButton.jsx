@@ -162,7 +162,9 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
             : onNextButtonClick
         }
       >
-        {activeStepIndex === steps.length - 3 || activeStepIndex === steps.length - 1 ? 'Submit' : 'Next'}
+        {activeStepIndex === steps.length - 3 || activeStepIndex === steps.length - 1
+          ? 'Submit'
+          : 'Next'}
       </Button>
     </div>
   );

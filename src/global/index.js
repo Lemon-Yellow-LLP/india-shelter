@@ -94,7 +94,7 @@ async function verifyPan(id) {
       ...requestOptions,
       timeout: 90000,
       'axios-retry': {
-        retries: 2,
+        retries: 3,
         retryCondition: () => true,
       },
     },
@@ -144,7 +144,7 @@ async function checkBre100(id, options = {}) {
       ...options,
       timeout: 90000,
       'axios-retry': {
-        retries: 2,
+        retries: 3,
         retryCondition: () => true,
       },
     },
@@ -160,7 +160,7 @@ async function checkCibil(id) {
       ...requestOptions,
       timeout: 90000,
       'axios-retry': {
-        retries: 2,
+        retries: 3,
         retryCondition: () => true,
       },
     },
@@ -181,7 +181,7 @@ async function addToSalesForce(id) {
       ...requestOptions,
       timeout: 90000,
       'axios-retry': {
-        retries: 3,
+        retries: 4,
         retryCondition: () => true,
       },
     },

@@ -1,6 +1,6 @@
 import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
-import { useCallback, useContext, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import AnimationBanner from './AnimationBanner';
 import { addToSalesForce, editLeadById, checkBre100 } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
@@ -8,8 +8,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
 import { ToastMessage } from '../../components';
 
+let leadID = null;
+
 const LeadGeneration = () => {
   const formContainerRef = useRef(null);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     processingBRE,
     setProcessingBRE,
@@ -21,6 +24,7 @@ const LeadGeneration = () => {
     setDrawerOpen,
     toastMessage,
     setToastMessage,
+    allowCallBre100,
   } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
@@ -34,6 +38,8 @@ const LeadGeneration = () => {
   const onSubmit = useCallback(
     (leadId, values) => {
       delete values.date_of_birth;
+      setIsSubmitted(true);
+      leadID = leadId;
 
       editLeadById(leadId, values).then(async () => {
         let interval = 10;
@@ -51,34 +57,6 @@ const LeadGeneration = () => {
             }, 500);
           });
         }, 500);
-
-        setTimeout(async () => {
-          try {
-            const res = await checkBre100(leadId);
-            const breResponse = res.data.bre_100_response;
-
-            if (breResponse.statusCode === 200) {
-              setLoadingBRE_Status(false);
-              setIsQualified(true);
-              const offeredAmount = breResponse.body.find(
-                (rule) => rule.Rule_Name === 'Amount_Offered',
-              );
-              if (offeredAmount.Rule_Value == 0) {
-                throw new Error('Loan amount is 0');
-              }
-              setAllowedLoanAmount(offeredAmount.Rule_Value);
-            } else {
-              setIsQualified(false);
-              setLoadingBRE_Status(false);
-            }
-            setLoadingBRE_Status(false);
-          } catch (error) {
-            setIsQualified(false);
-            setLoadingBRE_Status(false);
-          }
-
-          await addToSalesForce(leadId).catch(() => {});
-        }, 1000);
       });
     },
     [
@@ -91,6 +69,40 @@ const LeadGeneration = () => {
       setAllowedLoanAmount,
     ],
   );
+
+  useEffect(() => {
+    isSubmitted &&
+      allowCallBre100 &&
+      setTimeout(async () => {
+        try {
+          if (!allowCallBre100) return;
+
+          const res = await checkBre100(leadID);
+          const breResponse = res.data.bre_100_response;
+
+          if (breResponse.statusCode === 200) {
+            setLoadingBRE_Status(false);
+            setIsQualified(true);
+            const offeredAmount = breResponse.body.find(
+              (rule) => rule.Rule_Name === 'Amount_Offered',
+            );
+            if (offeredAmount.Rule_Value == 0) {
+              throw new Error('Loan amount is 0');
+            }
+            setAllowedLoanAmount(offeredAmount.Rule_Value);
+          } else {
+            setIsQualified(false);
+            setLoadingBRE_Status(false);
+          }
+          setLoadingBRE_Status(false);
+        } catch (error) {
+          setIsQualified(false);
+          setLoadingBRE_Status(false);
+        }
+
+        await addToSalesForce(leadID).catch(() => {});
+      }, 1000);
+  }, [allowCallBre100, isSubmitted]);
 
   if (processingBRE) {
     return (

@@ -274,6 +274,7 @@ const PersonalDetail = () => {
         loan_request_amount: parseFloat(values.loan_request_amount),
         loan_type: values.loan_type,
         gender: values.gender,
+        property_estimation: null,
       })
         .then((res) => {
           if (res.status === 200) {

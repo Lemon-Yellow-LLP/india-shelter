@@ -323,7 +323,7 @@ const PersonalDetail = () => {
   );
 
   return (
-    <div className='flex flex-col gap-2 h-[85%] max-[480px]:h-[72vh] overflow-auto max-[480px]:no-scrollbar md:pl-[5px] md:pb-[160px] min-[320px]:pl-[5px] min-[320px]:pr-[5px] md:pr-[145px]'>
+    <div className='flex flex-col gap-2 h-[85%] max-[480px]:h-[72vh] overflow-auto max-[480px]:no-scrollbar md:pl-[5px] md:pb-[160px] min-[320px]:pl-[5px] min-[320px]:pr-[5px] min-[320px]:pb-[80px] md:pr-[145px] '>
       <div className='flex flex-col gap-2'>
         <label htmlFor='loan-purpose' className='flex gap-0.5 font-medium text-black'>
           The loan I want is <span className='text-primary-red text-xs'>*</span>

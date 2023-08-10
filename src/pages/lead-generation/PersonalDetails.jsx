@@ -602,7 +602,6 @@ const PersonalDetail = () => {
           defaultResendTime={30}
           disableSendOTP={(isLeadGenerated && !phoneNumberVerified) || leadExists}
           verifyOTPCB={verifyLeadOTP}
-          type='number'
           hasSentOTPOnce={hasSentOTPOnce}
         />
       )}

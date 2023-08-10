@@ -22,12 +22,17 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
     currentLeadId,
     values,
     setAllowCallPanAndCibil,
+    setAllowCallBre100,
   } = useContext(AuthContext);
 
   const handlePanAndBre99Call = useCallback(
     async (_e) => {
       // call dedupe
-      await checkDedupe(currentLeadId);
+      try {
+        await checkDedupe(currentLeadId);
+      } catch (err) {
+        console.log(err);
+      }
 
       //call bre99
       try {
@@ -45,11 +50,19 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
         if (allowCallPanRule.Rule_Value === 'YES') {
           setAllowCallPanAndCibil((prev) => ({ ...prev, allowCallPanRule: true }));
         }
-
-        await Promise.all([verifyPan(currentLeadId), checkCibil(currentLeadId)]);
       } catch (err) {
         console.log(err);
       }
+
+      //call panAndCibil
+      await Promise.all([verifyPan(currentLeadId), checkCibil(currentLeadId)])
+        .then((res) => {
+          setAllowCallBre100(true);
+        })
+        .catch((err) => {
+          setAllowCallBre100(true);
+          console.log(err);
+        });
     },
     [currentLeadId, errors.pan_number, setAllowCallPanAndCibil, values.pan_number],
   );

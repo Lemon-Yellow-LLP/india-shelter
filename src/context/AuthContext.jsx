@@ -115,6 +115,7 @@ const AuthContextProvider = ({ children }) => {
     allowCallPanRule: false,
     allowCallCibilRule: false,
   });
+  const [allowCallBre100, setAllowCallBre100] = useState(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -201,6 +202,8 @@ const AuthContextProvider = ({ children }) => {
         setDrawerOpen,
         setToastMessage,
         toastMessage,
+        allowCallBre100,
+        setAllowCallBre100,
       }}
     >
       {children}

@@ -118,7 +118,6 @@ const OtpInput = ({
           onPaste={(e) => {
             e.preventDefault();
             const text = (e.originalEvent || e).clipboardData.getData('text/plain');
-            console.log(text);
             setOtp(text);
             if (text.length >= 5) {
               verifyOTPCB(text);
@@ -150,6 +149,7 @@ const OtpInput = ({
             className='text-primary-red cursor-pointer font-semibold'
             onClick={() => {
               setOtp('');
+              inputRef.current?.focus({ preventScroll: true });
               handleOnOTPSend();
             }}
           >

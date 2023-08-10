@@ -119,7 +119,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
       }}
       className={`${
         activeStepIndex > 0 ? 'justify-between' : 'justify-end'
-      } btn-bg absolute h-[128px] md:h-[166px] flex bottom-0 w-full md:pr-[175px] md:pl-1  md:w-[732px] items-end pb-4 px-4 md:px-0`}
+      } btn-bg absolute h-[128px] md:h-[166px] flex bottom-0 w-full 2xl:pr-[90px] xl:pr-[170px] lg:pr-[260px] md:pl-1 md:w-[732px] items-end pb-4 px-4 md:px-0`}
     >
       <Button
         type='button'

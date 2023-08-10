@@ -1,6 +1,6 @@
 import { AuthContext } from '../../context/AuthContext';
 import FormButton from './FormButton';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useRef } from 'react';
 import AnimationBanner from './AnimationBanner';
 import { addToSalesForce, editLeadById, checkBre100 } from '../../global';
 import CongratulationBanner from './CongratulationBanner';
@@ -8,11 +8,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import SwipeableDrawerComponent from '../../components/SwipeableDrawer/SwipeableDrawerComponent';
 import { ToastMessage } from '../../components';
 
-let leadID = null;
-
 const LeadGeneration = () => {
   const formContainerRef = useRef(null);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const {
     processingBRE,
     setProcessingBRE,
@@ -24,7 +21,6 @@ const LeadGeneration = () => {
     setDrawerOpen,
     toastMessage,
     setToastMessage,
-    allowCallBre100,
   } = useContext(AuthContext);
 
   const onFormButtonClick = useCallback(() => {
@@ -38,8 +34,6 @@ const LeadGeneration = () => {
   const onSubmit = useCallback(
     (leadId, values) => {
       delete values.date_of_birth;
-      setIsSubmitted(true);
-      leadID = leadId;
 
       editLeadById(leadId, values).then(async () => {
         let interval = 10;
@@ -57,6 +51,34 @@ const LeadGeneration = () => {
             }, 500);
           });
         }, 500);
+
+        setTimeout(async () => {
+          try {
+            const res = await checkBre100(leadId);
+            const breResponse = res.data.bre_100_response;
+
+            if (breResponse.statusCode === 200) {
+              setLoadingBRE_Status(false);
+              setIsQualified(true);
+              const offeredAmount = breResponse.body.find(
+                (rule) => rule.Rule_Name === 'Amount_Offered',
+              );
+              if (offeredAmount.Rule_Value == 0) {
+                throw new Error('Loan amount is 0');
+              }
+              setAllowedLoanAmount(offeredAmount.Rule_Value);
+            } else {
+              setIsQualified(false);
+              setLoadingBRE_Status(false);
+            }
+            setLoadingBRE_Status(false);
+          } catch (error) {
+            setIsQualified(false);
+            setLoadingBRE_Status(false);
+          }
+
+          await addToSalesForce(leadId).catch(() => {});
+        }, 1000);
       });
     },
     [
@@ -69,40 +91,6 @@ const LeadGeneration = () => {
       setAllowedLoanAmount,
     ],
   );
-
-  useEffect(() => {
-    isSubmitted &&
-      allowCallBre100 &&
-      setTimeout(async () => {
-        try {
-          if (!allowCallBre100) return;
-
-          const res = await checkBre100(leadID);
-          const breResponse = res.data.bre_100_response;
-
-          if (breResponse.statusCode === 200) {
-            setLoadingBRE_Status(false);
-            setIsQualified(true);
-            const offeredAmount = breResponse.body.find(
-              (rule) => rule.Rule_Name === 'Amount_Offered',
-            );
-            if (offeredAmount.Rule_Value == 0) {
-              throw new Error('Loan amount is 0');
-            }
-            setAllowedLoanAmount(offeredAmount.Rule_Value);
-          } else {
-            setIsQualified(false);
-            setLoadingBRE_Status(false);
-          }
-          setLoadingBRE_Status(false);
-        } catch (error) {
-          setIsQualified(false);
-          setLoadingBRE_Status(false);
-        }
-
-        await addToSalesForce(leadID).catch(() => {});
-      }, 1000);
-  }, [allowCallBre100, isSubmitted]);
 
   if (processingBRE) {
     return (
@@ -125,17 +113,14 @@ const LeadGeneration = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transitionDuration: 2 }}
         exit={{ opacity: 0 }}
-        className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen overflow-y-hidden  md:gap-[111px]'
+        className='flex w-full flex-col md:flex-row md:justify-between 2xl:justify-start h-screen md:gap-[111px] overflow-y-hidden'
       >
         <AnimationBanner />
-        <div
-          style={{ flex: '1 1 10%' }}
-          className='mt-[58px] lg:mt-0 relative overflow-hidden lg:overflow-visible min-h-screen lg:min-h-fit lg:static '
-        >
+        <div className='mt-[58px] lg:mt-0 relative overflow-hidden lg:overflow-visible min-h-screen lg:min-h-fit lg:static max-w-[732px] min-w-[732px]'>
           <form
             onSubmit={(e) => e.preventDefault()}
             id='lead-form-container'
-            className='w-full relative'
+            className='w-full md:max-w-[732px] relative'
           >
             <div className='overflow-auto'>
               <SwipeableDrawerComponent formContainerRef={formContainerRef} />

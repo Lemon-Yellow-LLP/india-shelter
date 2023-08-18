@@ -67,17 +67,20 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
     [currentLeadId, errors.pan_number, setAllowCallPanAndCibil, values.pan_number],
   );
 
-  const onNextButtonClick = useCallback(() => {
+  const onNextButtonClick = () => {
     const filteredValue = {
       loan_type: values.loan_type.toString(),
       loan_request_amount: parseFloat(values.loan_request_amount),
+      first_name: values.first_name,
       middle_name: values.middle_name,
       last_name: values.last_name,
       gender: values.gender,
+      pincode: parseInt(values.pincode),
       extra_params: {
         resume_journey_index: activeStepIndex + 1,
       },
     };
+
     if (activeStepIndex === 0) {
       editLeadById(currentLeadId, filteredValue);
     } else {
@@ -94,16 +97,7 @@ const FormButton = ({ onButtonClickCB, onSubmit }) => {
 
     goToNextStep();
     onButtonClickCB && onButtonClickCB();
-  }, [
-    values.loan_type,
-    values.loan_request_amount,
-    values.middle_name,
-    values.last_name,
-    activeStepIndex,
-    goToNextStep,
-    onButtonClickCB,
-    currentLeadId,
-  ]);
+  };
 
   const onPreviousButtonClick = useCallback(() => {
     goToPreviousStep();

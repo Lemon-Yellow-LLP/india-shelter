@@ -59,6 +59,7 @@ const AuthContextProvider = ({ children }) => {
   const [currentLeadId, setCurrentLeadId] = useState(null);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [phoneNumberVerified, setPhoneNumberVerified] = useState(null);
+  const [emailOTPVerified, setEmailOTPVerified] = useState(null);
   const [acceptedTermsAndCondition, setAcceptedTermsAndCondition] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const navigate = useNavigate();
@@ -204,6 +205,8 @@ const AuthContextProvider = ({ children }) => {
         toastMessage,
         allowCallBre100,
         setAllowCallBre100,
+        emailOTPVerified,
+        setEmailOTPVerified,
       }}
     >
       {children}

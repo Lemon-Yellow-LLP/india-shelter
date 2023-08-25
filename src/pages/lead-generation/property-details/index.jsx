@@ -9,7 +9,6 @@ export const PropertyDetailContext = createContext(null);
 
 const PropertyDetail = () => {
   const [showOTPInput, setShowOTPInput] = useState(false);
-  const [emailOTPVerified, setEmailOTPVerified] = useState(null);
   const [disableEmailInput, setDisableEmailInput] = useState(false);
 
   const {
@@ -25,6 +24,8 @@ const PropertyDetail = () => {
     currentLeadId,
     setDisableNextStep,
     setToastMessage,
+    emailOTPVerified,
+    setEmailOTPVerified,
   } = useContext(AuthContext);
 
   const [propertyIdentified, setPropertyIdentified] = useState(values.property_identification);
@@ -216,14 +217,13 @@ const PropertyDetail = () => {
                 displayError={hasSentOTPOnce}
               />
             </div>
-
             <button
               className={`min-w-[93px] self-end font-normal py-3 px-2 rounded disabled:text-dark-grey disabled:bg-stroke ${
-                disableEmailInput
+                disableEmailInput || emailOTPVerified
                   ? 'text-dark-grey bg-stroke mb-[22px] pointer-events-none'
                   : 'bg-primary-red text-white'
               }`}
-              disabled={!!errors.email}
+              disabled={!!errors.email || emailOTPVerified}
               onClick={sendEmailOTP}
             >
               Send OTP

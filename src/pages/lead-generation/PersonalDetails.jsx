@@ -95,6 +95,15 @@ const PersonalDetail = () => {
   const [showOTPInput, setShowOTPInput] = useState(searchParams.has('li') && !isLeadGenerated);
   const [selectedGender, setSelectedGender] = useState(null);
 
+  const params = {};
+  const getUtrmParameters = () => {
+    searchParams.forEach((value, key) => {
+      params[key] = value;
+    });
+  };
+
+  getUtrmParameters();
+
   useEffect(() => {
     let disableNext = disableNextFields.reduce((acc, field) => {
       const keys = Object.keys(errors);
@@ -275,6 +284,7 @@ const PersonalDetail = () => {
         loan_type: values.loan_type,
         gender: values.gender,
         property_estimation: null,
+        ...params,
       })
         .then((res) => {
           if (res.status === 200) {

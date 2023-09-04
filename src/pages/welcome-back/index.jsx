@@ -117,6 +117,9 @@ const WelcomeBack = () => {
     if (resumeJourneyIndex !== undefined) {
       setActiveStepIndex(parseInt(resumeJourneyIndex));
       navigate('/');
+    } else {
+      setActiveStepIndex(0);
+      navigate('/');
     }
   }, [
     navigate,

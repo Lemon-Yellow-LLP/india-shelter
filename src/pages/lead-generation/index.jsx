@@ -36,17 +36,38 @@ const LeadGeneration = () => {
     formContainerRef.current?.scrollTo(0, 0);
   }, [setDrawerOpen]);
 
+  const handleTestClick = () => {
+    console.log('Test Button Clicked');
+    !(function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = '2.0';
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '355833938473241');
+    fbq('track', 'PageView');
+  };
+
   const onSubmit = useCallback(
     (leadId, values) => {
       delete values.date_of_birth;
       setIsSubmitted(true);
       leadID = leadId;
-
+      handleTestClick();
       editLeadById(leadId, values).then(async () => {
         let interval = 10;
         setProcessingBRE(true);
         setLoadingBRE_Status(true);
-
         setTimeout(() => {
           interval = setInterval(() => {
             setProgress((prev) => {
@@ -120,28 +141,6 @@ const LeadGeneration = () => {
     );
   }
 
-  const handleTestClick = () => {
-    console.log('Test Button Clicked');
-    !(function (f, b, e, v, n, t, s) {
-      if (f.fbq) return;
-      n = f.fbq = function () {
-        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-      };
-      if (!f._fbq) f._fbq = n;
-      n.push = n;
-      n.loaded = !0;
-      n.version = '2.0';
-      n.queue = [];
-      t = b.createElement(e);
-      t.async = !0;
-      t.src = v;
-      s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s);
-    })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '355833938473241');
-    fbq('track', 'PageView');
-  };
-
   return (
     <AnimatePresence>
       <MetaPixel />
@@ -165,9 +164,6 @@ const LeadGeneration = () => {
               <SwipeableDrawerComponent formContainerRef={formContainerRef} />
             </div>
             <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
-            <button className='p-[20px] border-[1px] bg-white rounded' onClick={handleTestClick}>
-              Test
-            </button>
             <ToastMessage message={toastMessage} setMessage={setToastMessage} />
           </form>
         </div>

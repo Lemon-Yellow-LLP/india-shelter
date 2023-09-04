@@ -121,6 +121,7 @@ const LeadGeneration = () => {
   }
 
   const handleTestClick = () => {
+    console.log('Test Button Clicked');
     !(function (f, b, e, v, n, t, s) {
       if (f.fbq) return;
       n = f.fbq = function () {
@@ -164,7 +165,9 @@ const LeadGeneration = () => {
               <SwipeableDrawerComponent formContainerRef={formContainerRef} />
             </div>
             <FormButton onButtonClickCB={onFormButtonClick} onSubmit={onSubmit} />
-            <button onClick={handleTestClick}>Test</button>
+            <button className='p-[20px] border-[1px] bg-white rounded' onClick={handleTestClick}>
+              Test
+            </button>
             <ToastMessage message={toastMessage} setMessage={setToastMessage} />
           </form>
         </div>

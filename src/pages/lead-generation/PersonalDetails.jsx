@@ -96,6 +96,7 @@ const PersonalDetail = () => {
   const [selectedGender, setSelectedGender] = useState(null);
 
   const params = {};
+
   const getUtrmParameters = () => {
     searchParams.forEach((value, key) => {
       params[key] = value;
@@ -273,6 +274,9 @@ const PersonalDetail = () => {
       return acc && !Object.keys(errors).includes(field);
     }, true);
     if (canCreateLead) {
+      let extra_15 = params.fbclid;
+      let newParams = params;
+      delete newParams.fbclid;
       createLead({
         first_name,
         otp_send_on: null,
@@ -284,7 +288,8 @@ const PersonalDetail = () => {
         loan_type: values.loan_type,
         gender: values.gender,
         property_estimation: null,
-        ...params,
+        extra_15,
+        ...newParams,
       })
         .then((res) => {
           if (res.status === 200) {
